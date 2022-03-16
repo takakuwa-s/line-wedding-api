@@ -9,6 +9,7 @@ package main
 import (
 	"github.com/takakuwa-s/line-wedding-api/driver"
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
+	"github.com/takakuwa-s/line-wedding-api/interface/gateway"
 	"github.com/takakuwa-s/line-wedding-api/interface/presenter"
 	"github.com/takakuwa-s/line-wedding-api/usecase"
 )
@@ -17,7 +18,8 @@ import (
 
 func InitializeRouter() *driver.Router {
 	linePresenter := presenter.NewLinePresenter()
-	messageHandler := usecase.NewMessageHandler(linePresenter)
+	messageRepository := gateway.NewMessageRepository()
+	messageHandler := usecase.NewMessageHandler(linePresenter, messageRepository)
 	lineController := controller.NewLineController(messageHandler)
 	router := driver.NewRouter(lineController)
 	return router
