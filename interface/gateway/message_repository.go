@@ -1,14 +1,12 @@
 package gateway
 
 import (
-	"fmt"
-	"go.uber.org/zap"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-)
 
-var (
-	logger, _ = zap.NewProduction()
+	"github.com/takakuwa-s/line-wedding-api/conf"
+	"go.uber.org/zap"
 )
 
 type MessageRepository struct {
@@ -17,19 +15,21 @@ type MessageRepository struct {
 
 // Newコンストラクタ
 func NewMessageRepository() *MessageRepository {
-	b, err := ioutil.ReadFile("./resources/message.json")
+	b, err := ioutil.ReadFile("./resource/message.json")
 	if err != nil {
-		logger.Error("Failed to read the file", zap.Any("err", err))
+		conf.Log.Error("Failed to read the message.json", zap.Any("err", err))
 	}
 	var obj map[string]interface{}
-	_ = json.Unmarshal(b, &obj)
+	if err = json.Unmarshal(b, &obj); err != nil {
+		conf.Log.Error("Failed to parses the JSON-encoded data", zap.Any("err", err))
+	}
 	return &MessageRepository{data: obj}
 }
 
 func (mp *MessageRepository) FindReplyMessage(text string) string {
 	message := mp.data[text]
 	if fmt.Sprintf("%T", message) == "string" {
-		logger.Info("Message is successfully found", zap.Any("message", message))
+		conf.Log.Info("Message is successfully found", zap.Any("message", message))
 		return message.(string)
 	}
 	return ""

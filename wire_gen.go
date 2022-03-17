@@ -7,6 +7,7 @@
 package main
 
 import (
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/driver"
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
 	"github.com/takakuwa-s/line-wedding-api/interface/gateway"
@@ -17,10 +18,11 @@ import (
 // Injectors from wire.go:
 
 func InitializeRouter() *driver.Router {
-	linePresenter := presenter.NewLinePresenter()
+	client := conf.NewLineBot()
+	linePresenter := presenter.NewLinePresenter(client)
 	messageRepository := gateway.NewMessageRepository()
 	messageHandler := usecase.NewMessageHandler(linePresenter, messageRepository)
-	lineController := controller.NewLineController(messageHandler)
+	lineController := controller.NewLineController(client, messageHandler)
 	router := driver.NewRouter(lineController)
 	return router
 }

@@ -3,6 +3,7 @@
 package main
 
 import (
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/driver"
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
 	"github.com/takakuwa-s/line-wedding-api/interface/presenter"
@@ -16,6 +17,8 @@ import (
 
 func InitializeRouter() *driver.Router {
 	wire.Build(
+		// conf
+		conf.NewLineBot,
 
 		// driver
 		driver.NewRouter,

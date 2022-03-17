@@ -1,19 +1,28 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	"go.uber.org/zap"
-)
+	"flag"
 
-var (
-	logger, _ = zap.NewProduction()
+	"github.com/joho/godotenv"
+	"github.com/takakuwa-s/line-wedding-api/conf"
+	"go.uber.org/zap"
 )
 
 func main() {
 	err := godotenv.Load("./environments/dev.env")
 	if err != nil {
-		logger.Error("Error loading .env file", zap.Any("err", err))
+		conf.Log.Error("Error loading .env file", zap.Any("err", err))
 	}
-	router := InitializeRouter()
-	router.Init()
+
+	flag.Parse()
+	if flag.Arg(0) == "config" {
+		conf.Log.Info("start configuration")
+		conf.GetRichmenuList()
+		// conf.DeleteRichmenu("richmenu-c366d8ae6087d26dc448c4bca360b673")
+		// conf.CreateRichmenu()
+		conf.Log.Info("complete configuration")
+	} else {
+		router := InitializeRouter()
+		router.Init()
+	}
 }
