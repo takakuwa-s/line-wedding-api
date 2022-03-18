@@ -5,5 +5,5 @@ import (
 )
 
 type IPresenter interface {
-	ReplyMessage(dto.Message)
+	ReplyMessage(dto.ReplyMessage)
 }

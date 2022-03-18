@@ -2,7 +2,6 @@ package gateway
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
@@ -10,7 +9,7 @@ import (
 )
 
 type MessageRepository struct {
-	data map[string]interface{}
+	data map[string][]map[string]interface{}
 }
 
 // Newコンストラクタ
@@ -19,18 +18,17 @@ func NewMessageRepository() *MessageRepository {
 	if err != nil {
 		conf.Log.Error("Failed to read the message.json", zap.Any("err", err))
 	}
-	var obj map[string]interface{}
+	var obj map[string][]map[string]interface{}
 	if err = json.Unmarshal(b, &obj); err != nil {
 		conf.Log.Error("Failed to parses the JSON-encoded data", zap.Any("err", err))
 	}
 	return &MessageRepository{data: obj}
 }
 
-func (mp *MessageRepository) FindReplyMessage(text string) string {
-	message := mp.data[text]
-	if fmt.Sprintf("%T", message) == "string" {
-		conf.Log.Info("Message is successfully found", zap.Any("message", message))
-		return message.(string)
+func (mp *MessageRepository) FindReplyMessage(text string) []map[string]interface{} {
+	ms := mp.data[text]
+	if len(ms) > 0 {
+		conf.Log.Info("Successfully find the data", zap.Any("data", ms))
 	}
-	return ""
+	return ms
 }

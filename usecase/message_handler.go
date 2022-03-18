@@ -16,12 +16,14 @@ func NewMessageHandler(p ipresenter.IPresenter, mr igateway.IMessageRepository) 
 	return &MessageHandler{p:p, mr:mr}
 }
 
-func (ml *MessageHandler) HandleTextMessage(m dto.Message) {
-	text := ml.mr.FindReplyMessage(m.Text)
-	if len(text) > 0 {
-		m.Text = text
-	} else {
-		m.Text = "すいません。よくわかりません。"
+func (ml *MessageHandler) HandleTextMessage(m dto.RequestMessage) {
+	messages := ml.mr.FindReplyMessage(m.Text)
+	if len(messages) == 0 {
+		messages = ml.mr.FindReplyMessage("unknown")
 	}
-	ml.p.ReplyMessage(m)
+	rm := dto.ReplyMessage{
+		ReplyToken: m.ReplyToken,
+		Messages: messages,
+	}
+	ml.p.ReplyMessage(rm)
 }

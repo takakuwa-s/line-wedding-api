@@ -1,6 +1,6 @@
 package dto
 
-type Message struct {
+type RequestMessage struct {
 	ReplyToken string
 	Text string
 }

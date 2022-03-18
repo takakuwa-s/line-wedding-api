@@ -29,7 +29,7 @@ func (lw *LineController) Webhook(c *gin.Context) {
 	conf.Log.Info("Successfully parse the request", zap.Any("events", events))
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
-			message := dto.Message{
+			message := dto.RequestMessage{
 				ReplyToken : event.ReplyToken,
 				Text : event.Message.(*linebot.TextMessage).Text,
 			}

@@ -1,5 +1,5 @@
 package igateway
 
 type IMessageRepository interface {
-	FindReplyMessage(string) string
+	FindReplyMessage(string) []map[string]interface{}
 }
