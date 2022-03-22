@@ -16,14 +16,29 @@ func NewMessageHandler(p ipresenter.IPresenter, mr igateway.IMessageRepository) 
 	return &MessageHandler{p:p, mr:mr}
 }
 
-func (ml *MessageHandler) HandleTextMessage(m dto.RequestMessage) {
+func (ml *MessageHandler) HandleImageEvent(m *dto.FileMessage) {
+	messages := ml.mr.FindImageMessage()
+	rm := dto.NewReplyMessage(m.ReplyToken, messages)
+	ml.p.ReplyMessage(rm)
+}
+
+func (ml *MessageHandler) HandleFollowEvent(m *dto.FollowMessage) {
+	messages := ml.mr.FindFollowMessage()
+	rm := dto.NewReplyMessage(m.ReplyToken, messages)
+	ml.p.ReplyMessage(rm)
+}
+
+func (ml *MessageHandler) HandleGroupEvent(m *dto.GroupMessage) {
+	messages := ml.mr.FindGroupMessage()
+	rm := dto.NewReplyMessage(m.ReplyToken, messages)
+	ml.p.ReplyMessage(rm)
+}
+
+func (ml *MessageHandler) HandleTextMessage(m *dto.TextMessage) {
 	messages := ml.mr.FindReplyMessage(m.Text)
 	if len(messages) == 0 {
 		messages = ml.mr.FindReplyMessage("unknown")
 	}
-	rm := dto.ReplyMessage{
-		ReplyToken: m.ReplyToken,
-		Messages: messages,
-	}
+	rm := dto.NewReplyMessage(m.ReplyToken, messages)
 	ml.p.ReplyMessage(rm)
 }

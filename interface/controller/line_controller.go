@@ -28,12 +28,30 @@ func (lw *LineController) Webhook(c *gin.Context) {
 	}
 	conf.Log.Info("Successfully parse the request", zap.Any("events", events))
 	for _, event := range events {
-		if event.Type == linebot.EventTypeMessage {
-			message := dto.RequestMessage{
-				ReplyToken : event.ReplyToken,
-				Text : event.Message.(*linebot.TextMessage).Text,
+		if event.Source.Type == linebot.EventSourceTypeUser {
+			switch event.Type {
+			case linebot.EventTypeMessage:
+				switch event.Message.(type) {
+				case *linebot.ImageMessage:
+					message := dto.NewFileMessage(event.ReplyToken, event.Message.(*linebot.ImageMessage).ID)
+					lw.ml.HandleImageEvent(message)
+				case *linebot.VideoMessage:
+					message := dto.NewFileMessage(event.ReplyToken, event.Message.(*linebot.VideoMessage).ID)
+					lw.ml.HandleImageEvent(message)
+				case *linebot.TextMessage:
+					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text)
+					lw.ml.HandleTextMessage(message)
+				default:
+					message := dto.NewTextMessage(event.ReplyToken, "unknown")
+					lw.ml.HandleTextMessage(message)
+				}
+			case linebot.EventTypeFollow:
+				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
+				lw.ml.HandleFollowEvent(message)
 			}
-			lw.ml.HandleTextMessage(message)
+		} else {
+			message := dto.NewGroupMessage(event.ReplyToken)
+			lw.ml.HandleGroupEvent(message)
 		}
 	}
 }

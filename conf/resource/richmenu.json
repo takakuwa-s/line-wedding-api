@@ -57,7 +57,7 @@
       "action": {
         "type": "message",
         "label": "結婚式について",
-        "text": "結婚式について"
+        "text": "結婚式"
       }
     },
     {
@@ -83,7 +83,7 @@
       "action": {
         "type": "message",
         "label": "新郎・新婦について",
-        "text": "新郎・新婦について"
+        "text": "新郎・新婦"
       }
     }
   ]

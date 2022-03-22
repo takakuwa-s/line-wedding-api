@@ -1,11 +1,11 @@
 {
-  "unknown": [
+  "group": [
     {
       "type": "text",
-      "text": "ごめんなさい！よく分からないです...$\n\n下の返信メニューから近いものを選んでみて下さい",
+      "text": "ごめんなさい!個人LINEにのみ対応しています$",
       "emojis": [
         {
-          "index": 19,
+          "index": 23,
           "productId": "5ac1bfd5040ab15980c9b435",
           "emojiId": "005"
         }
@@ -14,30 +14,19 @@
     {
       "type": "sticker",
       "packageID": "6136",
-      "stickerID": "10551379",
-      "quickReplyItems": [
-        {
-          "imageURL": "",
-          "action": {
-            "type": "cameraRoll",
-            "label": "画像・動画を共有したい"
-          }
-        },
-        {
-          "imageURL": "https://drive.google.com/uc?export=view&id=1316g1ZQWfmffVy_uAVc_4UCxkG-9PTPq",
-          "action": {
-            "type": "message",
-            "label": "結婚式について知りたい",
-            "text": "結婚式"
-          }
-        }
-      ]
+      "stickerID": "10551379"
     }
   ],
-  "結婚式について": [
+  "follow": [
     {
       "type": "text",
-      "text": "SCAPESでやるよ"
+      "text": "友達追加ありがとう"
+    }
+  ],
+  "image": [
+    {
+      "type": "text",
+      "text": "画像/動画を登録しました"
     }
   ]
 }
