@@ -21,7 +21,10 @@ func InitializeRouter() *driver.Router {
 	client := conf.NewLineBot()
 	linePresenter := presenter.NewLinePresenter(client)
 	messageRepository := gateway.NewMessageRepository()
-	messageHandler := usecase.NewMessageHandler(linePresenter, messageRepository)
+	lineRepository := gateway.NewLineRepository(client)
+	userRepository := gateway.NewUserRepository()
+	fileRepository := gateway.NewFileRepository()
+	messageHandler := usecase.NewMessageHandler(linePresenter, messageRepository, lineRepository, userRepository, fileRepository)
 	lineController := controller.NewLineController(client, messageHandler)
 	router := driver.NewRouter(lineController)
 	return router

@@ -3,6 +3,7 @@ package gateway
 import (
 	"encoding/json"
 	"io/ioutil"
+	"fmt"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"go.uber.org/zap"
@@ -48,8 +49,10 @@ func (mp *MessageRepository) FindGroupMessage() []map[string]interface{} {
 	return mp.findMessage("group")
 }
 
-func (mp *MessageRepository) FindFollowMessage() []map[string]interface{} {
-	return mp.findMessage("follow")
+func (mp *MessageRepository) FindFollowMessage(displayName string) []map[string]interface{} {
+	ms := mp.findMessage("follow")
+	ms[0]["text"] = fmt.Sprintf(ms[0]["text"].(string), displayName)
+	return ms
 }
 
 func (mp *MessageRepository) findMessage(m string) []map[string]interface{} {

@@ -20,7 +20,7 @@
   "follow": [
     {
       "type": "text",
-      "text": "友達追加ありがとう"
+      "text": "初めまして%sさん!"
     }
   ],
   "image": [

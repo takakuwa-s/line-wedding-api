@@ -133,14 +133,10 @@
             "type": "bubble",
             "hero": {
               "type": "image",
-              "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
+              "url": "https://drive.google.com/uc?export=view&id=1xqHEE4jnffIg-pX8qFmREZ8ozL4iYKcS",
               "size": "full",
-              "aspectRatio": "20:13",
-              "aspectMode": "cover",
-              "action": {
-                "type": "uri",
-                "uri": "http://linecorp.com/"
-              }
+              "aspectRatio": "25:13",
+              "aspectMode": "cover"
             },
             "body": {
               "type": "box",
@@ -148,54 +144,14 @@
               "contents": [
                 {
                   "type": "text",
-                  "text": "Brown Cafe",
+                  "text": "Access",
                   "weight": "bold",
-                  "size": "xl"
-                },
-                {
-                  "type": "box",
-                  "layout": "baseline",
-                  "margin": "md",
-                  "contents": [
-                    {
-                      "type": "icon",
-                      "size": "sm",
-                      "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                      "type": "icon",
-                      "size": "sm",
-                      "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                      "type": "icon",
-                      "size": "sm",
-                      "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                      "type": "icon",
-                      "size": "sm",
-                      "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                      "type": "icon",
-                      "size": "sm",
-                      "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gray_star_28.png"
-                    },
-                    {
-                      "type": "text",
-                      "text": "4.0",
-                      "size": "sm",
-                      "color": "#999999",
-                      "margin": "md",
-                      "flex": 0
-                    }
-                  ]
+                  "size": "xl",
+                  "color": "#555555"
                 },
                 {
                   "type": "box",
                   "layout": "vertical",
-                  "margin": "lg",
                   "spacing": "sm",
                   "contents": [
                     {
@@ -208,81 +164,72 @@
                           "text": "Place",
                           "color": "#aaaaaa",
                           "size": "sm",
-                          "flex": 1
+                          "flex": 23,
+                          "style": "italic"
                         },
                         {
                           "type": "text",
-                          "text": "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
+                          "text": "SCAPES THE SUITE",
                           "wrap": true,
                           "color": "#666666",
                           "size": "sm",
-                          "flex": 5
+                          "flex": 77
                         }
                       ]
                     },
                     {
                       "type": "box",
                       "layout": "baseline",
-                      "spacing": "sm",
+                      "spacing": "none",
                       "contents": [
                         {
                           "type": "text",
-                          "text": "Time",
+                          "text": "address",
                           "color": "#aaaaaa",
+                          "flex": 23,
+                          "margin": "none",
                           "size": "sm",
-                          "flex": 1
+                          "style": "italic"
                         },
                         {
                           "type": "text",
-                          "text": "10:00 - 23:00",
+                          "text": "〒240-0112 神奈川県三浦郡葉山町堀内９２２−２",
                           "wrap": true,
                           "color": "#666666",
                           "size": "sm",
-                          "flex": 5
+                          "flex": 77,
+                          "margin": "xs"
                         }
                       ]
                     }
-                  ]
+                  ],
+                  "margin": "lg"
                 }
-              ]
+              ],
+              "paddingTop": "lg",
+              "paddingBottom": "md",
+              "paddingStart": "xl",
+              "paddingEnd": "xl"
             },
             "footer": {
               "type": "box",
               "layout": "vertical",
-              "spacing": "sm",
               "contents": [
                 {
                   "type": "button",
-                  "style": "link",
-                  "height": "sm",
                   "action": {
-                    "type": "uri",
-                    "label": "CALL",
-                    "uri": "https://linecorp.com"
-                  }
-                },
-                {
-                  "type": "button",
-                  "style": "link",
-                  "height": "sm",
-                  "action": {
-                    "type": "uri",
-                    "label": "WEBSITE",
-                    "uri": "https://linecorp.com"
-                  }
-                },
-                {
-                  "type": "box",
-                  "layout": "vertical",
-                  "contents": [],
-                  "margin": "sm"
+                    "type": "message",
+                    "label": "詳細はこちら",
+                    "text": "結婚式場はどこ？"
+                  },
+                  "style": "link"
                 }
               ],
-              "flex": 0
+              "paddingAll": "none"
             }
           }
         ]
-      } 
+      }
     }
   ]
 }

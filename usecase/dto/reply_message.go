@@ -5,9 +5,9 @@ type ReplyMessage struct {
 	Messages []map[string]interface{}
 }
 
-func NewReplyMessage(ReplyToken string, Messages []map[string]interface{}) *ReplyMessage {
+func NewReplyMessage(replyToken string, messages []map[string]interface{}) *ReplyMessage {
 	return &ReplyMessage{
-		ReplyToken : ReplyToken,
-		Messages : Messages,
+		ReplyToken : replyToken,
+		Messages : messages,
 	}
 } 

@@ -5,34 +5,49 @@ type TextMessage struct {
 	Text string
 }
 
-func NewTextMessage(ReplyToken, Text string) *TextMessage {
+func NewTextMessage(replyToken, text string) *TextMessage {
 	return &TextMessage{
-		ReplyToken : ReplyToken,
-		Text : Text,
+		ReplyToken : replyToken,
+		Text : text,
 	}
 }
 
 type FileMessage struct {
 	ReplyToken string
-	MessageID string
+	File *File
 }
 
-func NewFileMessage(ReplyToken, MessageID string) *FileMessage {
+func NewFileMessage(replyToken, messageId string) *FileMessage {
+	file := NewFile(messageId)
 	return &FileMessage{
-		ReplyToken : ReplyToken,
-		MessageID: MessageID,
+		ReplyToken : replyToken,
+		File: file,
 	}
 }
 
 type FollowMessage struct {
 	ReplyToken string
-	SenderUserID string
+	SenderUserId string
 }
 
-func NewFollowMessage(ReplyToken, SenderUserID string) *FollowMessage {
+func NewFollowMessage(replyToken, senderUserId string) *FollowMessage {
 	return &FollowMessage{
-		ReplyToken : ReplyToken,
-		SenderUserID: SenderUserID,
+		ReplyToken : replyToken,
+		SenderUserId: senderUserId,
+	}
+}
+
+type PostbackMessage struct {
+	ReplyToken string
+	Data string
+	Params interface{}
+}
+
+func NewPostbackMessage(replyToken, data string, params interface{}) *PostbackMessage {
+	return &PostbackMessage{
+		ReplyToken : replyToken,
+		Data: data,
+		Params: params,
 	}
 }
 
@@ -40,8 +55,8 @@ type GroupMessage struct {
 	ReplyToken string
 }
 
-func NewGroupMessage(ReplyToken string) *GroupMessage {
+func NewGroupMessage(replyToken string) *GroupMessage {
 	return &GroupMessage{
-		ReplyToken : ReplyToken,
+		ReplyToken : replyToken,
 	}
 }

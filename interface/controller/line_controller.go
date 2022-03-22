@@ -34,10 +34,10 @@ func (lw *LineController) Webhook(c *gin.Context) {
 				switch event.Message.(type) {
 				case *linebot.ImageMessage:
 					message := dto.NewFileMessage(event.ReplyToken, event.Message.(*linebot.ImageMessage).ID)
-					lw.ml.HandleImageEvent(message)
+					lw.ml.HandleFileEvent(message)
 				case *linebot.VideoMessage:
 					message := dto.NewFileMessage(event.ReplyToken, event.Message.(*linebot.VideoMessage).ID)
-					lw.ml.HandleImageEvent(message)
+					lw.ml.HandleFileEvent(message)
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text)
 					lw.ml.HandleTextMessage(message)
@@ -48,6 +48,12 @@ func (lw *LineController) Webhook(c *gin.Context) {
 			case linebot.EventTypeFollow:
 				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
 				lw.ml.HandleFollowEvent(message)
+			case linebot.EventTypeUnfollow:
+				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
+				lw.ml.HandleUnFollowEvent(message)
+			case linebot.EventTypePostback:
+				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Postback.Params)
+				lw.ml.HandlePostbackEvent(message)
 			}
 		} else {
 			message := dto.NewGroupMessage(event.ReplyToken)
