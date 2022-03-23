@@ -18,7 +18,22 @@
     {
       "type": "sticker",
       "packageID": "6136",
-      "stickerID": "10551379",
+      "stickerID": "10551379"
+    }
+  ],
+  "画像/動画を共有したい": [
+    {
+      "type": "text",
+      "text": "このLINEに写真・動画を投稿すると、他の人にも共有できます"
+    },
+    {
+      "type": "text",
+      "text": "結婚式後に、共有された画像・動画は配信予定です"
+    },
+    {
+      "type": "sticker",
+      "packageID": "11537",
+      "stickerID": "52002734",
       "quickReply": {
         "items": [
           {
@@ -26,16 +41,15 @@
             "imageURL": "",
             "action": {
               "type": "cameraRoll",
-              "label": "画像・動画を共有したい"
+              "label": "カメラロールから共有"
             }
           },
           {
             "type": "action",
-            "imageURL": "https://drive.google.com/uc?export=view&id=1316g1ZQWfmffVy_uAVc_4UCxkG-9PTPq",
+            "imageURL": "",
             "action": {
-              "type": "message",
-              "label": "結婚式について知りたい",
-              "text": "結婚式場はどこ？"
+              "type": "camera",
+              "label": "新たに撮影して共有"
             }
           }
         ]
@@ -46,6 +60,10 @@
     {
       "type": "text",
       "text": "SCAPESでやるよ"
+    },
+    {
+      "type": "text",
+      "text": "https://www.scapes.jp/access.html"
     },
     {
       "type": "location",

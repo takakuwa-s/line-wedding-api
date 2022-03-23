@@ -11,10 +11,7 @@ var (
 )
 
 func NewLineBot() *linebot.Client {
-	accessToken, exist := os.LookupEnv("ACCESS_TOKEN")
-	if !exist {
-		Log.Error("Failed to get env value")
-	}
+	accessToken:= os.Getenv("ACCESS_TOKEN")
 	channelSecret := os.Getenv("CHANNEL_SECRET")
 	bot, err := linebot.New(channelSecret, accessToken)
 	if err != nil {

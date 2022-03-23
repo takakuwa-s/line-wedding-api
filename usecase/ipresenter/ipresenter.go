@@ -5,5 +5,6 @@ import (
 )
 
 type IPresenter interface {
-	ReplyMessage(message *dto.ReplyMessage)
+	MulticastMessage(message *dto.MulticastMessage) error
+	ReplyMessage(message *dto.ReplyMessage) error
 }

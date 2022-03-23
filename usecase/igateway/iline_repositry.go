@@ -1,9 +1,10 @@
 package igateway
 
 import (
-	"github.com/takakuwa-s/line-wedding-api/usecase/dto"
+	"github.com/takakuwa-s/line-wedding-api/entity"
 )
 
 type ILineRepository interface {
-	FindUserById(id string) *dto.User
+	FindUserById(id string) (*entity.User, error)
+	GetQuotaComsuption() (int, error)
 }

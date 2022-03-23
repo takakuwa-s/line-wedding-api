@@ -1,12 +1,11 @@
 package presenter
 
 import (
-	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/usecase/dto"
 
+	"fmt"
 	"encoding/json"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
-	"go.uber.org/zap"
 )
 
 type LinePresenter struct {
@@ -18,45 +17,66 @@ func NewLinePresenter(bot *linebot.Client) *LinePresenter {
 	return &LinePresenter{bot: bot}
 }
 
-func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage) {
-	sendingMessage := make([]linebot.SendingMessage, len(message.Messages))
-	for i, m := range message.Messages {
+func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage) error {
+	messages, err := createMessages(message.Messages)
+	if err != nil {
+		return fmt.Errorf("failed to create the multicast message; err = %w", err)
+	}
+	if _, err := lp.bot.Multicast(message.UserIds, messages...).Do(); err != nil {
+		return fmt.Errorf("failed to multicast the message messages = %v, err = %w", messages, err)
+	}
+	return nil
+}
+
+func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage) error {
+	messages, err := createMessages(message.Messages)
+	if err != nil {
+		return fmt.Errorf("failed to create the reply message; err = %w", err)
+	}
+	if _, err := lp.bot.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
+		return fmt.Errorf("failed to send the reply message messages = %v, err = %w", messages, err)
+	}
+	return nil
+}
+
+func createMessages(messages []map[string]interface{}) ([]linebot.SendingMessage, error) {
+	res := make([]linebot.SendingMessage, len(messages))
+	var err error
+	for i, m := range messages {
 		switch m["type"].(string) {
 		case "text":
-			sendingMessage[i] = linebot.NewTextMessage(m["text"].(string))
+			res[i] = linebot.NewTextMessage(m["text"].(string))
 		case "sticker":
-			sendingMessage[i] = linebot.NewStickerMessage(m["packageID"].(string), m["stickerID"].(string))
+			res[i] = linebot.NewStickerMessage(m["packageID"].(string), m["stickerID"].(string))
 		case "image":
-			sendingMessage[i] = linebot.NewImageMessage(m["originalContentUrl"].(string), m["previewImageUrl"].(string))
+			res[i] = linebot.NewImageMessage(m["originalContentUrl"].(string), m["previewImageUrl"].(string))
 		case "video":
-			sendingMessage[i] = linebot.NewVideoMessage(m["originalContentUrl"].(string), m["previewImageUrl"].(string))
+			res[i] = linebot.NewVideoMessage(m["originalContentUrl"].(string), m["previewImageUrl"].(string))
 		case "audio":
-			sendingMessage[i] = linebot.NewAudioMessage(m["originalContentUrl"].(string), int(m["duration"].(float64)))
+			res[i] = linebot.NewAudioMessage(m["originalContentUrl"].(string), int(m["duration"].(float64)))
 		case "location":
-			sendingMessage[i] = linebot.NewLocationMessage(m["title"].(string), m["address"].(string), m["latitude"].(float64), m["longitude"].(float64))
+			res[i] = linebot.NewLocationMessage(m["title"].(string), m["address"].(string), m["latitude"].(float64), m["longitude"].(float64))
 		case "imagemap":
-			sendingMessage[i] = createImageMapMessage(m)
+			res[i] = createImageMapMessage(m)
 		case "template":
-			sendingMessage[i] = createTemplateMessage(m)
+			res[i] = createTemplateMessage(m)
 		case "flex":
-			sendingMessage[i] = createFlexMessage(m)
+			res[i], err = createFlexMessage(m)
 		}
 		if m["quickReply"] != nil {
-			sendingMessage[i] = sendingMessage[i].WithQuickReplies(createQuickReplyItems(m))
+			res[i] = res[i].WithQuickReplies(createQuickReplyItems(m))
 		}
 		if m["sender"] != nil {
 			s := m["sender"].(map[string]interface{})
-			sendingMessage[i] = sendingMessage[i].WithSender(linebot.NewSender(s["name"].(string), s["iconUrl"].(string)))
+			res[i] = res[i].WithSender(linebot.NewSender(s["name"].(string), s["iconUrl"].(string)))
 		}
 		if m["emojis"] != nil {
 			for _, e := range createAllEmojis(m) {
-				sendingMessage[i] = sendingMessage[i].AddEmoji(e)
+				res[i] = res[i].AddEmoji(e)
 			}
 		}
 	}
-	if _, err := lp.bot.ReplyMessage(message.ReplyToken, sendingMessage...).Do(); err != nil {
-		conf.Log.Error("Failed to send the reply message", zap.Any("err", err), zap.Any("messages", sendingMessage))
-	}
+	return res, err
 }
 
 func createAllEmojis(m map[string]interface{}) []*linebot.Emoji {
@@ -164,15 +184,15 @@ func createTemplateActions(m []interface{}) []linebot.TemplateAction {
 	return actions
 }
 
-func createFlexMessage(m map[string]interface{}) *linebot.FlexMessage {
+func createFlexMessage(m map[string]interface{}) (*linebot.FlexMessage, error) {
 	c := m["contents"].(map[string]interface{})
 	b, err :=	json.Marshal(c)
 	if err != nil {
-		conf.Log.Error("Failed to convert contents to byte", zap.Any("err", err))
+		return nil, fmt.Errorf("failed to convert contents to byte; err = %w", err)
 	}
 	flexContainer, err := linebot.UnmarshalFlexMessageJSON(b)
 	if err != nil {
-		conf.Log.Error("Failed to convert byte to flexContainer", zap.Any("err", err))
+		return nil, fmt.Errorf("failed to convert byte to flexContainer; err = %w", err)
 	}
-	return linebot.NewFlexMessage(m["altText"].(string), flexContainer)
+	return linebot.NewFlexMessage(m["altText"].(string), flexContainer), nil
 }

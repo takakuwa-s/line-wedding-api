@@ -55,6 +55,10 @@ func (mp *MessageRepository) FindFollowMessage(displayName string) []map[string]
 	return ms
 }
 
+func (mp *MessageRepository) FindReminderMessage() []map[string]interface{} {
+	return mp.findMessage("reminder")
+}
+
 func (mp *MessageRepository) findMessage(m string) []map[string]interface{} {
 	ms := mp.messages[m]
 	if len(ms) > 0 {

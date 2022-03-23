@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/takakuwa-s/line-wedding-api/conf"
+	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase"
 	"github.com/takakuwa-s/line-wedding-api/usecase/dto"
 
@@ -12,12 +13,12 @@ import (
 
 type LineController struct {
 	bot *linebot.Client
-	ml  *usecase.MessageHandler
+	rmu  *usecase.ReplyMessageUsecase
 }
 
 // コンストラクタ
-func NewLineController(bot *linebot.Client, ml *usecase.MessageHandler) *LineController {
-	return &LineController{bot: bot, ml: ml}
+func NewLineController(bot *linebot.Client, rmu *usecase.ReplyMessageUsecase) *LineController {
+	return &LineController{bot: bot, rmu: rmu}
 }
 
 func (lw *LineController) Webhook(c *gin.Context) {
@@ -33,31 +34,36 @@ func (lw *LineController) Webhook(c *gin.Context) {
 			case linebot.EventTypeMessage:
 				switch event.Message.(type) {
 				case *linebot.ImageMessage:
-					message := dto.NewFileMessage(event.ReplyToken, event.Message.(*linebot.ImageMessage).ID)
-					lw.ml.HandleFileEvent(message)
+					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID, event.Timestamp)
+					message := dto.NewFileMessage(event.ReplyToken, file)
+					err = lw.rmu.HandleFileEvent(message)
 				case *linebot.VideoMessage:
-					message := dto.NewFileMessage(event.ReplyToken, event.Message.(*linebot.VideoMessage).ID)
-					lw.ml.HandleFileEvent(message)
+					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID, event.Timestamp)
+					message := dto.NewFileMessage(event.ReplyToken, file)
+					err = lw.rmu.HandleFileEvent(message)
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text)
-					lw.ml.HandleTextMessage(message)
+					err = lw.rmu.HandleTextMessage(message)
 				default:
 					message := dto.NewTextMessage(event.ReplyToken, "unknown")
-					lw.ml.HandleTextMessage(message)
+					err = lw.rmu.HandleTextMessage(message)
 				}
 			case linebot.EventTypeFollow:
-				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
-				lw.ml.HandleFollowEvent(message)
+				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID, event.Timestamp)
+				err = lw.rmu.HandleFollowEvent(message)
 			case linebot.EventTypeUnfollow:
-				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
-				lw.ml.HandleUnFollowEvent(message)
+				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID, event.Timestamp)
+				err = lw.rmu.HandleUnFollowEvent(message)
 			case linebot.EventTypePostback:
 				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Postback.Params)
-				lw.ml.HandlePostbackEvent(message)
+				err = lw.rmu.HandlePostbackEvent(message)
 			}
 		} else {
 			message := dto.NewGroupMessage(event.ReplyToken)
-			lw.ml.HandleGroupEvent(message)
+			err = lw.rmu.HandleGroupEvent(message)
 		}
+	}
+	if err != nil {
+		conf.Log.Error("Failed to handle the request", zap.Any("err", err))
 	}
 }

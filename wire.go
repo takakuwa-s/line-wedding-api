@@ -41,7 +41,7 @@ func InitializeRouter() *driver.Router {
 		wire.Bind(new(ipresenter.IPresenter), new(*presenter.LinePresenter)),
 
 		// usecase
-		usecase.NewMessageHandler,
+		usecase.NewReplyMessageUsecase,
 	)
 	return nil
 }

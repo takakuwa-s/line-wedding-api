@@ -15,13 +15,15 @@ This project aims a clean architecture.
     - check in logic
     - sign up logic
 - usecase
-  - logic to get the data
+  - logic to handle the data
 - interface
   - gateway
-    - image uploading interface
+    - message data repository
+    - user data repository
+    - file data repository
   - presenter
-    - create line messaing api request
+    - send line messaing
   - controller
-  　- routing the message event
+  　- routing the line webhook event
 - driver
-  - image upload api call
+  - router

@@ -1,9 +1,9 @@
 package igateway
 
 import (
-	"github.com/takakuwa-s/line-wedding-api/usecase/dto"
+	"github.com/takakuwa-s/line-wedding-api/entity"
 )
 
 type IFileRepository interface {
-	SaveFile(file *dto.File)
+	SaveFile(file *entity.File) error
 }

@@ -1,5 +1,11 @@
 package dto
 
+import (
+	"time"
+
+	"github.com/takakuwa-s/line-wedding-api/entity"
+)
+
 type TextMessage struct {
 	ReplyToken string
 	Text string
@@ -14,11 +20,10 @@ func NewTextMessage(replyToken, text string) *TextMessage {
 
 type FileMessage struct {
 	ReplyToken string
-	File *File
+	File *entity.File
 }
 
-func NewFileMessage(replyToken, messageId string) *FileMessage {
-	file := NewFile(messageId)
+func NewFileMessage(replyToken string, file *entity.File) *FileMessage {
 	return &FileMessage{
 		ReplyToken : replyToken,
 		File: file,
@@ -28,12 +33,14 @@ func NewFileMessage(replyToken, messageId string) *FileMessage {
 type FollowMessage struct {
 	ReplyToken string
 	SenderUserId string
+	EventTime time.Time
 }
 
-func NewFollowMessage(replyToken, senderUserId string) *FollowMessage {
+func NewFollowMessage(replyToken, senderUserId string, eventTime time.Time) *FollowMessage {
 	return &FollowMessage{
 		ReplyToken : replyToken,
 		SenderUserId: senderUserId,
+		EventTime: eventTime,
 	}
 }
 
