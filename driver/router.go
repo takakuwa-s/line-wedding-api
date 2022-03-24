@@ -8,19 +8,21 @@ import (
 )
 
 type Router struct {
-	lc *controller.LineController
+	wlc *controller.WeddingLineController
+	alc *controller.AdminLineController
 }
 
 // Newコンストラクタ
-func NewRouter(lc *controller.LineController) *Router {
-	return &Router{lc: lc}
+func NewRouter(wlc *controller.WeddingLineController, alc *controller.AdminLineController) *Router {
+	return &Router{wlc: wlc, alc:alc}
 }
 
 // Init ルーティング設定
 func (r *Router) Init() {
 	router := gin.Default()
 	router.Use(gin.Logger())
-	router.POST("/line-messaging-api/webhook", r.lc.Webhook)
+	router.POST("/line-messaging-api/wedding/webhook", r.wlc.Webhook)
+	router.POST("/line-messaging-api/admin/webhook", r.alc.Webhook)
   port := os.Getenv("PORT")
   if port == "" {
 		port = "8080"

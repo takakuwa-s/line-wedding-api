@@ -3,12 +3,13 @@
 package main
 
 import (
-	"github.com/takakuwa-s/line-wedding-api/conf"
+	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/driver"
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
 	"github.com/takakuwa-s/line-wedding-api/interface/presenter"
 	"github.com/takakuwa-s/line-wedding-api/interface/gateway"
-	"github.com/takakuwa-s/line-wedding-api/usecase"
+	"github.com/takakuwa-s/line-wedding-api/usecase/wedding"
+	"github.com/takakuwa-s/line-wedding-api/usecase/admin"
 	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
 
@@ -17,14 +18,16 @@ import (
 
 func InitializeRouter() *driver.Router {
 	wire.Build(
-		// conf
-		conf.NewLineBot,
+		// dto
+		dto.NewWeddingLineBot,
+		dto.NewAdminLineBot,
 
 		// driver
 		driver.NewRouter,
 
 		// controller
-		controller.NewLineController,
+		controller.NewWeddingLineController,
+		controller.NewAdminLineController,
 
 		// gateway
 		gateway.NewMessageRepository,
@@ -41,7 +44,8 @@ func InitializeRouter() *driver.Router {
 		wire.Bind(new(ipresenter.IPresenter), new(*presenter.LinePresenter)),
 
 		// usecase
-		usecase.NewReplyMessageUsecase,
+		wedding.NewWeddingReplyUsecase,
+		admin.NewAdminReplyUsecase,
 	)
 	return nil
 }

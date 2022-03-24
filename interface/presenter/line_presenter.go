@@ -1,42 +1,63 @@
 package presenter
 
 import (
-	"github.com/takakuwa-s/line-wedding-api/usecase/dto"
+	"github.com/takakuwa-s/line-wedding-api/dto"
 
-	"fmt"
 	"encoding/json"
+	"fmt"
+
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
 type LinePresenter struct {
-	bot *linebot.Client
+	wlb *dto.WeddingLineBot
+	alb *dto.AdminLineBot
 }
 
 // コンストラクタ
-func NewLinePresenter(bot *linebot.Client) *LinePresenter {
-	return &LinePresenter{bot: bot}
+func NewLinePresenter(wlb *dto.WeddingLineBot, alb *dto.AdminLineBot) *LinePresenter {
+	return &LinePresenter{wlb:wlb, alb:alb}
 }
 
-func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage) error {
+func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage, botType dto.BotType) error {
 	messages, err := createMessages(message.Messages)
 	if err != nil {
 		return fmt.Errorf("failed to create the multicast message; err = %w", err)
 	}
-	if _, err := lp.bot.Multicast(message.UserIds, messages...).Do(); err != nil {
+	bot, err := lp.getBot(botType)
+	if err != nil {
+		return fmt.Errorf("failed to get the line bot client; err = %w", err)
+	}
+	if _, err := bot.Multicast(message.UserIds, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to multicast the message messages = %v, err = %w", messages, err)
 	}
 	return nil
 }
 
-func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage) error {
+func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage, botType dto.BotType) error {
 	messages, err := createMessages(message.Messages)
 	if err != nil {
 		return fmt.Errorf("failed to create the reply message; err = %w", err)
 	}
-	if _, err := lp.bot.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
+	bot, err := lp.getBot(botType)
+	if err != nil {
+		return fmt.Errorf("failed to get the line bot client; err = %w", err)
+	}
+	if _, err := bot.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to send the reply message messages = %v, err = %w", messages, err)
 	}
 	return nil
+}
+
+func (lp *LinePresenter) getBot(botType dto.BotType) (*linebot.Client, error) {
+	switch botType {
+	case dto.WeddingBotType:
+		return lp.wlb.Client, nil
+	case dto.AdminBotType:
+		return lp.alb.Client, nil
+	default:
+		return nil, fmt.Errorf("unknown bot type; %s", botType)
+	}
 }
 
 func createMessages(messages []map[string]interface{}) ([]linebot.SendingMessage, error) {
