@@ -27,5 +27,8 @@ func (ur *UserRepository) UpdateFollowStatusById(id string, status bool) error {
 
 func (ur *UserRepository) FindByWillJoin(willJoin bool) (*[]entity.User, error) {
 	conf.Log.Info("Successfully find the users with WillJoin flag", zap.Bool("WillJoin", willJoin))
-	return nil, nil
+	user := &[]entity.User{
+		{Id: "U544c7c84c496d89b3f56b034b75f8dae"},
+	}
+	return user, nil
 }

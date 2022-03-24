@@ -45,6 +45,7 @@ func InitializeRouter() *driver.Router {
 
 		// usecase
 		wedding.NewWeddingReplyUsecase,
+		wedding.NewWeddingPushUsecase,
 		admin.NewAdminReplyUsecase,
 	)
 	return nil

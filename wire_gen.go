@@ -28,7 +28,8 @@ func InitializeRouter() *driver.Router {
 	fileRepository := gateway.NewFileRepository()
 	weddingReplyUsecase := wedding.NewWeddingReplyUsecase(linePresenter, messageRepository, lineRepository, userRepository, fileRepository)
 	weddingLineController := controller.NewWeddingLineController(weddingLineBot, weddingReplyUsecase)
-	adminReplyUsecase := admin.NewAdminReplyUsecase(linePresenter, messageRepository)
+	weddingPushUsecase := wedding.NewWeddingPushUsecase(linePresenter, messageRepository, lineRepository, userRepository)
+	adminReplyUsecase := admin.NewAdminReplyUsecase(linePresenter, messageRepository, lineRepository, weddingPushUsecase)
 	adminLineController := controller.NewAdminLineController(adminLineBot, adminReplyUsecase)
 	router := driver.NewRouter(weddingLineController, adminLineController)
 	return router

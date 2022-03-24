@@ -2,68 +2,51 @@ package gateway
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
+	"github.com/takakuwa-s/line-wedding-api/dto"
 	"go.uber.org/zap"
 )
 
 type MessageRepository struct {
-	textReplyMessages map[string][]map[string]interface{}
-	messages map[string][]map[string]interface{}
 }
 
 // Newコンストラクタ
 func NewMessageRepository() *MessageRepository {
-	textReplyMessages := readJson("./resource/text_reply_message.json")
-	messages := readJson("./resource/message.json")
-	return &MessageRepository{textReplyMessages: textReplyMessages, messages: messages}
+	return &MessageRepository{}
 }
 
-func readJson(path string) map[string][]map[string]interface{} {
+func (mp *MessageRepository) readJson(path string) map[string][]map[string]interface{} {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		conf.Log.Error("Failed to read the message.json", zap.Any("err", err), zap.String("path", path))
+		panic(fmt.Sprintf("failed to read the message.json; path = %s, err = %v", path, err))
 	}
 	var obj map[string][]map[string]interface{}
 	if err = json.Unmarshal(b, &obj); err != nil {
-		conf.Log.Error("Failed to parses the JSON-encoded data", zap.Any("err", err))
+		panic(fmt.Sprintf("failed to parses the JSON-encoded data; path = %s, err = %v", path, err))
 	}
 	return obj
 }
 
-func (mp *MessageRepository) FindReplyMessage(text string) []map[string]interface{} {
-	ms := mp.textReplyMessages[text]
-	if len(ms) > 0 {
-		conf.Log.Info("Successfully find the textReplyMessages data", zap.Any("data", ms))
+func (mp *MessageRepository) FindReplyMessage(botType dto.BotType, text string) []map[string]interface{} {
+	path := fmt.Sprintf("./resource/%s/reply_message.json", botType)
+	ms := mp.readJson(path)
+	m := ms[text]
+	if len(m) > 0 {
+		conf.Log.Info("Successfully find the reply messages data", zap.Any("data", m))
 	}
-	return ms
+	return m
 }
 
-func (mp *MessageRepository) FindImageMessage() []map[string]interface{} {
-	return mp.findMessage("image")
-}
-
-func (mp *MessageRepository) FindGroupMessage() []map[string]interface{} {
-	return mp.findMessage("group")
-}
-
-func (mp *MessageRepository) FindFollowMessage(displayName string) []map[string]interface{} {
-	ms := mp.findMessage("follow")
-	ms[0]["text"] = fmt.Sprintf(ms[0]["text"].(string), displayName)
-	return ms
-}
-
-func (mp *MessageRepository) FindReminderMessage() []map[string]interface{} {
-	return mp.findMessage("reminder")
-}
-
-func (mp *MessageRepository) findMessage(m string) []map[string]interface{} {
-	ms := mp.messages[m]
-	if len(ms) > 0 {
+func (mp *MessageRepository) FindMessageByKey(botType dto.BotType, key string) []map[string]interface{} {
+	path := fmt.Sprintf("./resource/%s/message.json", botType)
+	ms := mp.readJson(path)
+	m := ms[key]
+	if len(m) > 0 {
 		conf.Log.Info("Successfully find the messages data", zap.Any("message", ms))
 	}
-	return ms
+	return m
 }
 

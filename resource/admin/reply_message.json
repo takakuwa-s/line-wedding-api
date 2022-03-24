@@ -1,0 +1,124 @@
+{
+  "前日メッセージ": [
+    {
+      "type": "text",
+      "text": "前日メッセージを配信します。下記から行うアクションを選んで下さい",
+      "quickReply": {
+        "items": [
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "message",
+              "label": "前日メッセージを確認",
+              "text":"前日メッセージを確認"
+            }
+          },
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "message",
+              "label": "!!!前日メッセージを配信!!!",
+              "text":"前日メッセージを配信"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "前日メッセージを配信": [
+    {
+      "type": "template",
+      "altText": "前日メッセージ配信確認",
+      "template": {
+          "type": "confirm",
+          "text": "前日メッセージを配信します。本当によろしいですか？",
+          "actions": [
+              {
+                "type": "postback",
+                "label": "はい",
+                "data": "{\"action\":\"reminder\",\"confirm\":true}",
+                "displayText": "前日メッセージを配信します"
+              },
+              {
+                "type": "postback",
+                "label": "いいえ",
+                "data": "{\"action\":\"reminder\",\"confirm\":false}",
+                "displayText": "キャンセルします"
+              }
+          ]
+      }
+    }
+  ],
+  "スライドショー": [
+    {
+      "type": "text",
+      "text": "スライドショーを配信します。下記から行うアクションを選んで下さい",
+      "quickReply": {
+        "items": [
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "message",
+              "label": "スライドショーを確認",
+              "text":"スライドショーを確認"
+            }
+          },
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "message",
+              "label": "!!!スライドショーを配信!!!",
+              "text":"スライドショーを配信"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "スライドショーを配信": [
+    {
+      "type": "template",
+      "altText": "スライドショー配信確認",
+      "template": {
+          "type": "confirm",
+          "text": "スライドショーを配信します。本当によろしいですか？",
+          "actions": [
+              {
+                "type": "postback",
+                "label": "はい",
+                "data": "{\"action\":\"slideshow\",\"confirm\":true}",
+                "displayText": "スライドショーを配信します"
+              },
+              {
+                "type": "postback",
+                "label": "いいえ",
+                "data": "{\"action\":\"slideshow\",\"confirm\":false}",
+                "displayText": "キャンセルします"
+              }
+          ]
+      }
+    }
+  ],
+  "残pushメッセージ数": [
+    {
+      "type": "text",
+      "text": "Wedding LINE BOTの残pushメッセージ数は%dです"
+    },
+    {
+      "type": "text",
+      "text": "Admin LINE BOTの残pushメッセージ数は%dです"
+    },
+    {
+      "type": "text",
+      "text": "料金に関しては下記。毎月1000通まで無料。\n\n※メッセージ通数は送付人数×メッセージ通数でカウントされます。1通あたり3吹き出しまで送付いただけます。"
+    },
+    {
+      "type": "text",
+      "text": "https://www.linebiz.com/jp/service/line-official-account/plan/"
+    }
+  ]
+}

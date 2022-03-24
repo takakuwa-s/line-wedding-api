@@ -54,9 +54,6 @@ func (wlc *WeddingLineController) Webhook(c *gin.Context) {
 			case linebot.EventTypeUnfollow:
 				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID, event.Timestamp)
 				err = wlc.wru.HandleUnFollowEvent(message)
-			case linebot.EventTypePostback:
-				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Postback.Params)
-				err = wlc.wru.HandlePostbackEvent(message)
 			}
 		} else {
 			message := dto.NewGroupMessage(event.ReplyToken)

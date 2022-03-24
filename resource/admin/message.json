@@ -1,0 +1,62 @@
+{
+  "unknown": [
+    {
+      "type": "text",
+      "text": "ごめんなさい！よく分からないです...$",
+      "emojis": [
+        {
+          "index": 19,
+          "productId": "5ac1bfd5040ab15980c9b435",
+          "emojiId": "005"
+        }
+      ],
+      "sender": {
+        "name": "くま",
+        "iconUrl": "https://drive.google.com/uc?export=view&id=1316g1ZQWfmffVy_uAVc_4UCxkG-9PTPq"
+      }
+    },
+    {
+      "type": "sticker",
+      "packageID": "6136",
+      "stickerID": "10551379"
+    }
+  ],
+  "postback_cancel": [
+    {
+      "type": "text",
+      "text": "キャンセルしました。"
+    }
+  ],
+  "reminder_submit": [
+    {
+      "type": "text",
+      "text": "前日メッセージを配信しました"
+    }
+  ],
+  "reminder_error": [
+    {
+      "type": "text",
+      "text": "前日メッセージの配信に失敗しました"
+    },
+    {
+      "type": "text",
+      "text": "エラー原因は下記の通りです。\n\n %v"
+    }
+  ],
+  "slideshow_submit": [
+    {
+      "type": "text",
+      "text": "スライドショーを配信しました"
+    }
+  ],
+  "slideshow_error": [
+    {
+      "type": "text",
+      "text": "スライドショーの配信に失敗しました"
+    },
+    {
+      "type": "text",
+      "text": "エラー原因は下記の通りです。\n\n %v"
+    }
+  ]
+}

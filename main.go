@@ -19,13 +19,13 @@ func main() {
 
 	flag.Parse()
 	if flag.Arg(0) == "config" {
-		botType := dto.WeddingBotType
+		botType := dto.AdminBotType
 		conf.Log.Info("start configuration", zap.Any("botType", botType))
 		if err := lineconf.GetRichmenuList(botType); err != nil {
 			conf.Log.Error("Failed to get rich menu list", zap.Any("err", err))
 			return
 		}
-		// if err := lineconf.DeleteRichmenu("richmenu-3bbe1606ee5c031bfc0313a7850874ea", botType); err != nil {
+		// if err := lineconf.DeleteRichmenu("richmenu-f67e399f66134244f277ff005f1f855a", botType); err != nil {
 		// 	conf.Log.Error("Failed to delete the rich menu", zap.Any("err", err))
 		// 	return
 		// }

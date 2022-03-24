@@ -3,6 +3,6 @@ package dto
 type BotType string
 
 const (
-    WeddingBotType BotType = BotType("Wedding")
-    AdminBotType BotType = BotType("Admin")
+    WeddingBotType BotType = BotType("wedding")
+    AdminBotType BotType = BotType("admin")
 )

@@ -1,26 +1,4 @@
 {
-  "unknown": [
-    {
-      "type": "text",
-      "text": "ごめんなさい！よく分からないです...$\n\n下の返信メニューから近いものを選んでみて下さい",
-      "emojis": [
-        {
-          "index": 19,
-          "productId": "5ac1bfd5040ab15980c9b435",
-          "emojiId": "005"
-        }
-      ],
-      "sender": {
-        "name": "くま",
-        "iconUrl": "https://drive.google.com/uc?export=view&id=1316g1ZQWfmffVy_uAVc_4UCxkG-9PTPq"
-      }
-    },
-    {
-      "type": "sticker",
-      "packageID": "6136",
-      "stickerID": "10551379"
-    }
-  ],
   "画像/動画を共有したい": [
     {
       "type": "text",

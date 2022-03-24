@@ -1,0 +1,72 @@
+{
+  "unknown": [
+    {
+      "type": "text",
+      "text": "ごめんなさい！よく分からないです...$\n\n下の返信メニューから近いものを選んでみて下さい",
+      "emojis": [
+        {
+          "index": 19,
+          "productId": "5ac1bfd5040ab15980c9b435",
+          "emojiId": "005"
+        }
+      ]
+    },
+    {
+      "type": "sticker",
+      "packageID": "6136",
+      "stickerID": "10551379"
+    }
+  ],
+  "group": [
+    {
+      "type": "text",
+      "text": "ごめんなさい!個人LINEにのみ対応しています$",
+      "emojis": [
+        {
+          "index": 23,
+          "productId": "5ac1bfd5040ab15980c9b435",
+          "emojiId": "005"
+        }
+      ]
+    },
+    {
+      "type": "sticker",
+      "packageID": "6136",
+      "stickerID": "10551379"
+    }
+  ],
+  "follow": [
+    {
+      "type": "text",
+      "text": "初めまして%sさん!"
+    }
+  ],
+  "image": [
+    {
+      "type": "text",
+      "text": "画像/動画を登録しました"
+    }
+  ],
+  "reminder": [
+    {
+      "type": "text",
+      "text": "みなさん"
+    },
+    {
+      "type": "text",
+      "text": "今日は3/18ですよ"
+    },
+    {
+      "type": "text",
+      "text": "明日は結婚式ですね"
+    },
+    {
+      "type": "text",
+      "text": "体調に気をつけて参加してね"
+    },
+    {
+      "type": "text",
+      "text": "よろしくね"
+    }
+  ]
+}

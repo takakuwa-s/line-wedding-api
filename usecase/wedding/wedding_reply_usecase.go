@@ -28,7 +28,7 @@ func NewWeddingReplyUsecase(
 
 func (wru *WeddingReplyUsecase) HandleFileEvent(m *dto.FileMessage) error {
 	wru.fr.SaveFile(m.File)
-	messages := wru.mr.FindImageMessage()
+	messages := wru.mr.FindMessageByKey(dto.WeddingBotType, "image")
 	rm := dto.NewReplyMessage(m.ReplyToken, messages)
 	if err := wru.p.ReplyMessage(rm, dto.WeddingBotType); err != nil {
 		return fmt.Errorf("failed to send the reply message; err = %w", err)
@@ -43,7 +43,8 @@ func (wru *WeddingReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	}
 	user.CreatedAt = m.EventTime
 	wru.ur.SaveUser(user)
-	messages := wru.mr.FindFollowMessage(user.Name)
+	messages := wru.mr.FindMessageByKey(dto.WeddingBotType, "follow")
+	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), user.Name)
 	rm := dto.NewReplyMessage(m.ReplyToken, messages)
 	if err = wru.p.ReplyMessage(rm, dto.WeddingBotType); err != nil {
 		return fmt.Errorf("failed to send the reply message; err = %w", err)
@@ -58,13 +59,8 @@ func (wru *WeddingReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error 
 	return nil
 }
 
-func (wru *WeddingReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
-	// Do nothing
-	return nil
-}
-
 func (wru *WeddingReplyUsecase) HandleGroupEvent(m *dto.GroupMessage) error {
-	messages := wru.mr.FindGroupMessage()
+	messages := wru.mr.FindMessageByKey(dto.WeddingBotType, "group")
 	rm := dto.NewReplyMessage(m.ReplyToken, messages)
 	if err := wru.p.ReplyMessage(rm, dto.WeddingBotType); err != nil {
 		return fmt.Errorf("failed to send the reply message; err = %w", err)
@@ -73,9 +69,9 @@ func (wru *WeddingReplyUsecase) HandleGroupEvent(m *dto.GroupMessage) error {
 }
 
 func (wru *WeddingReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
-	messages := wru.mr.FindReplyMessage(m.Text)
+	messages := wru.mr.FindReplyMessage(dto.WeddingBotType, m.Text)
 	if len(messages) == 0 {
-		messages = wru.mr.FindReplyMessage("unknown")
+		messages = wru.mr.FindMessageByKey(dto.WeddingBotType, "unknown")
 	}
 	rm := dto.NewReplyMessage(m.ReplyToken, messages)
 	if err := wru.p.ReplyMessage(rm, dto.WeddingBotType); err != nil {

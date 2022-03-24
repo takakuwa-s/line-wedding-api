@@ -9,13 +9,11 @@ This project aims a clean architecture.
 - environments
   - store the environmental variables
 - entity
-  - store the business logic
-    - wedding data such as Course menu, seat, and message template
-    - image upload logic
-    - check in logic
-    - sign up logic
+  - business data
 - usecase
-  - logic to handle the data
+  - logic for the application
+- resource
+  - data files
 - interface
   - gateway
     - message data repository

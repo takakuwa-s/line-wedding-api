@@ -20,8 +20,8 @@ func NewAdminLineController(bot *dto.AdminLineBot, aru *admin.AdminReplyUsecase)
 	return &AdminLineController{bot: bot, aru: aru}
 }
 
-func (lw *AdminLineController) Webhook(c *gin.Context) {
-	events, err := lw.bot.ParseRequest(c.Request)
+func (alc *AdminLineController) Webhook(c *gin.Context) {
+	events, err := alc.bot.ParseRequest(c.Request)
 	if err != nil {
 		conf.Log.Error("Failed to parse the request", zap.Any("err", err))
 		return
@@ -34,11 +34,14 @@ func (lw *AdminLineController) Webhook(c *gin.Context) {
 				switch event.Message.(type) {
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text)
-					err = lw.aru.HandleTextMessage(message)
+					err = alc.aru.HandleTextMessage(message)
 				default:
 					message := dto.NewTextMessage(event.ReplyToken, "unknown")
-					err = lw.aru.HandleTextMessage(message)
+					err = alc.aru.HandleTextMessage(message)
 				}
+			case linebot.EventTypePostback:
+				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Postback.Params)
+				err = alc.aru.HandlePostbackEvent(message)
 			}
 		}
 	}

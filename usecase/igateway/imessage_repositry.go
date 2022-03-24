@@ -1,9 +1,8 @@
 package igateway
 
+import "github.com/takakuwa-s/line-wedding-api/dto"
+
 type IMessageRepository interface {
-	FindReplyMessage(text string) []map[string]interface{}
-	FindGroupMessage() []map[string]interface{}
-	FindFollowMessage(displayName string) []map[string]interface{}
-	FindImageMessage() []map[string]interface{}
-	FindReminderMessage() []map[string]interface{}
+	FindReplyMessage(botType dto.BotType, text string) []map[string]interface{}
+	FindMessageByKey(botType dto.BotType, key string) []map[string]interface{}
 }

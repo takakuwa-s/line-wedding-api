@@ -44,7 +44,8 @@ func CreateRichmenu(botType dto.BotType) error {
 	if err != nil {
 		return fmt.Errorf("failed to get the line bot client; err = %w", err)
 	}
-	b, err := ioutil.ReadFile("./conf/resource/richmenu.json")
+	path := fmt.Sprintf("./conf/resource/%s/richmenu.json", botType)
+	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("failed to read the richmenu.json; err = %w", err)
 	}
@@ -57,7 +58,8 @@ func CreateRichmenu(botType dto.BotType) error {
 		return fmt.Errorf("failed to request to create the rich menu; err = %w", err)
 	}
 	conf.Log.Info("rich menu call", zap.Any("CreateRichMenuCall", res))
-	if _, err := bot.UploadRichMenuImage(res.RichMenuID, "./conf/resource/richmenu.png").Do(); err != nil {
+	path = fmt.Sprintf("./conf/resource/%s/richmenu.png", botType)
+	if _, err := bot.UploadRichMenuImage(res.RichMenuID, path).Do(); err != nil {
 		return fmt.Errorf("failed to upload the image for the rich menu; err = %w", err)
 	}
 	if _, err := bot.SetDefaultRichMenu(res.RichMenuID).Do(); err != nil {
