@@ -47,6 +47,16 @@
       "text": "画像/動画を登録しました"
     }
   ],
+  "invitation": [
+    {
+      "type": "text",
+      "text": "招待状ぜよ。"
+    },
+    {
+      "type": "text",
+      "text": "https://wedding-invi.jp/s/kE5P4wne?openExternalBrowser=1"
+    }
+  ],
   "reminder": [
     {
       "type": "text",

@@ -12,8 +12,7 @@ import (
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
 	"github.com/takakuwa-s/line-wedding-api/interface/gateway"
 	"github.com/takakuwa-s/line-wedding-api/interface/presenter"
-	"github.com/takakuwa-s/line-wedding-api/usecase/admin"
-	"github.com/takakuwa-s/line-wedding-api/usecase/wedding"
+	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
 )
 
 // Injectors from wire.go:
@@ -26,10 +25,12 @@ func InitializeRouter() *driver.Router {
 	lineRepository := gateway.NewLineRepository(weddingLineBot, adminLineBot)
 	userRepository := gateway.NewUserRepository()
 	fileRepository := gateway.NewFileRepository()
-	weddingReplyUsecase := wedding.NewWeddingReplyUsecase(linePresenter, messageRepository, lineRepository, userRepository, fileRepository)
+	commonUsecase := usecase.NewCommonUsecase(linePresenter, lineRepository)
+	adminPushUsecase := usecase.NewAdminPushUsecase(messageRepository, userRepository, commonUsecase)
+	weddingReplyUsecase := usecase.NewWeddingReplyUsecase(linePresenter, messageRepository, lineRepository, userRepository, fileRepository, adminPushUsecase, commonUsecase)
 	weddingLineController := controller.NewWeddingLineController(weddingLineBot, weddingReplyUsecase)
-	weddingPushUsecase := wedding.NewWeddingPushUsecase(linePresenter, messageRepository, lineRepository, userRepository)
-	adminReplyUsecase := admin.NewAdminReplyUsecase(linePresenter, messageRepository, lineRepository, weddingPushUsecase)
+	weddingPushUsecase := usecase.NewWeddingPushUsecase(messageRepository, userRepository, commonUsecase)
+	adminReplyUsecase := usecase.NewAdminReplyUsecase(linePresenter, messageRepository, lineRepository, weddingPushUsecase, commonUsecase)
 	adminLineController := controller.NewAdminLineController(adminLineBot, adminReplyUsecase)
 	router := driver.NewRouter(weddingLineController, adminLineController)
 	return router

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/takakuwa-s/line-wedding-api/conf"
-	"github.com/takakuwa-s/line-wedding-api/usecase/admin"
 	"github.com/takakuwa-s/line-wedding-api/dto"
+	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
 
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
@@ -12,11 +12,11 @@ import (
 
 type AdminLineController struct {
 	bot *dto.AdminLineBot
-	aru *admin.AdminReplyUsecase
+	aru *usecase.AdminReplyUsecase
 }
 
 // コンストラクタ
-func NewAdminLineController(bot *dto.AdminLineBot, aru *admin.AdminReplyUsecase) *AdminLineController {
+func NewAdminLineController(bot *dto.AdminLineBot, aru *usecase.AdminReplyUsecase) *AdminLineController {
 	return &AdminLineController{bot: bot, aru: aru}
 }
 

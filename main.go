@@ -25,7 +25,7 @@ func main() {
 			conf.Log.Error("Failed to get rich menu list", zap.Any("err", err))
 			return
 		}
-		// if err := lineconf.DeleteRichmenu("richmenu-f67e399f66134244f277ff005f1f855a", botType); err != nil {
+		// if err := lineconf.DeleteRichmenu("richmenu-617f4a4dc1494564ecae3113e43c2285", botType); err != nil {
 		// 	conf.Log.Error("Failed to delete the rich menu", zap.Any("err", err))
 		// 	return
 		// }

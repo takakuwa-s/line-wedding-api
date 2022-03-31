@@ -21,10 +21,38 @@
       "stickerID": "10551379"
     }
   ],
+  "wedding_follow": [
+    {
+      "type": "text",
+      "text": "%sさんがWedding botを友達登録しました"
+    }
+  ],
+  "wedding_unfollow": [
+    {
+      "type": "text",
+      "text": "%sさんがWedding botをブロックしました"
+    }
+  ],
   "postback_cancel": [
     {
       "type": "text",
       "text": "キャンセルしました。"
+    }
+  ],
+  "invitation_submit": [
+    {
+      "type": "text",
+      "text": "招待状を配信しました"
+    }
+  ],
+  "invitation_error": [
+    {
+      "type": "text",
+      "text": "招待状の配信に失敗しました"
+    },
+    {
+      "type": "text",
+      "text": "エラー原因は下記の通りです。\n\n %v"
     }
   ],
   "reminder_submit": [

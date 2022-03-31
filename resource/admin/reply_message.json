@@ -1,4 +1,56 @@
 {
+  "招待状": [
+    {
+      "type": "text",
+      "text": "招待状を配信します。下記から行うアクションを選んで下さい",
+      "quickReply": {
+        "items": [
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "message",
+              "label": "招待状を確認",
+              "text":"招待状を確認"
+            }
+          },
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "message",
+              "label": "!!!招待状を配信!!!",
+              "text":"招待状を配信"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "招待状を配信": [
+    {
+      "type": "template",
+      "altText": "招待状配信確認",
+      "template": {
+          "type": "confirm",
+          "text": "招待状を配信します。本当によろしいですか？",
+          "actions": [
+              {
+                "type": "postback",
+                "label": "はい",
+                "data": "{\"action\":\"invitation\",\"confirm\":true}",
+                "displayText": "招待状を配信します"
+              },
+              {
+                "type": "postback",
+                "label": "いいえ",
+                "data": "{\"action\":\"invitation\",\"confirm\":false}",
+                "displayText": "キャンセルします"
+              }
+          ]
+      }
+    }
+  ],
   "前日メッセージ": [
     {
       "type": "text",
@@ -103,14 +155,14 @@
       }
     }
   ],
-  "残pushメッセージ数": [
+  "送信済みpushメッセージ数": [
     {
       "type": "text",
-      "text": "Wedding LINE BOTの残pushメッセージ数は%dです"
+      "text": "Wedding LINE BOTの今月の送信済みpushメッセージ数は%dです"
     },
     {
       "type": "text",
-      "text": "Admin LINE BOTの残pushメッセージ数は%dです"
+      "text": "Admin LINE BOTの今月の送信済みpushメッセージ数は%dです"
     },
     {
       "type": "text",

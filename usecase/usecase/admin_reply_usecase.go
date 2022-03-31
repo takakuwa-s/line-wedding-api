@@ -1,4 +1,4 @@
-package admin
+package usecase
 
 import (
 	"encoding/json"
@@ -7,14 +7,14 @@ import (
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
 	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
-	"github.com/takakuwa-s/line-wedding-api/usecase/wedding"
 )
 
 type AdminReplyUsecase struct {
 	p   ipresenter.IPresenter
 	mr  igateway.IMessageRepository
 	lr  igateway.ILineRepository
-	wpu *wedding.WeddingPushUsecase
+	wpu *WeddingPushUsecase
+	cu *CommonUsecase
 }
 
 // Newコンストラクタ
@@ -22,8 +22,9 @@ func NewAdminReplyUsecase(
 	p ipresenter.IPresenter,
 	mr igateway.IMessageRepository,
 	lr igateway.ILineRepository,
-	wpu *wedding.WeddingPushUsecase) *AdminReplyUsecase {
-	return &AdminReplyUsecase{p: p, mr: mr, lr: lr, wpu: wpu}
+	wpu *WeddingPushUsecase,
+	cu *CommonUsecase) *AdminReplyUsecase {
+	return &AdminReplyUsecase{p: p, mr: mr, lr: lr, wpu: wpu, cu:cu}
 }
 
 func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
@@ -33,6 +34,17 @@ func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error 
 	}
 	var messages []map[string]interface{}
 	switch data["action"].(string) {
+	case "invitation":
+		if data["confirm"].(bool) {
+			if err := aru.wpu.PublishInvitation(); err != nil {
+				messages = aru.mr.FindMessageByKey(dto.AdminBotType, "invitation_error")
+				messages[1]["text"] = fmt.Sprintf(messages[1]["text"].(string), err)
+			} else {
+				messages = aru.mr.FindMessageByKey(dto.AdminBotType, "invitation_submit")
+			}
+		} else {
+			messages = aru.mr.FindMessageByKey(dto.AdminBotType, "postback_cancel")
+		}
 	case "reminder":
 		if data["confirm"].(bool) {
 			if err := aru.wpu.PublishReminder(); err != nil {
@@ -51,19 +63,17 @@ func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error 
 			messages = aru.mr.FindMessageByKey(dto.AdminBotType, "postback_cancel")
 		}
 	}
-	rm := dto.NewReplyMessage(m.ReplyToken, messages)
-	if err := aru.p.ReplyMessage(rm, dto.AdminBotType); err != nil {
-		return fmt.Errorf("failed to send the reply message; err = %w", err)
-	}
-	return nil
+	return aru.cu.SendReplyMessage(m.ReplyToken, messages, dto.AdminBotType)
 }
 
 func (aru *AdminReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 	messages := aru.mr.FindReplyMessage(dto.AdminBotType, m.Text)
 	var err error
 	switch m.Text {
-	case "残pushメッセージ数":
+	case "送信済みpushメッセージ数":
 		messages, err = aru.handleQuotaCheck(messages)
+	case "招待状を確認":
+		messages = aru.mr.FindMessageByKey(dto.WeddingBotType, "invitation")
 	case "前日メッセージを確認":
 		messages = aru.mr.FindMessageByKey(dto.WeddingBotType, "reminder")
 	case "スライドショーを確認":
@@ -74,11 +84,7 @@ func (aru *AdminReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 	if len(messages) == 0 {
 		messages = aru.mr.FindMessageByKey(dto.AdminBotType, "unknown")
 	}
-	rm := dto.NewReplyMessage(m.ReplyToken, messages)
-	if err := aru.p.ReplyMessage(rm, dto.AdminBotType); err != nil {
-		return fmt.Errorf("failed to send the reply message; err = %w", err)
-	}
-	return nil
+	return aru.cu.SendReplyMessage(m.ReplyToken, messages, dto.AdminBotType)
 }
 
 func (aru *AdminReplyUsecase) handleQuotaCheck(m []map[string]interface{}) ([]map[string]interface{}, error) {

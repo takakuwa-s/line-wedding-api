@@ -8,8 +8,7 @@ import (
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
 	"github.com/takakuwa-s/line-wedding-api/interface/presenter"
 	"github.com/takakuwa-s/line-wedding-api/interface/gateway"
-	"github.com/takakuwa-s/line-wedding-api/usecase/wedding"
-	"github.com/takakuwa-s/line-wedding-api/usecase/admin"
+	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
 	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
 
@@ -44,9 +43,11 @@ func InitializeRouter() *driver.Router {
 		wire.Bind(new(ipresenter.IPresenter), new(*presenter.LinePresenter)),
 
 		// usecase
-		wedding.NewWeddingReplyUsecase,
-		wedding.NewWeddingPushUsecase,
-		admin.NewAdminReplyUsecase,
+		usecase.NewWeddingReplyUsecase,
+		usecase.NewWeddingPushUsecase,
+		usecase.NewAdminReplyUsecase,
+		usecase.NewAdminPushUsecase,
+		usecase.NewCommonUsecase,
 	)
 	return nil
 }

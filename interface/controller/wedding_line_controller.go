@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/entity"
-	"github.com/takakuwa-s/line-wedding-api/usecase/wedding"
+	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 
 	"github.com/gin-gonic/gin"
@@ -13,11 +13,11 @@ import (
 
 type WeddingLineController struct {
 	bot *dto.WeddingLineBot
-	wru *wedding.WeddingReplyUsecase
+	wru *usecase.WeddingReplyUsecase
 }
 
 // コンストラクタ
-func NewWeddingLineController(bot *dto.WeddingLineBot, wru *wedding.WeddingReplyUsecase) *WeddingLineController {
+func NewWeddingLineController(bot *dto.WeddingLineBot, wru *usecase.WeddingReplyUsecase) *WeddingLineController {
 	return &WeddingLineController{bot: bot, wru: wru}
 }
 
