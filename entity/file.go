@@ -9,13 +9,15 @@ type File struct {
 	IsUploaded bool
 	CreatedAt time.Time
 	CreatedBy string
+	UpdatedAt time.Time
 }
 
-func NewFile(messageId, createdBy string, createdAt time.Time) *File {
+func NewFile(messageId, createdBy string) *File {
 	return &File{
 		Id: messageId,
 		IsUploaded: false,
-		CreatedAt: createdAt,
+		CreatedAt: time.Now(),
 		CreatedBy: createdBy,
+		UpdatedAt: time.Now(),
 	}
 }

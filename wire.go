@@ -20,6 +20,7 @@ func InitializeRouter() *driver.Router {
 		// dto
 		dto.NewWeddingLineBot,
 		dto.NewAdminLineBot,
+		dto.NewFirestore,
 
 		// driver
 		driver.NewRouter,
@@ -47,7 +48,7 @@ func InitializeRouter() *driver.Router {
 		usecase.NewWeddingPushUsecase,
 		usecase.NewAdminReplyUsecase,
 		usecase.NewAdminPushUsecase,
-		usecase.NewCommonUsecase,
+		usecase.NewCommonUtils,
 	)
 	return nil
 }

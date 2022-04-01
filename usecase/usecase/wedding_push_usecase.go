@@ -10,14 +10,14 @@ import (
 type WeddingPushUsecase struct {
 	mr igateway.IMessageRepository
 	ur igateway.IUserRepository
-	cu *CommonUsecase
+	cu *CommonUtils
 }
 
 // Newコンストラクタ
 func NewWeddingPushUsecase(
 	mr igateway.IMessageRepository,
 	ur igateway.IUserRepository,
-	cu *CommonUsecase) *WeddingPushUsecase {
+	cu *CommonUtils) *WeddingPushUsecase {
 	return &WeddingPushUsecase{mr:mr, ur:ur, cu:cu}
 }
 

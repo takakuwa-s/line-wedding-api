@@ -25,12 +25,33 @@
     {
       "type": "text",
       "text": "%sさんがWedding botを友達登録しました"
+    },
+    {
+      "type": "image",
+      "originalContentUrl": "%s",
+      "previewImageUrl": "%s"
+    }
+  ],
+  "wedding_refollow": [
+    {
+      "type": "text",
+      "text": "%sさんがWedding botを再度友達登録しました"
+    },
+    {
+      "type": "image",
+      "originalContentUrl": "%s",
+      "previewImageUrl": "%s"
     }
   ],
   "wedding_unfollow": [
     {
       "type": "text",
       "text": "%sさんがWedding botをブロックしました"
+    },
+    {
+      "type": "image",
+      "originalContentUrl": "%s",
+      "previewImageUrl": "%s"
     }
   ],
   "postback_cancel": [

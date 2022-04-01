@@ -6,25 +6,22 @@ import (
 
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
-	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
 )
 
 type AdminReplyUsecase struct {
-	p   ipresenter.IPresenter
 	mr  igateway.IMessageRepository
 	lr  igateway.ILineRepository
 	wpu *WeddingPushUsecase
-	cu *CommonUsecase
+	cu  *CommonUtils
 }
 
 // Newコンストラクタ
 func NewAdminReplyUsecase(
-	p ipresenter.IPresenter,
 	mr igateway.IMessageRepository,
 	lr igateway.ILineRepository,
 	wpu *WeddingPushUsecase,
-	cu *CommonUsecase) *AdminReplyUsecase {
-	return &AdminReplyUsecase{p: p, mr: mr, lr: lr, wpu: wpu, cu:cu}
+	cu *CommonUtils) *AdminReplyUsecase {
+	return &AdminReplyUsecase{mr: mr, lr: lr, wpu: wpu, cu:cu}
 }
 
 func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {

@@ -34,11 +34,11 @@ func (wlc *WeddingLineController) Webhook(c *gin.Context) {
 			case linebot.EventTypeMessage:
 				switch event.Message.(type) {
 				case *linebot.ImageMessage:
-					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID, event.Timestamp)
+					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID)
 					message := dto.NewFileMessage(event.ReplyToken, file)
 					err = wlc.wru.HandleFileEvent(message)
 				case *linebot.VideoMessage:
-					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID, event.Timestamp)
+					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID)
 					message := dto.NewFileMessage(event.ReplyToken, file)
 					err = wlc.wru.HandleFileEvent(message)
 				case *linebot.TextMessage:
@@ -49,10 +49,10 @@ func (wlc *WeddingLineController) Webhook(c *gin.Context) {
 					err = wlc.wru.HandleTextMessage(message)
 				}
 			case linebot.EventTypeFollow:
-				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID, event.Timestamp)
+				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
 				err = wlc.wru.HandleFollowEvent(message)
 			case linebot.EventTypeUnfollow:
-				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID, event.Timestamp)
+				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
 				err = wlc.wru.HandleUnFollowEvent(message)
 			}
 		} else {

@@ -11,19 +11,19 @@ import (
 	"github.com/takakuwa-s/line-wedding-api/entity"
 )
 
-type CommonUsecase struct {
+type CommonUtils struct {
 	p   ipresenter.IPresenter
 	lr  igateway.ILineRepository
 }
 
 // Newコンストラクタ
-func NewCommonUsecase(
+func NewCommonUtils(
 	p ipresenter.IPresenter,
-	lr igateway.ILineRepository) *CommonUsecase {
-	return &CommonUsecase{p: p, lr: lr}
+	lr igateway.ILineRepository) *CommonUtils {
+	return &CommonUtils{p: p, lr: lr}
 }
 
-func (cu *CommonUsecase) SendReplyMessage(
+func (cu *CommonUtils) SendReplyMessage(
 	token string,
 	m []map[string]interface{},
 	botType dto.BotType) error {
@@ -34,7 +34,7 @@ func (cu *CommonUsecase) SendReplyMessage(
 	return nil
 }
 
-func (cu *CommonUsecase) MulticastMessage(
+func (cu *CommonUtils) MulticastMessage(
 	users *[]entity.User,
 	m []map[string]interface{},
 	botType dto.BotType) error {

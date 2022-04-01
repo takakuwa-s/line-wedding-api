@@ -21,7 +21,7 @@ func NewLineRepository(wlb *dto.WeddingLineBot, alb *dto.AdminLineBot) *LineRepo
 	return &LineRepository{wlb:wlb, alb:alb}
 }
 
-func (lr *LineRepository) FindUserById(id string, botType dto.BotType) (*entity.User, error) {
+func (lr *LineRepository) GetUserProfileById(id string, botType dto.BotType) (*entity.User, error) {
 	bot, err := lr.getBot(botType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)

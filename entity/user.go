@@ -15,6 +15,7 @@ type User struct {
 	IconUrl string
 	StatusMessage string
 	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func NewUser(res *linebot.UserProfileResponse) *User {
@@ -27,5 +28,7 @@ func NewUser(res *linebot.UserProfileResponse) *User {
 		Language: res.Language,
 		IconUrl: res.PictureURL,
 		StatusMessage: res.StatusMessage,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 }

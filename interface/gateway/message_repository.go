@@ -45,7 +45,7 @@ func (mp *MessageRepository) FindMessageByKey(botType dto.BotType, key string) [
 	ms := mp.readJson(path)
 	m := ms[key]
 	if len(m) > 0 {
-		conf.Log.Info("Successfully find the messages data", zap.Any("message", ms))
+		conf.Log.Info("Successfully find the messages data", zap.Any("message", m))
 	}
 	return m
 }

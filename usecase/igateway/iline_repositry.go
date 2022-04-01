@@ -6,6 +6,6 @@ import (
 )
 
 type ILineRepository interface {
-	FindUserById(id string, botType dto.BotType) (*entity.User, error)
+	GetUserProfileById(id string, botType dto.BotType) (*entity.User, error)
 	GetQuotaComsuption(botType dto.BotType) (int64, error)
 }
