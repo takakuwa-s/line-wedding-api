@@ -1,18 +1,23 @@
 package dto
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/takakuwa-s/line-wedding-api/entity"
 )
 
 type TextMessage struct {
 	ReplyToken string
 	Text string
+	SenderUserId string
 }
 
-func NewTextMessage(replyToken, text string) *TextMessage {
+func NewTextMessage(replyToken, text, senderUserId string) *TextMessage {
 	return &TextMessage{
 		ReplyToken : replyToken,
 		Text : text,
+		SenderUserId: senderUserId,
 	}
 }
 
@@ -42,15 +47,21 @@ func NewFollowMessage(replyToken, senderUserId string) *FollowMessage {
 
 type PostbackMessage struct {
 	ReplyToken string
-	Data string
+	Data map[string]interface{}
 	Params interface{}
+	SenderUserId string
 }
 
-func NewPostbackMessage(replyToken, data string, params interface{}) *PostbackMessage {
+func NewPostbackMessage(replyToken, dataStr, senderUserId string, params interface{}) *PostbackMessage {
+	var data map[string]interface{}
+	if err := json.Unmarshal([]byte(dataStr), &data); err != nil {
+		panic(fmt.Sprintf("Failed to convert postback data to map object; dataStr = %s, err = %v", dataStr, err))
+	}
 	return &PostbackMessage{
 		ReplyToken : replyToken,
 		Data: data,
 		Params: params,
+		SenderUserId: senderUserId,
 	}
 }
 

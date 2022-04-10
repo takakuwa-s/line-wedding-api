@@ -5,19 +5,25 @@ import (
 )
 
 type File struct {
-	Id string
+	LineFileId string
+	FileId string
+	Name string
+	Uri string
 	IsUploaded bool
 	CreatedAt time.Time
-	CreatedBy string
+	Creater string
 	UpdatedAt time.Time
+	Updater string
+	IsDeleted bool
 }
 
-func NewFile(messageId, createdBy string) *File {
+func NewFile(messageId, creater string) *File {
 	return &File{
-		Id: messageId,
+		LineFileId: messageId,
 		IsUploaded: false,
 		CreatedAt: time.Now(),
-		CreatedBy: createdBy,
+		Creater: creater,
 		UpdatedAt: time.Now(),
+		IsDeleted: false,
 	}
 }

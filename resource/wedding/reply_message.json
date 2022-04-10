@@ -1,12 +1,12 @@
 {
-  "画像/動画を共有したい": [
+  "写真共有": [
     {
       "type": "text",
       "text": "このLINEに写真・動画を投稿すると、他の人にも共有できます"
     },
     {
       "type": "text",
-      "text": "結婚式後に、共有された画像・動画は配信予定です"
+      "text": "共有された写真・動画は以下のメニューのリンク先からダウンロードできます"
     },
     {
       "type": "sticker",
@@ -14,6 +14,24 @@
       "stickerID": "52002734",
       "quickReply": {
         "items": [
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+                "type": "uri",
+                "label": "写真を確認",
+                "uri": "https://drive.google.com/drive/folders/1yziSpir9Io-LjaGNz0_uOpfHT3YecFYN?usp=sharing&openExternalBrowser=1"
+            }
+          },
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type":"message",
+              "label":"写真を削除",
+              "text":"写真を削除"
+            }
+          },
           {
             "type": "action",
             "imageURL": "",
@@ -27,10 +45,40 @@
             "imageURL": "",
             "action": {
               "type": "camera",
-              "label": "新たに撮影して共有"
+              "label": "撮影して共有"
             }
           }
         ]
+      }
+    }
+  ],
+  "写真を削除": [
+    {
+      "type": "template",
+      "altText": "写真を削除",
+      "template": {
+          "type": "carousel",
+          "columns": [
+              {
+                "thumbnailImageUrl": "https://drive.google.com/uc?export=view&id=%s",
+                "title": "",
+                "text": "%s",
+                "actions": [
+                    {
+                      "type": "postback",
+                      "label": "確認する",
+                      "data": "{\"action\":\"image_check\",\"id\":\"%s\"}",
+                      "displayText": "確認する"
+                    },
+                    {
+                      "type": "postback",
+                      "label": "削除する",
+                      "data": "{\"action\":\"image_delete\",\"lineFileId\":\"%s\",\"fileId\":\"%s\"}",
+                      "displayText": "削除する"
+                    }
+                ]
+              }
+          ]
       }
     }
   ],

@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/takakuwa-s/line-wedding-api/dto"
@@ -25,14 +24,10 @@ func NewAdminReplyUsecase(
 }
 
 func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
-	var data map[string]interface{}
-	if err := json.Unmarshal([]byte(m.Data), &data); err != nil {
-		return fmt.Errorf("failed to convert postback data to map object; err = %w", err)
-	}
 	var messages []map[string]interface{}
-	switch data["action"].(string) {
+	switch m.Data["action"].(string) {
 	case "invitation":
-		if data["confirm"].(bool) {
+		if m.Data["confirm"].(bool) {
 			if err := aru.wpu.PublishInvitation(); err != nil {
 				messages = aru.mr.FindMessageByKey(dto.AdminBotType, "invitation_error")
 				messages[1]["text"] = fmt.Sprintf(messages[1]["text"].(string), err)
@@ -43,7 +38,7 @@ func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error 
 			messages = aru.mr.FindMessageByKey(dto.AdminBotType, "postback_cancel")
 		}
 	case "reminder":
-		if data["confirm"].(bool) {
+		if m.Data["confirm"].(bool) {
 			if err := aru.wpu.PublishReminder(); err != nil {
 				messages = aru.mr.FindMessageByKey(dto.AdminBotType, "reminder_error")
 				messages[1]["text"] = fmt.Sprintf(messages[1]["text"].(string), err)
@@ -54,7 +49,7 @@ func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error 
 			messages = aru.mr.FindMessageByKey(dto.AdminBotType, "postback_cancel")
 		}
 	case "slideshow":
-		if data["confirm"].(bool) {
+		if m.Data["confirm"].(bool) {
 			messages = aru.mr.FindMessageByKey(dto.AdminBotType, "slideshow_submit")
 		} else {
 			messages = aru.mr.FindMessageByKey(dto.AdminBotType, "postback_cancel")
@@ -76,7 +71,7 @@ func (aru *AdminReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 	case "スライドショーを確認":
 	}
 	if err != nil {
-		return fmt.Errorf("; err = %w", err)
+		return err
 	}
 	if len(messages) == 0 {
 		messages = aru.mr.FindMessageByKey(dto.AdminBotType, "unknown")

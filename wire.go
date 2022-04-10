@@ -38,6 +38,8 @@ func InitializeRouter() *driver.Router {
 		wire.Bind(new(igateway.IUserRepository), new(*gateway.UserRepository)),
 		gateway.NewFileRepository,
 		wire.Bind(new(igateway.IFileRepository), new(*gateway.FileRepository)),
+		gateway.NewBinaryRepository,
+		wire.Bind(new(igateway.IBinaryRepository), new(*gateway.BinaryRepository)),
 
 		// presenter
 		presenter.NewLinePresenter,

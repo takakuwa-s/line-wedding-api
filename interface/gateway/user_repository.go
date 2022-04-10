@@ -25,7 +25,7 @@ func NewUserRepository(f *dto.Firestore) *UserRepository {
 }
 
 func (ur *UserRepository) SaveUser(user *entity.User) error {
-	if _, err := ur.f.Client.Collection("users").Doc(user.Id).Set(ur.f.Ctx, user); err != nil {
+	if _, err := ur.f.Client.Collection("users").Doc(user.Id).Set(conf.Ctx, user); err != nil {
 		return fmt.Errorf("failed adding a new user; user =  %v, err = %w", user, err)
 	}
 	conf.Log.Info("Successfully save the user", zap.Any("user", user))
@@ -33,7 +33,7 @@ func (ur *UserRepository) SaveUser(user *entity.User) error {
 }
 
 func (ur *UserRepository) UpdateFollowStatusById(id string, status bool) error {
-	if _, err := ur.f.Client.Collection("users").Doc(id).Update(ur.f.Ctx, []firestore.Update{
+	if _, err := ur.f.Client.Collection("users").Doc(id).Update(conf.Ctx, []firestore.Update{
 		{
 			Path:  "FollowStatus",
 			Value: status,
@@ -49,38 +49,8 @@ func (ur *UserRepository) UpdateFollowStatusById(id string, status bool) error {
 	return nil
 }
 
-func (ur *UserRepository) FindByWillJoinAndFollowStatus(willJoin, followStatus bool) (*[]entity.User, error) {
-	var users []entity.User
-	iter := ur.f.Client.Collection("users").Where("WillJoin", "==", willJoin).Where("FollowStatus", "==", followStatus).Documents(ur.f.Ctx)
-	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
-		if err != nil {
-			return nil, fmt.Errorf("failed get a user; err = %w", err)
-		}
-		var u entity.User
-		dsnap.DataTo(&u)
-		users = append(users, u)
-	}
-	conf.Log.Info("Successfully find the users with WillJoin and FollowStatus flag", zap.Bool("WillJoin", willJoin), zap.Bool("FollowStatus", followStatus), zap.Any("user", users))
-	return &users, nil
-}
-
-func (ur *UserRepository) FindByIsAdmin(isAdmin bool) (*[]entity.User, error) {
-	var users []entity.User
-	iter := ur.f.Client.Collection("users").Where("IsAdmin", "==", isAdmin).Documents(ur.f.Ctx)
-	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
-		if err != nil {
-			return nil, fmt.Errorf("failed get a user; err = %w", err)
-		}
-		var u entity.User
-		dsnap.DataTo(&u)
-		users = append(users, u)
-	}
-	conf.Log.Info("Successfully find the users with IsAdmin flag", zap.Bool("IsAdmin", isAdmin), zap.Any("users", users))
-	return &users, nil
-}
-
 func (ur *UserRepository) FindById(id string) (*entity.User, error) {
-	dsnap, err := ur.f.Client.Collection("users").Doc(id).Get(ur.f.Ctx)
+	dsnap, err := ur.f.Client.Collection("users").Doc(id).Get(conf.Ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
 			return nil, nil
@@ -92,4 +62,35 @@ func (ur *UserRepository) FindById(id string) (*entity.User, error) {
 	dsnap.DataTo(&user)
 	conf.Log.Info("Successfully find the users by Id", zap.String("id", id), zap.Any("user", user))
 	return &user, nil
+}
+
+
+func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
+	var users []entity.User
+	iter := ur.f.Client.Collection("users").Where("IsAdmin", "==", isAdmin).Documents(conf.Ctx)
+	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
+		if err != nil {
+			return nil, fmt.Errorf("failed get a user; err = %w", err)
+		}
+		var u entity.User
+		dsnap.DataTo(&u)
+		users = append(users, u)
+	}
+	conf.Log.Info("Successfully find the users with IsAdmin flag", zap.Bool("IsAdmin", isAdmin), zap.Any("users", users))
+	return users, nil
+}
+
+func (ur *UserRepository) FindByWillJoinAndFollowStatus(willJoin, followStatus bool) ([]entity.User, error) {
+	var users []entity.User
+	iter := ur.f.Client.Collection("users").Where("WillJoin", "==", willJoin).Where("FollowStatus", "==", followStatus).Documents(conf.Ctx)
+	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
+		if err != nil {
+			return nil, fmt.Errorf("failed get a user; err = %w", err)
+		}
+		var u entity.User
+		dsnap.DataTo(&u)
+		users = append(users, u)
+	}
+	conf.Log.Info("Successfully find the users with WillJoin and FollowStatus flag", zap.Bool("WillJoin", willJoin), zap.Bool("FollowStatus", followStatus), zap.Any("user", users))
+	return users, nil
 }

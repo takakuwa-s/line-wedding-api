@@ -47,11 +47,6 @@
     {
       "type": "text",
       "text": "%sさんがWedding botをブロックしました"
-    },
-    {
-      "type": "image",
-      "originalContentUrl": "%s",
-      "previewImageUrl": "%s"
     }
   ],
   "postback_cancel": [

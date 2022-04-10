@@ -42,12 +42,15 @@ func (wlc *WeddingLineController) Webhook(c *gin.Context) {
 					message := dto.NewFileMessage(event.ReplyToken, file)
 					err = wlc.wru.HandleFileEvent(message)
 				case *linebot.TextMessage:
-					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text)
+					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text, event.Source.UserID)
 					err = wlc.wru.HandleTextMessage(message)
 				default:
-					message := dto.NewTextMessage(event.ReplyToken, "unknown")
+					message := dto.NewTextMessage(event.ReplyToken, "unknown", event.Source.UserID)
 					err = wlc.wru.HandleTextMessage(message)
 				}
+			case linebot.EventTypePostback:
+				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Source.UserID, event.Postback.Params)
+				err = wlc.wru.HandlePostbackEvent(message)
 			case linebot.EventTypeFollow:
 				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
 				err = wlc.wru.HandleFollowEvent(message)

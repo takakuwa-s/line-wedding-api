@@ -33,14 +33,14 @@ func (alc *AdminLineController) Webhook(c *gin.Context) {
 			case linebot.EventTypeMessage:
 				switch event.Message.(type) {
 				case *linebot.TextMessage:
-					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text)
+					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text, event.Source.UserID)
 					err = alc.aru.HandleTextMessage(message)
 				default:
-					message := dto.NewTextMessage(event.ReplyToken, "unknown")
+					message := dto.NewTextMessage(event.ReplyToken, "unknown", event.Source.UserID)
 					err = alc.aru.HandleTextMessage(message)
 				}
 			case linebot.EventTypePostback:
-				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Postback.Params)
+				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Source.UserID, event.Postback.Params)
 				err = alc.aru.HandlePostbackEvent(message)
 			}
 		}

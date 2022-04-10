@@ -35,10 +35,10 @@ func (cu *CommonUtils) SendReplyMessage(
 }
 
 func (cu *CommonUtils) MulticastMessage(
-	users *[]entity.User,
+	users []entity.User,
 	m []map[string]interface{},
 	botType dto.BotType) error {
-	userCnt := len(*users)
+	userCnt := len(users)
 	quotaComsuption, err := cu.lr.GetQuotaComsuption(botType)
 	if err != nil {
 		return fmt.Errorf("failed to get the quota comsuption; err = %w", err)
@@ -48,7 +48,7 @@ func (cu *CommonUtils) MulticastMessage(
 	conf.Log.Info("publish message counts", zap.Int("user count", userCnt), zap.Int("message cnt", len(m)), zap.Int64("Quota Comsuption", quotaComsuption))
 	if (userCnt * (len(m) / 3 + 1)  + int(quotaComsuption) <= 1000) {
 		userIds := make([]string, userCnt)
-		for i, user := range *users {
+		for i, user := range users {
 			userIds[i] = user.Id
 		}
 		pm := dto.NewMulticastMessage(userIds, m)
