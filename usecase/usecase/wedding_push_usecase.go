@@ -23,18 +23,18 @@ func NewWeddingPushUsecase(
 
 func (wpu *WeddingPushUsecase) PublishInvitation() error {
 	messages := wpu.mr.FindMessageByKey(dto.WeddingBotType, "invitation")
-	users, err := wpu.ur.FindByWillJoinAndFollowStatus(true, true)
+	users, err := wpu.ur.FindByAttendanceAndFollowStatus(true, true)
 	if err != nil {
-		return fmt.Errorf("failed to get user by WillJoin and FollowStatus; err = %w", err)
+		return fmt.Errorf("failed to get user by Attendance and FollowStatus; err = %w", err)
 	}
 	return wpu.cu.MulticastMessage(users, messages, dto.WeddingBotType)
 }
 
 func (wpu *WeddingPushUsecase) PublishReminder() error {
 	messages := wpu.mr.FindMessageByKey(dto.WeddingBotType, "reminder")
-	users, err := wpu.ur.FindByWillJoinAndFollowStatus(true, true)
+	users, err := wpu.ur.FindByAttendanceAndFollowStatus(true, true)
 	if err != nil {
-		return fmt.Errorf("failed to get user by WillJoin and FollowStatus; err = %w", err)
+		return fmt.Errorf("failed to get user by Attendance and FollowStatus; err = %w", err)
 	}
 	return wpu.cu.MulticastMessage(users, messages, dto.WeddingBotType)
 }

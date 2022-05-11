@@ -9,5 +9,5 @@ type IUserRepository interface {
 	UpdateFollowStatusById(id string, status bool) error
 	FindById(id string) (*entity.User, error)
 	FindByIsAdmin(isAdmin bool) ([]entity.User, error)
-	FindByWillJoinAndFollowStatus(willJoin, followStatus bool) ([]entity.User, error)
+	FindByAttendanceAndFollowStatus(attendance, followStatus bool) ([]entity.User, error)
 }

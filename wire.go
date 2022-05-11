@@ -28,6 +28,8 @@ func InitializeRouter() *driver.Router {
 		// controller
 		controller.NewWeddingLineController,
 		controller.NewAdminLineController,
+		controller.NewUserApiController,
+		controller.NewFileApiController,
 
 		// gateway
 		gateway.NewMessageRepository,
@@ -50,6 +52,7 @@ func InitializeRouter() *driver.Router {
 		usecase.NewWeddingPushUsecase,
 		usecase.NewAdminReplyUsecase,
 		usecase.NewAdminPushUsecase,
+		usecase.NewApiUsecase,
 		usecase.NewCommonUtils,
 	)
 	return nil

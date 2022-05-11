@@ -2,18 +2,29 @@ package entity
 
 import (
 	"time"
+
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
 type User struct {
 	Id string
-	Name string
-	WillJoin bool
-	IsAdmin bool
+	LineName string
 	FollowStatus bool
 	Language string
 	IconUrl string
 	StatusMessage string
+	Attendance bool
+  GuestType string
+  FamilyName string
+  FirstName string
+  FamilyNameKana string
+  FirstNameKana string
+  PhoneNumber string
+  PostalCode string
+  Address string
+  Allergy string
+  Message string
+	IsAdmin bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -21,8 +32,7 @@ type User struct {
 func NewUser(res *linebot.UserProfileResponse) *User {
 	return &User{
 		Id: res.UserID,
-		Name: res.DisplayName,
-		WillJoin: false,
+		LineName: res.DisplayName,
 		IsAdmin: false,
 		FollowStatus: true,
 		Language: res.Language,

@@ -80,9 +80,9 @@ func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
 	return users, nil
 }
 
-func (ur *UserRepository) FindByWillJoinAndFollowStatus(willJoin, followStatus bool) ([]entity.User, error) {
+func (ur *UserRepository) FindByAttendanceAndFollowStatus(attendance, followStatus bool) ([]entity.User, error) {
 	var users []entity.User
-	iter := ur.f.Client.Collection("users").Where("WillJoin", "==", willJoin).Where("FollowStatus", "==", followStatus).Documents(conf.Ctx)
+	iter := ur.f.Client.Collection("users").Where("Attendance", "==", attendance).Where("FollowStatus", "==", followStatus).Documents(conf.Ctx)
 	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
 		if err != nil {
 			return nil, fmt.Errorf("failed get a user; err = %w", err)
@@ -91,6 +91,6 @@ func (ur *UserRepository) FindByWillJoinAndFollowStatus(willJoin, followStatus b
 		dsnap.DataTo(&u)
 		users = append(users, u)
 	}
-	conf.Log.Info("Successfully find the users with WillJoin and FollowStatus flag", zap.Bool("WillJoin", willJoin), zap.Bool("FollowStatus", followStatus), zap.Any("user", users))
+	conf.Log.Info("Successfully find the users with Attendance and FollowStatus flag", zap.Bool("Attendance", attendance), zap.Bool("FollowStatus", followStatus), zap.Any("user", users))
 	return users, nil
 }

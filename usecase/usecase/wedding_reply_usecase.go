@@ -89,7 +89,7 @@ func (wru *WeddingReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 
 	// Return message
 	messages := wru.mr.FindMessageByKey(dto.WeddingBotType, "follow")
-	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), user.Name)
+	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), user.LineName)
 	return wru.cu.SendReplyMessage(m.ReplyToken, messages, dto.WeddingBotType)
 }
 

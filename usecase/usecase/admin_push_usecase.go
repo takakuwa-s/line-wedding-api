@@ -29,7 +29,7 @@ func (apu *AdminPushUsecase) SendFollowNotification(follower *entity.User, isFir
 	} else {
 		messages = apu.mr.FindMessageByKey(dto.AdminBotType, "wedding_refollow")
 	}
-	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), follower.Name)
+	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), follower.LineName)
 	messages[1]["originalContentUrl"] = fmt.Sprintf(messages[1]["originalContentUrl"].(string), follower.IconUrl)
 	messages[1]["previewImageUrl"] = fmt.Sprintf(messages[1]["previewImageUrl"].(string), follower.IconUrl)
 	users, err := apu.ur.FindByIsAdmin(true)
@@ -41,7 +41,7 @@ func (apu *AdminPushUsecase) SendFollowNotification(follower *entity.User, isFir
 
 func (apu *AdminPushUsecase) SendUnFollowNotification(unFollower *entity.User) error {
 	messages := apu.mr.FindMessageByKey(dto.AdminBotType, "wedding_unfollow")
-	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), unFollower.Name)
+	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), unFollower.LineName)
 	users, err := apu.ur.FindByIsAdmin(true)
 	if err != nil {
 		return fmt.Errorf("failed to get user by IsAdmin; err = %w", err)

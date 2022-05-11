@@ -51,10 +51,11 @@ func (fr *FileRepository) DeleteFile(id, updater string) error {
 	return nil
 }
 
-func (fr *FileRepository) FindByCreaterAndIsDeleted(creater string, isDeleted bool) ([]entity.File, error) {
+func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, error) {
 	var files []entity.File
-	iter := fr.f.Client.Collection("files").Where("Creater", "==", creater).Where("IsDeleted", "==", isDeleted).Documents(conf.Ctx)
+	iter := query.Documents(conf.Ctx)
 	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
+		conf.Log.Info("dsnap", zap.Any("dsnap", dsnap))
 		if err != nil {
 			return nil, fmt.Errorf("failed get a file; err = %w", err)
 		}
@@ -62,6 +63,47 @@ func (fr *FileRepository) FindByCreaterAndIsDeleted(creater string, isDeleted bo
 		dsnap.DataTo(&f)
 		files = append(files, f)
 	}
-	conf.Log.Info("Successfully find the files of the creater", zap.String("creater", creater))
+	conf.Log.Info("files", zap.Any("files", files))
+	return files, nil
+}
+
+func (fr *FileRepository) FindByCreaterAndIsDeleted(creater string, isDeleted bool) ([]entity.File, error) {
+	query := fr.f.Client.Collection("files").Where("Creater", "==", creater).Where("IsDeleted", "==", isDeleted)
+	files, err := fr.executeQuery(&query)
+	if err != nil {
+		return nil, err
+	}
+	conf.Log.Info("Successfully find the files with", zap.String("creater", creater), zap.Bool("isDeleted", isDeleted))
+	return files, nil
+}
+
+func (fr *FileRepository) FindByLimit(limit int) ([]entity.File, error) {
+	query := fr.f.Client.Collection("files").
+							Where("IsDeleted", "==", false).
+							OrderBy("CreatedAt", firestore.Desc).
+							Limit(limit)
+	files, err := fr.executeQuery(&query)
+	if err != nil {
+		return nil, err
+	}
+	conf.Log.Info("Successfully find the files with", zap.Int("limit", limit))
+	return files, nil
+}
+
+func (fr *FileRepository) FindByLimitAndStartAtId(limit int, startAtId string) ([]entity.File, error) {
+	dsnap, err := fr.f.Client.Collection("files").Doc(startAtId).Get(conf.Ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed get the startAtId file; err = %w", err)
+	}
+	query := fr.f.Client.Collection("files").
+							Where("IsDeleted", "==", false).
+							OrderBy("CreatedAt", firestore.Desc).
+							StartAt(dsnap).
+							Limit(limit)
+	files, err := fr.executeQuery(&query)
+	if err != nil {
+		return nil, err
+	}
+	conf.Log.Info("Successfully find the files with", zap.Int("limit", limit), zap.String("startAtId", startAtId))
 	return files, nil
 }
