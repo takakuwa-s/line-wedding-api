@@ -1,13 +1,10 @@
 package usecase
 
 import (
-	"encoding/json"
 	"fmt"
 
-	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
-	"go.uber.org/zap"
 )
 
 type WeddingReplyUsecase struct {
@@ -122,61 +119,10 @@ func (wru *WeddingReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 	messages := wru.mr.FindReplyMessage(dto.WeddingBotType, m.Text)
 	if len(messages) == 0 {
 		messages = wru.mr.FindMessageByKey(dto.WeddingBotType, "unknown")
-	} else if m.Text == "写真を削除" {
-		messages = wru.handleImageDeleteRequest(messages, m.SenderUserId)
 	}
 	return wru.cu.SendReplyMessage(m.ReplyToken, messages, dto.WeddingBotType)
 }
 
 func (wru *WeddingReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
-	var messages []map[string]interface{}
-	switch m.Data["action"].(string) {
-	case "image_delete":
-		fileId := m.Data["fileId"].(string)
-		lineFileId := m.Data["lineFileId"].(string)
-		if err := wru.br.DeleteBinary(fileId); err != nil {
-			conf.Log.Error("Failed to delete image binary", zap.Any("err", err))
-			messages = wru.mr.FindMessageByKey(dto.WeddingBotType, "delete_image_error")
-			break
-		}
-		if err := wru.fr.DeleteFile(lineFileId, m.SenderUserId); err != nil {
-			conf.Log.Error("Failed to delete the file metadata", zap.Any("err", err))
-		}
-		messages = wru.mr.FindMessageByKey(dto.WeddingBotType, "delete_image_success")
-	case "image_check":
-		messages = wru.mr.FindMessageByKey(dto.WeddingBotType, "image_check")
-		messages[0]["originalContentUrl"] = fmt.Sprintf(messages[0]["originalContentUrl"].(string), m.Data["id"].(string))
-		messages[0]["previewImageUrl"] = fmt.Sprintf(messages[0]["previewImageUrl"].(string), m.Data["id"].(string))
-	}
-	return wru.cu.SendReplyMessage(m.ReplyToken, messages, dto.WeddingBotType)
-}
-
-func (wru *WeddingReplyUsecase) handleImageDeleteRequest(m []map[string]interface{}, userId string) []map[string]interface{} {
-	files, err := wru.fr.FindByCreaterAndIsDeleted(userId, false)
-	if err != nil {
-
-	}
-	if len(files) == 0 {
-		return wru.mr.FindMessageByKey(dto.WeddingBotType, "not_found_image")
-	}
-	cols := m[0]["template"].(map[string]interface{})["columns"].([]interface{})
-	byteCol, err := json.Marshal(cols[0].(map[string]interface{}))
-	if err != nil {
-		panic(fmt.Sprintf("Failed to marshal column; err = %v", err))
-	}
-	for _, file := range files {
-		var obj interface{}
-  	if err := json.Unmarshal(byteCol, &obj); err != nil {
-			panic(fmt.Sprintf("Failed to unmarshal column; err = %v", err))
-		}
-		c := obj.(map[string]interface{})
-		c["thumbnailImageUrl"] = fmt.Sprintf(c["thumbnailImageUrl"].(string), file.FileId)
-		c["text"] = fmt.Sprintf(c["text"].(string), file.Name)
-		actions := c["actions"].([]interface{})
-		actions[0].(map[string]interface{})["data"] = fmt.Sprintf(actions[0].(map[string]interface{})["data"].(string), file.FileId)
-		actions[1].(map[string]interface{})["data"] = fmt.Sprintf(actions[1].(map[string]interface{})["data"].(string), file.LineFileId, file.FileId)
-		cols = append(cols, c)
-	}
-	m[0]["template"].(map[string]interface{})["columns"] = cols[1:]
-	return m
+	return fmt.Errorf("not implemented")
 }

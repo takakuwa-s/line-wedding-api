@@ -8,13 +8,13 @@ type File struct {
 	LineFileId string
 	FileId string
 	Name string
-	Uri string
+	ContentUri string
+	ThumbnailUri string
 	IsUploaded bool
 	CreatedAt time.Time
 	Creater string
 	UpdatedAt time.Time
 	Updater string
-	IsDeleted bool
 }
 
 func NewFile(messageId, creater string) *File {
@@ -24,6 +24,5 @@ func NewFile(messageId, creater string) *File {
 		CreatedAt: time.Now(),
 		Creater: creater,
 		UpdatedAt: time.Now(),
-		IsDeleted: false,
 	}
 }

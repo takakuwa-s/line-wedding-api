@@ -27,15 +27,6 @@
             "type": "action",
             "imageURL": "",
             "action": {
-              "type":"message",
-              "label":"写真を削除",
-              "text":"写真を削除"
-            }
-          },
-          {
-            "type": "action",
-            "imageURL": "",
-            "action": {
               "type": "cameraRoll",
               "label": "カメラロールから共有"
             }
@@ -49,36 +40,6 @@
             }
           }
         ]
-      }
-    }
-  ],
-  "写真を削除": [
-    {
-      "type": "template",
-      "altText": "写真を削除",
-      "template": {
-          "type": "carousel",
-          "columns": [
-              {
-                "thumbnailImageUrl": "https://drive.google.com/uc?export=view&id=%s",
-                "title": "",
-                "text": "%s",
-                "actions": [
-                    {
-                      "type": "postback",
-                      "label": "確認する",
-                      "data": "{\"action\":\"image_check\",\"id\":\"%s\"}",
-                      "displayText": "確認する"
-                    },
-                    {
-                      "type": "postback",
-                      "label": "削除する",
-                      "data": "{\"action\":\"image_delete\",\"lineFileId\":\"%s\",\"fileId\":\"%s\"}",
-                      "displayText": "削除する"
-                    }
-                ]
-              }
-          ]
       }
     }
   ],

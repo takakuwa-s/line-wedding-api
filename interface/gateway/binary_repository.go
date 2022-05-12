@@ -38,9 +38,9 @@ func (br *BinaryRepository) SaveBinary(file *entity.File, content io.ReadCloser)
 	if err != nil {
 		return nil, fmt.Errorf("failed to insert the file; err = %w", err)
 	}
-	conf.Log.Info("2", zap.Any("OriginalFilename", res.OriginalFilename), zap.Any("Id", res.Id), zap.Any("DefaultOpenWithLink", res.DefaultOpenWithLink), zap.Any("WebContentLink", res.WebContentLink), zap.Any("WebViewLink", res.WebViewLink))
 	file.FileId = res.Id
-	file.Uri = res.DefaultOpenWithLink
+	file.ContentUri = "https://drive.google.com/uc?export=view&id=" + res.Id
+	file.ThumbnailUri = "https://drive.google.com/uc?export=view&id=" + res.Id
 	file.IsUploaded = true
 	file.Name = name
 	return file, nil
@@ -48,7 +48,7 @@ func (br *BinaryRepository) SaveBinary(file *entity.File, content io.ReadCloser)
 
 func (br *BinaryRepository) DeleteBinary(id string) error {
 	if err :=	br.srv.Files.Delete(id).Do(); err != nil {
-		return fmt.Errorf("failed to delete the file; err = %w", err)
+		return fmt.Errorf("failed to delete the file binary; id = %s, err = %w", id, err)
 	}
 	conf.Log.Info("Successfully delete the file", zap.String("id", id))
 	return nil

@@ -32,8 +32,8 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "limit is required and must be number"})
 		return
 	}
-	startAtId := c.Query("startAtId")
-	files, err := fac.au.GetFileList(limit, startAtId)
+	startId := c.Query("startId")
+	files, err := fac.au.GetFileList(limit, startId)
 	if err != nil {
 		conf.Log.Error("[GetFileList] Getting file list failed", zap.String("error", err.Error()))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -49,7 +49,8 @@ func (fac *FileApiController) DeleteFile(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	id := c.Param("id") 
+	id := c.Param("id")
+
 	if err := fac.au.DeleteFile(id); err != nil {
 		conf.Log.Error("[DeleteFile] Deleting file failed", zap.String("error", err.Error()))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

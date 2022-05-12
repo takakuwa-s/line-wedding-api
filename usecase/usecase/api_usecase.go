@@ -16,11 +16,12 @@ type ApiUsecase struct {
 	ur igateway.IUserRepository
 	lr igateway.ILineRepository
 	fr igateway.IFileRepository
+	br igateway.IBinaryRepository
 }
 
 // Newコンストラクタ
-func NewApiUsecase(ur igateway.IUserRepository, lr igateway.ILineRepository, fr igateway.IFileRepository) *ApiUsecase {
-	return &ApiUsecase{ur: ur, lr: lr, fr: fr}
+func NewApiUsecase(ur igateway.IUserRepository, lr igateway.ILineRepository, fr igateway.IFileRepository, br igateway.IBinaryRepository) *ApiUsecase {
+	return &ApiUsecase{ur: ur, lr: lr, fr: fr, br: br}
 }
 
 func (au *ApiUsecase) ValidateToken(token string) error {
@@ -77,14 +78,36 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 	return user, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startAtId string) ([]entity.File, error) {
-	if startAtId == "" {
-		return au.fr.FindByLimit(limit)
+func (au *ApiUsecase) GetFileList(limit int, startId string) ([]entity.File, error) {
+	var files []entity.File
+	var err error
+	if startId == "" {
+		files, err = au.fr.FindByLimit(limit)
 	} else {
-		return au.fr.FindByLimitAndStartAtId(limit, startAtId)
+		files, err =  au.fr.FindByLimitAndStartId(limit, startId)
 	}
+	if err != nil {
+		return nil, err
+	}
+	if files == nil {
+		return []entity.File{}, nil
+	}
+	return files, nil
 }
 
 func (au *ApiUsecase) DeleteFile(id string) error {
-	return au.fr.DeleteFile(id, "api call")
+	file, err := au.fr.FindById(id)
+	if err != nil {
+		return err
+	}
+	if file == nil {
+		return fmt.Errorf("not found the file with id = %s", id)
+	}
+	if err := au.br.DeleteBinary(file.FileId); err != nil {
+		return err
+	}
+	if err := au.fr.DeleteFile(id); err != nil {
+		return err
+	}
+	return nil
 }

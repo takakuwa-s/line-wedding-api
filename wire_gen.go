@@ -34,7 +34,7 @@ func InitializeRouter() *driver.Router {
 	weddingPushUsecase := usecase.NewWeddingPushUsecase(messageRepository, userRepository, commonUtils)
 	adminReplyUsecase := usecase.NewAdminReplyUsecase(messageRepository, lineRepository, weddingPushUsecase, commonUtils)
 	adminLineController := controller.NewAdminLineController(adminLineBot, adminReplyUsecase)
-	apiUsecase := usecase.NewApiUsecase(userRepository, lineRepository, fileRepository)
+	apiUsecase := usecase.NewApiUsecase(userRepository, lineRepository, fileRepository, binaryRepository)
 	userApiController := controller.NewUserApiController(apiUsecase)
 	fileApiController := controller.NewFileApiController(apiUsecase)
 	router := driver.NewRouter(weddingLineController, adminLineController, userApiController, fileApiController)
