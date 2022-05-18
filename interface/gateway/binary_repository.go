@@ -2,63 +2,90 @@ package gateway
 
 import (
 	"fmt"
+	"image"
 	"io"
-	"os"
 	"time"
 
+	"cloud.google.com/go/storage"
+	"github.com/disintegration/imaging"
 	"github.com/takakuwa-s/line-wedding-api/conf"
+	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"go.uber.org/zap"
-	"google.golang.org/api/drive/v2"
 )
 
 type BinaryRepository struct {
-	srv *drive.Service
+	f *dto.Firestore
 }
 
 // Newコンストラクタ
-func NewBinaryRepository() *BinaryRepository {
-	srv, err := drive.NewService(conf.Ctx)
-	if err != nil {
-		panic(fmt.Sprintf("Unable to retrieve Drive client; err = %v", err))
-	}
-	return &BinaryRepository{srv: srv}
+func NewBinaryRepository(f *dto.Firestore) *BinaryRepository {
+	return &BinaryRepository{f: f}
 }
 
-func (br *BinaryRepository) SaveBinary(file *entity.File, content io.ReadCloser) (*entity.File, error) {
-	parentReference := os.Getenv("GOOGLE_PARENT_REFERENCE")
-	parent := &drive.ParentReference{
-		Id: parentReference,
+func (br *BinaryRepository) getUploadWriter(name string) *storage.Writer {
+	writer := br.f.Bucket.Object(name).NewWriter(conf.Ctx)
+	writer.ObjectAttrs.ACL = []storage.ACLRule{
+		{
+			Entity: storage.AllUsers,
+			Role:   storage.RoleReader,
+		},
 	}
-	name := file.FileType.ToString() + "-" + time.Now().Format("2006-01-02-15:04:05.000000")
-	f := &drive.File{
-		Title:     name,
-		Shareable: true,
-		Parents:   []*drive.ParentReference{parent},
-		HasThumbnail: true,
+	return writer
+}
+
+func (br *BinaryRepository) uploadImageThumb(name string, img image.Image) (*storage.Writer, error) {
+	writer := br.getUploadWriter("thumbnail/" + name)
+	thumb := imaging.Resize(img, 200, 0, imaging.Lanczos)
+	imaging.Encode(writer, thumb, imaging.JPEG)
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close the writer for thumbnail; err = %w", err)
 	}
-	res, err := br.srv.Files.Insert(f).Media(content).Do()
+	conf.Log.Info("Successfully upload the thumbnail binary", zap.String("name", name), zap.Any("attrs", writer.Attrs()))
+	return writer, nil
+}
+
+func (br *BinaryRepository) deleteBinary(name string) error {
+	if err := br.f.Bucket.Object(name).Delete(conf.Ctx); err != nil {
+		return fmt.Errorf("failed to delete the file binary; name = %s, err = %w", name, err)
+	}
+	conf.Log.Info("Successfully delete the file", zap.String("name", name))
+	return nil
+}
+
+func (br *BinaryRepository) SaveImageBinary(file *entity.File, content io.ReadCloser) (*entity.File, error) {
+	name := file.Id + "-" + time.Now().Format("2006-01-02-15:04:05")
+	contentWriter := br.getUploadWriter("content/" + name)
+	reader := io.TeeReader(content, contentWriter)
+	img, _, err := image.Decode(reader)
 	if err != nil {
-		return nil, fmt.Errorf("failed to insert the file; err = %w", err)
+		return nil, fmt.Errorf("failed to decode image; err = %w", err)
 	}
-	conf.Log.Info("Successfully insert the file", zap.Any("res", res))
-	file.FileId = res.Id
-	file.ContentUrl = "https://drive.google.com/uc?export=view&id=" + res.Id
-	if file.FileType == entity.ImageType {
-		file.ThumbnailUrl = res.ThumbnailLink
-		file.Width = res.ImageMediaMetadata.Width
-		file.Height = res.ImageMediaMetadata.Height
+	thumbWriter, err := br.uploadImageThumb(name, img)
+	if err != nil {
+		return nil, err
 	}
-	file.MimeType = res.MimeType
+	if err := contentWriter.Close(); err != nil {
+		br.deleteBinary("thumbnail/" + name)
+		return nil, fmt.Errorf("failed to close the writer for the content binary; err = %w", err)
+	}
+	conf.Log.Info("Successfully upload the binary content", zap.String("name", name), zap.Any("attrs", contentWriter.Attrs()))
+	file.Width = img.Bounds().Dx()
+	file.Height = img.Bounds().Dy()
+	file.ThumbnailUrl = thumbWriter.Attrs().MediaLink
+	file.ContentUrl = contentWriter.Attrs().MediaLink
+	file.MimeType = contentWriter.Attrs().ContentType
 	file.IsUploaded = true
 	file.Name = name
 	return file, nil
 }
 
-func (br *BinaryRepository) DeleteBinary(id string) error {
-	if err :=	br.srv.Files.Delete(id).Do(); err != nil {
-		return fmt.Errorf("failed to delete the file binary; id = %s, err = %w", id, err)
+func (br *BinaryRepository) DeleteBinary(name string) error {
+	if err := br.deleteBinary("content/" + name); err != nil {
+		return err
 	}
-	conf.Log.Info("Successfully delete the file", zap.String("id", id))
+	if err := br.deleteBinary("thumbnail/" + name); err != nil {
+		return err
+	}
 	return nil
 }

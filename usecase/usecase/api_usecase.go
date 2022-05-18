@@ -103,7 +103,7 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 	if file == nil {
 		return fmt.Errorf("not found the file with id = %s", id)
 	}
-	if err := au.br.DeleteBinary(file.FileId); err != nil {
+	if err := au.br.DeleteBinary(file.Name); err != nil {
 		return err
 	}
 	if err := au.fr.DeleteFile(id); err != nil {

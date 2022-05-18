@@ -1,0 +1,88 @@
+{
+  "size": {
+    "width": 2500,
+    "height": 1686
+  },
+  "selected": true,
+  "name": "richmenu-2",
+  "chatBarText": "タップしてメニューを開く",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 834,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "label": "座席表",
+        "text": "座席表"
+      }
+    },
+    {
+      "bounds": {
+        "x": 834,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "label": "料理メニュー",
+        "text": "料理メニュー"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1667,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "label": "ドリンクメニュー",
+        "text": "ドリンクメニュー"
+      }
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 843,
+        "width": 834,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "label": "結婚式場はどこ？",
+        "text": "結婚式場はどこ？"
+      }
+    },
+    {
+      "bounds": {
+        "x": 834,
+        "y": 843,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "uri",
+        "uri": "https://www.scapes.jp/"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1667,
+        "y": 843,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "richmenuswitch",
+        "richMenuAliasId": "richmenu-alias-1",
+        "data": "richmenu-changed-to-1"
+      }
+    }
+  ]
+}

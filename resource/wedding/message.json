@@ -2,7 +2,7 @@
   "unknown": [
     {
       "type": "text",
-      "text": "ごめんなさい！よく分からないです...$\n\n下の返信メニューから近いものを選んでみて下さい",
+      "text": "ごめんなさい！よく分からないです...$",
       "emojis": [
         {
           "index": 19,
@@ -44,32 +44,9 @@
   "image": [
     {
       "type": "text",
-      "text": "写真・動画を登録しました"
-    },
-    {
-      "type": "sticker",
-      "packageID": "6325",
-      "stickerID": "10979912",
+      "text": "写真を登録しました",
       "quickReply": {
         "items": [
-          {
-            "type": "action",
-            "imageURL": "",
-            "action": {
-                "type": "uri",
-                "label": "写真を確認",
-                "uri": "https://drive.google.com/drive/folders/1yziSpir9Io-LjaGNz0_uOpfHT3YecFYN?usp=sharing&openExternalBrowser=1"
-            }
-          },
-          {
-            "type": "action",
-            "imageURL": "",
-            "action": {
-              "type":"message",
-              "label":"写真を削除",
-              "text":"写真を削除"
-            }
-          },
           {
             "type": "action",
             "imageURL": "",

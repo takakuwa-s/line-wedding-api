@@ -24,7 +24,7 @@ func NewFileRepository(f *dto.Firestore) *FileRepository {
 }
 
 func (fr *FileRepository) SaveFile(file *entity.File) error {
-	if _, err := fr.f.Client.Collection("files").Doc(file.LineFileId).Set(conf.Ctx, file); err != nil {
+	if _, err := fr.f.Firestore.Collection("files").Doc(file.Id).Set(conf.Ctx, file); err != nil {
 		return fmt.Errorf("failed to save a new file metadata; file =  %v, err = %w", file, err)
 	}
 	conf.Log.Info("Successfully save the file metadata", zap.Any("file", file))
@@ -32,7 +32,7 @@ func (fr *FileRepository) SaveFile(file *entity.File) error {
 }
 
 func (fr *FileRepository) DeleteFile(id string) error {
-	_, err := fr.f.Client.Collection("files").Doc(id).Delete(conf.Ctx)
+	_, err := fr.f.Firestore.Collection("files").Doc(id).Delete(conf.Ctx)
 	if err != nil {
 		return fmt.Errorf("failed to delete the file metadata; id =  %s, err = %w", id, err)
 	}
@@ -41,7 +41,7 @@ func (fr *FileRepository) DeleteFile(id string) error {
 }
 
 func (fr *FileRepository)	FindById(id string) (*entity.File, error) {
-	dsnap, err := fr.f.Client.Collection("files").Doc(id).Get(conf.Ctx)
+	dsnap, err := fr.f.Firestore.Collection("files").Doc(id).Get(conf.Ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
 			return nil, nil
@@ -71,7 +71,7 @@ func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, e
 }
 
 func (fr *FileRepository) FindByLimit(limit int) ([]entity.File, error) {
-	query := fr.f.Client.Collection("files").
+	query := fr.f.Firestore.Collection("files").
 							OrderBy("CreatedAt", firestore.Desc).
 							Limit(limit)
 	files, err := fr.executeQuery(&query)
@@ -83,11 +83,11 @@ func (fr *FileRepository) FindByLimit(limit int) ([]entity.File, error) {
 }
 
 func (fr *FileRepository) FindByLimitAndStartId(limit int, startId string) ([]entity.File, error) {
-	dsnap, err := fr.f.Client.Collection("files").Doc(startId).Get(conf.Ctx)
+	dsnap, err := fr.f.Firestore.Collection("files").Doc(startId).Get(conf.Ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the file metadata; err = %w", err)
 	}
-	query := fr.f.Client.Collection("files").
+	query := fr.f.Firestore.Collection("files").
 							OrderBy("CreatedAt", firestore.Desc).
 							StartAfter(dsnap).
 							Limit(limit)

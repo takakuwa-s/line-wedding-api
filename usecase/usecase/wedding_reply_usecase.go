@@ -29,15 +29,15 @@ func NewWeddingReplyUsecase(
 	return &WeddingReplyUsecase{mr: mr, lr: lr, ur: ur, fr: fr, br: br, apu: apu, cu: cu}
 }
 
-func (wru *WeddingReplyUsecase) HandleFileEvent(m *dto.FileMessage) error {
+func (wru *WeddingReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 	// Get the file binary
-	content, err := wru.lr.GetFileContent(dto.WeddingBotType, m.File.LineFileId)
+	content, err := wru.lr.GetFileContent(dto.WeddingBotType, m.File.Id)
 	if err != nil {
 		return fmt.Errorf("failed to download the file; err = %w", err)
 	}
 
 	// upload the file binary
-	file, err := wru.br.SaveBinary(m.File, content)
+	file, err := wru.br.SaveImageBinary(m.File, content)
 	if err != nil {
 		return fmt.Errorf("failed to upload the file; err = %w", err)
 	}

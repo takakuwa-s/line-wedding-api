@@ -25,7 +25,7 @@ func NewUserRepository(f *dto.Firestore) *UserRepository {
 }
 
 func (ur *UserRepository) SaveUser(user *entity.User) error {
-	if _, err := ur.f.Client.Collection("users").Doc(user.Id).Set(conf.Ctx, user); err != nil {
+	if _, err := ur.f.Firestore.Collection("users").Doc(user.Id).Set(conf.Ctx, user); err != nil {
 		return fmt.Errorf("failed adding a new user; user =  %v, err = %w", user, err)
 	}
 	conf.Log.Info("Successfully save the user", zap.Any("user", user))
@@ -33,7 +33,7 @@ func (ur *UserRepository) SaveUser(user *entity.User) error {
 }
 
 func (ur *UserRepository) UpdateFollowStatusById(id string, status bool) error {
-	if _, err := ur.f.Client.Collection("users").Doc(id).Update(conf.Ctx, []firestore.Update{
+	if _, err := ur.f.Firestore.Collection("users").Doc(id).Update(conf.Ctx, []firestore.Update{
 		{
 			Path:  "FollowStatus",
 			Value: status,
@@ -50,7 +50,7 @@ func (ur *UserRepository) UpdateFollowStatusById(id string, status bool) error {
 }
 
 func (ur *UserRepository) FindById(id string) (*entity.User, error) {
-	dsnap, err := ur.f.Client.Collection("users").Doc(id).Get(conf.Ctx)
+	dsnap, err := ur.f.Firestore.Collection("users").Doc(id).Get(conf.Ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
 			return nil, nil
@@ -67,7 +67,7 @@ func (ur *UserRepository) FindById(id string) (*entity.User, error) {
 
 func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
 	var users []entity.User
-	iter := ur.f.Client.Collection("users").Where("IsAdmin", "==", isAdmin).Documents(conf.Ctx)
+	iter := ur.f.Firestore.Collection("users").Where("IsAdmin", "==", isAdmin).Documents(conf.Ctx)
 	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
 		if err != nil {
 			return nil, fmt.Errorf("failed get a user; err = %w", err)
@@ -82,7 +82,7 @@ func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
 
 func (ur *UserRepository) FindByAttendanceAndFollowStatus(attendance, followStatus bool) ([]entity.User, error) {
 	var users []entity.User
-	iter := ur.f.Client.Collection("users").Where("Attendance", "==", attendance).Where("FollowStatus", "==", followStatus).Documents(conf.Ctx)
+	iter := ur.f.Firestore.Collection("users").Where("Attendance", "==", attendance).Where("FollowStatus", "==", followStatus).Documents(conf.Ctx)
 	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
 		if err != nil {
 			return nil, fmt.Errorf("failed get a user; err = %w", err)

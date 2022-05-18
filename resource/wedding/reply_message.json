@@ -2,11 +2,7 @@
   "写真共有": [
     {
       "type": "text",
-      "text": "このLINEに写真・動画を投稿すると、他の人にも共有できます"
-    },
-    {
-      "type": "text",
-      "text": "共有された写真・動画は以下のメニューのリンク先からダウンロードできます"
+      "text": "このLINEに写真を投稿すると、他の人にも共有できます"
     },
     {
       "type": "sticker",
@@ -14,15 +10,6 @@
       "stickerID": "52002734",
       "quickReply": {
         "items": [
-          {
-            "type": "action",
-            "imageURL": "",
-            "action": {
-                "type": "uri",
-                "label": "写真を確認",
-                "uri": "https://drive.google.com/drive/folders/1yziSpir9Io-LjaGNz0_uOpfHT3YecFYN?usp=sharing&openExternalBrowser=1"
-            }
-          },
           {
             "type": "action",
             "imageURL": "",
@@ -74,167 +61,11 @@
       "previewImageUrl": "https://drive.google.com/uc?export=view&id=1OhQIX9CHGiiSQT6Z9qv_7bGq_kYyefy2"
     }
   ],
-  "新郎・新婦" : [
+  "ドリンクメニュー": [
     {
-      "type": "template",
-      "altText": "this is a carousel template",
-      "template": {
-          "type": "carousel",
-          "columns": [
-              {
-                "thumbnailImageUrl": "https://drive.google.com/uc?export=view&id=1OhQIX9CHGiiSQT6Z9qv_7bGq_kYyefy2",
-                "imageBackgroundColor": "#FFFFFF",
-                "title": "this is menu",
-                "text": "description",
-                "actions": [
-                    {
-                        "type": "postback",
-                        "label": "Buy",
-                        "data": "action=buy&itemid=111",
-                        "displayText": "test"
-                    },
-                    {
-                        "type": "postback",
-                        "label": "Add to cart",
-                        "data": "action=add&itemid=111",
-                        "displayText": "test"
-                    }
-                ]
-              },
-              {
-                "thumbnailImageUrl": "https://drive.google.com/uc?export=view&id=1OhQIX9CHGiiSQT6Z9qv_7bGq_kYyefy2",
-                "imageBackgroundColor": "#000000",
-                "title": "this is menu",
-                "text": "description",
-                "actions": [
-                    {
-                        "type": "postback",
-                        "label": "Buy",
-                        "data": "action=buy&itemid=222",
-                        "displayText": "test"
-                    },
-                    {
-                        "type": "postback",
-                        "label": "Add to cart",
-                        "data": "action=add&itemid=222",
-                        "displayText": "test"
-                    }
-                ]
-              }
-          ],
-          "imageAspectRatio": "rectangle",
-          "imageSize": "cover"
-      }
-    }
-  ],
-  "結婚式" : [
-    {
-      "type": "flex",
-      "altText": "this is a flex message",
-      "contents": {
-        "type": "carousel",
-        "contents": [
-          {
-            "type": "bubble",
-            "hero": {
-              "type": "image",
-              "url": "https://drive.google.com/uc?export=view&id=1xqHEE4jnffIg-pX8qFmREZ8ozL4iYKcS",
-              "size": "full",
-              "aspectRatio": "25:13",
-              "aspectMode": "cover"
-            },
-            "body": {
-              "type": "box",
-              "layout": "vertical",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": "Access",
-                  "weight": "bold",
-                  "size": "xl",
-                  "color": "#555555"
-                },
-                {
-                  "type": "box",
-                  "layout": "vertical",
-                  "spacing": "sm",
-                  "contents": [
-                    {
-                      "type": "box",
-                      "layout": "baseline",
-                      "spacing": "sm",
-                      "contents": [
-                        {
-                          "type": "text",
-                          "text": "Place",
-                          "color": "#aaaaaa",
-                          "size": "sm",
-                          "flex": 23,
-                          "style": "italic"
-                        },
-                        {
-                          "type": "text",
-                          "text": "SCAPES THE SUITE",
-                          "wrap": true,
-                          "color": "#666666",
-                          "size": "sm",
-                          "flex": 77
-                        }
-                      ]
-                    },
-                    {
-                      "type": "box",
-                      "layout": "baseline",
-                      "spacing": "none",
-                      "contents": [
-                        {
-                          "type": "text",
-                          "text": "address",
-                          "color": "#aaaaaa",
-                          "flex": 23,
-                          "margin": "none",
-                          "size": "sm",
-                          "style": "italic"
-                        },
-                        {
-                          "type": "text",
-                          "text": "〒240-0112 神奈川県三浦郡葉山町堀内９２２−２",
-                          "wrap": true,
-                          "color": "#666666",
-                          "size": "sm",
-                          "flex": 77,
-                          "margin": "xs"
-                        }
-                      ]
-                    }
-                  ],
-                  "margin": "lg"
-                }
-              ],
-              "paddingTop": "lg",
-              "paddingBottom": "md",
-              "paddingStart": "xl",
-              "paddingEnd": "xl"
-            },
-            "footer": {
-              "type": "box",
-              "layout": "vertical",
-              "contents": [
-                {
-                  "type": "button",
-                  "action": {
-                    "type": "message",
-                    "label": "詳細はこちら",
-                    "text": "結婚式場はどこ？"
-                  },
-                  "style": "link"
-                }
-              ],
-              "paddingAll": "none"
-            }
-          }
-        ]
-      }
+      "type": "image",
+      "originalContentUrl": "https://drive.google.com/uc?export=view&id=13UpnvPRcsHxOYuH9z-DkCgE7HzwzWAxu",
+      "previewImageUrl": "https://drive.google.com/uc?export=view&id=13UpnvPRcsHxOYuH9z-DkCgE7HzwzWAxu"
     }
   ]
 }

@@ -16,14 +16,12 @@ func (f *FileType) ToString() string {
 }
 
 type File struct {
-	LineFileId string `json:"lineFileId"`
-	FileId string `json:"fileId"`
+	Id string `json:"id"`
 	Name string `json:"name"`
-	FileType FileType `json:"fileType"`
 	ContentUrl string `json:"contentUrl"`
 	ThumbnailUrl string `json:"thumbnailUrl"`
-	Width int64 `json:"width"`
-	Height int64 `json:"height"`
+	Width int `json:"width"`
+	Height int `json:"height"`
 	MimeType string `json:"mimeType"`
 	IsUploaded bool `json:"isUploaded"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -32,10 +30,9 @@ type File struct {
 	Updater string `json:"updater"`
 }
 
-func NewFile(messageId, creater string, fileType FileType) *File {
+func NewFile(messageId, creater string) *File {
 	return &File{
-		LineFileId: messageId,
-		FileType: fileType,
+		Id: messageId,
 		IsUploaded: false,
 		CreatedAt: time.Now(),
 		Creater: creater,

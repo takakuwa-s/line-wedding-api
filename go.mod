@@ -14,6 +14,7 @@ require (
 	cloud.google.com/go/iam v0.1.1 // indirect
 	cloud.google.com/go/storage v1.21.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible // indirect
+	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/gin-contrib/cors v1.3.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.7.7 // indirect
@@ -38,6 +39,7 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/crypto v0.0.0-20220313003712-b769efc7c000 // indirect
+	golang.org/x/image v0.0.0-20220413100746-70e8d0d3baa9 // indirect
 	golang.org/x/net v0.0.0-20220403103023-749bd193bc2b // indirect
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a // indirect
 	golang.org/x/sys v0.0.0-20220405052023-b1e9470b6e64 // indirect

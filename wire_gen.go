@@ -25,7 +25,7 @@ func InitializeRouter() *driver.Router {
 	firestore := dto.NewFirestore()
 	userRepository := gateway.NewUserRepository(firestore)
 	fileRepository := gateway.NewFileRepository(firestore)
-	binaryRepository := gateway.NewBinaryRepository()
+	binaryRepository := gateway.NewBinaryRepository(firestore)
 	linePresenter := presenter.NewLinePresenter(weddingLineBot, adminLineBot)
 	commonUtils := usecase.NewCommonUtils(linePresenter, lineRepository)
 	adminPushUsecase := usecase.NewAdminPushUsecase(messageRepository, userRepository, commonUtils)

@@ -34,13 +34,9 @@ func (wlc *WeddingLineController) Webhook(c *gin.Context) {
 			case linebot.EventTypeMessage:
 				switch event.Message.(type) {
 				case *linebot.ImageMessage:
-					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID, entity.ImageType)
+					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID)
 					message := dto.NewFileMessage(event.ReplyToken, file)
-					err = wlc.wru.HandleFileEvent(message)
-				case *linebot.VideoMessage:
-					file := entity.NewFile(event.Message.(*linebot.VideoMessage).ID, event.Source.UserID, entity.VideoType)
-					message := dto.NewFileMessage(event.ReplyToken, file)
-					err = wlc.wru.HandleFileEvent(message)
+					err = wlc.wru.HandleImageEvent(message)
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text, event.Source.UserID)
 					err = wlc.wru.HandleTextMessage(message)

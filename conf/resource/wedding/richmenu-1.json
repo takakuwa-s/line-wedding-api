@@ -4,7 +4,7 @@
     "height": 1686
   },
   "selected": true,
-  "name": "richmenu1",
+  "name": "richmenu-1",
   "chatBarText": "タップしてメニューを開く",
   "areas": [
     {
@@ -15,9 +15,8 @@
         "height": 843
       },
       "action": {
-        "type": "message",
-        "label": "写真共有",
-        "text": "写真共有"
+        "type": "uri",
+        "uri": "https://liff.line.me/1657103786-yAJBxJnk/image/list"
       }
     },
     {
@@ -29,8 +28,8 @@
       },
       "action": {
         "type": "message",
-        "label": "料理メニュー",
-        "text": "料理メニュー"
+        "label": "写真共有",
+        "text": "写真共有"
       }
     },
     {
@@ -41,9 +40,8 @@
         "height": 843
       },
       "action": {
-        "type": "message",
-        "label": "座席表",
-        "text": "座席表"
+        "type": "uri",
+        "uri": "https://liff.line.me/1657103786-yAJBxJnk/user"
       }
     },
     {
@@ -54,9 +52,8 @@
         "height": 843
       },
       "action": {
-        "type": "message",
-        "label": "結婚式について",
-        "text": "結婚式"
+        "type": "uri",
+        "uri": "https://liff.line.me/1657103786-yAJBxJnk"
       }
     },
     {
@@ -80,9 +77,9 @@
         "height": 843
       },
       "action": {
-        "type": "message",
-        "label": "新郎・新婦について",
-        "text": "新郎・新婦"
+        "type": "richmenuswitch",
+        "richMenuAliasId": "richmenu-alias-2",
+        "data": "richmenu-changed-to-2"
       }
     }
   ]

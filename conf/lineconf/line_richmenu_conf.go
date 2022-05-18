@@ -11,20 +11,36 @@ import (
 	"go.uber.org/zap"
 )
 
-func GetRichmenuList(botType dto.BotType) error {
+func GetRichmenuList(botType dto.BotType) ([]*linebot.RichMenuResponse, error) {
 	bot, err := getBot(botType)
 	if err != nil {
-		return fmt.Errorf("failed to get the line bot client; err = %w", err)
+		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
 	}
 	res, err := bot.GetRichMenuList().Do()
 	if err != nil {
-		return fmt.Errorf("failed to get the richmenu list; err = %w", err)
+		return nil, fmt.Errorf("failed to get the richmenu list; err = %w", err)
 	}
 	conf.Log.Info("richmenu list size", zap.Int("len", len(res)))
 	for _, richMenu := range res {
 		conf.Log.Info("richMenu", zap.Any("richMenu", richMenu))
 	}
-	return nil
+	return res, nil
+}
+
+func GetRichmenuAliasList(botType dto.BotType) ([]*linebot.RichMenuAliasResponse, error) {
+	bot, err := getBot(botType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
+	}
+	res, err := bot.GetRichMenuAliasList().Do()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get the richmenu alias list; err = %w", err)
+	}
+	conf.Log.Info("richmenu alias list size", zap.Int("len", len(res)))
+	for _, alias := range res {
+		conf.Log.Info("richMenu alias", zap.Any("richMenu", alias))
+	}
+	return res, nil
 }
 
 func DeleteRichmenu(richMenuID string, botType dto.BotType) error {
@@ -39,33 +55,82 @@ func DeleteRichmenu(richMenuID string, botType dto.BotType) error {
 	return nil
 }
 
-func CreateRichmenu(botType dto.BotType) error {
+func DeleteRichmenuAlias(richMenuAliasID string, botType dto.BotType) error {
 	bot, err := getBot(botType)
 	if err != nil {
 		return fmt.Errorf("failed to get the line bot client; err = %w", err)
 	}
-	path := fmt.Sprintf("./conf/resource/%s/richmenu.json", botType)
-	b, err := ioutil.ReadFile(path)
+	if _, err := bot.DeleteRichMenuAlias(richMenuAliasID).Do(); err != nil {
+		return fmt.Errorf("failed to delete the richmenu alias; err = %w", err)
+	}
+	conf.Log.Info("richmenu alias is deleted", zap.String("richMenuAliasID", richMenuAliasID))
+	return nil
+}
+
+func createRichmenu(jsonPath, imagePath string, bot *linebot.Client) (string, error) {
+	b, err := ioutil.ReadFile(jsonPath)
 	if err != nil {
-		return fmt.Errorf("failed to read the richmenu.json; err = %w", err)
+		return "", fmt.Errorf("failed to read the richmenu.json; err = %w", err)
 	}
 	var menu linebot.RichMenu
 	if err = json.Unmarshal(b, &menu); err != nil {
-		return fmt.Errorf("failed to parses the JSON-encoded data; err = %w", err)
+		return "", fmt.Errorf("failed to parses the JSON-encoded data; err = %w", err)
 	}
 	res, err := bot.CreateRichMenu(menu).Do()
 	if err != nil {
-		return fmt.Errorf("failed to request to create the rich menu; err = %w", err)
+		return "", fmt.Errorf("failed to request to create the rich menu; err = %w", err)
 	}
-	conf.Log.Info("rich menu call", zap.Any("CreateRichMenuCall", res))
-	path = fmt.Sprintf("./conf/resource/%s/richmenu.png", botType)
-	if _, err := bot.UploadRichMenuImage(res.RichMenuID, path).Do(); err != nil {
-		return fmt.Errorf("failed to upload the image for the rich menu; err = %w", err)
+	conf.Log.Info("rich menu is successfully created", zap.Any("CreateRichMenuCall", res))
+	if _, err := bot.UploadRichMenuImage(res.RichMenuID, imagePath).Do(); err != nil {
+		return "", fmt.Errorf("failed to upload the image for the rich menu; err = %w", err)
 	}
-	if _, err := bot.SetDefaultRichMenu(res.RichMenuID).Do(); err != nil {
+	return res.RichMenuID, nil
+}
+
+func createAdminRichmenu() error {
+	bot := dto.NewAdminLineBot().Client
+	id, err := createRichmenu("./conf/resource/admin/richmenu.json", "./conf/resource/admin/richmenu.png", bot);
+	if err != nil {
+		return err
+	}
+	if _, err := bot.SetDefaultRichMenu(id).Do(); err != nil {
 		return fmt.Errorf("failed to set the menu default; err = %w", err)
 	}
 	return nil
+}
+
+func createWeddingRichmenu() error {
+	bot := dto.NewWeddingLineBot().Client
+	bot.GetRichMenuAliasList()
+	id1, err := createRichmenu("./conf/resource/wedding/richmenu-1.json", "./conf/resource/wedding/richmenu-1.png", bot);
+	if err != nil {
+		return err
+	}
+	id2, err := createRichmenu("./conf/resource/wedding/richmenu-2.json", "./conf/resource/wedding/richmenu-2.png", bot);
+	if err != nil {
+		return err
+	}
+	if _, err := bot.SetDefaultRichMenu(id1).Do(); err != nil {
+		return fmt.Errorf("failed to set the menu 1 as default; err = %w", err)
+	}
+	if _, err := bot.CreateRichMenuAlias("richmenu-alias-1", id1).Do(); err != nil {
+		return fmt.Errorf("failed to set the menu 1 as alias 1 ; err = %w", err)
+	}
+	if _, err := bot.CreateRichMenuAlias("richmenu-alias-2", id2).Do(); err != nil {
+		return fmt.Errorf("failed to set the menu 2 as alias 2 ; err = %w", err)
+	}
+	return nil
+}
+
+func CreateRichmenu(botType dto.BotType) error {
+	switch botType {
+	case dto.WeddingBotType:
+		return createWeddingRichmenu()
+	case dto.AdminBotType:
+		return createAdminRichmenu()
+	default:
+		return fmt.Errorf("unknown bot type; %s", botType)
+	}
 }
 
 func getBot(botType dto.BotType) (*linebot.Client, error) {
