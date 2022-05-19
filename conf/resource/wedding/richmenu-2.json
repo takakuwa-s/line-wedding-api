@@ -81,7 +81,7 @@
       "action": {
         "type": "richmenuswitch",
         "richMenuAliasId": "richmenu-alias-1",
-        "data": "richmenu-changed-to-1"
+        "data": "{}"
       }
     }
   ]

@@ -1,13 +1,14 @@
 {
+  "help": [
+    {
+      "type": "text",
+      "text": "わからんのか。。。"
+    }
+  ],
   "写真共有": [
     {
       "type": "text",
-      "text": "このLINEに写真を投稿すると、他の人にも共有できます"
-    },
-    {
-      "type": "sticker",
-      "packageID": "11537",
-      "stickerID": "52002734",
+      "text": "写真を送信して下さい",
       "quickReply": {
         "items": [
           {

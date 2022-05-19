@@ -33,7 +33,8 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 		return
 	}
 	startId := c.Query("startId")
-	files, err := fac.au.GetFileList(limit, startId)
+	userId := c.Query("userId")
+	files, err := fac.au.GetFileList(limit, startId, userId)
 	if err != nil {
 		conf.Log.Error("[GetFileList] Getting file list failed", zap.String("error", err.Error()))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/takakuwa-s/line-wedding-api/dto"
+	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
 )
 
@@ -60,10 +61,11 @@ func (wru *WeddingReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 		return fmt.Errorf("failed to find the user; err = %w", err)
 	}
 
+	var profile *entity.User
 	// follow the bot in the first time
 	if user == nil {
 		// Get the detail user profile
-		profile, err := wru.lr.GetUserProfileById(m.SenderUserId, dto.WeddingBotType)
+		profile, err = wru.lr.GetUserProfileById(m.SenderUserId, dto.WeddingBotType)
 		if err != nil {
 			return fmt.Errorf("failed to find the user; err = %w", err)
 		}
@@ -77,10 +79,11 @@ func (wru *WeddingReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 		if err := wru.ur.UpdateFollowStatusById(m.SenderUserId, true); err != nil {
 			return fmt.Errorf("failed to update the follow status; err = %w", err)
 		}
+		profile = user
 	}
 
 	// Send notification to admin bot
-	if err = wru.apu.SendFollowNotification(user, user == nil); err != nil {
+	if err = wru.apu.SendFollowNotification(profile, user == nil); err != nil {
 		return fmt.Errorf("failed to send notification to admin bot; err = %w", err)
 	}
 
@@ -124,5 +127,5 @@ func (wru *WeddingReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 }
 
 func (wru *WeddingReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
-	return fmt.Errorf("not implemented")
+	return nil
 }

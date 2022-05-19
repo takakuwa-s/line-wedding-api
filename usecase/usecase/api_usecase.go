@@ -72,20 +72,15 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 		}
 	}
 	user = r.ToUser(user)
+	user.IsRegistered = true
 	if err = au.ur.SaveUser(user); err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startId string) ([]entity.File, error) {
-	var files []entity.File
-	var err error
-	if startId == "" {
-		files, err = au.fr.FindByLimit(limit)
-	} else {
-		files, err =  au.fr.FindByLimitAndStartId(limit, startId)
-	}
+func (au *ApiUsecase) GetFileList(limit int, startId, userId string) ([]entity.File, error) {
+	files, err :=  au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId)
 	if err != nil {
 		return nil, err
 	}

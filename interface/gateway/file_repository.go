@@ -59,7 +59,6 @@ func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, e
 	var files []entity.File
 	iter := query.Documents(conf.Ctx)
 	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
-		conf.Log.Info("dsnap", zap.Any("dsnap", dsnap))
 		if err != nil {
 			return nil, fmt.Errorf("failed to get a file metadata ; err = %w", err)
 		}
@@ -70,31 +69,25 @@ func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, e
 	return files, nil
 }
 
-func (fr *FileRepository) FindByLimit(limit int) ([]entity.File, error) {
-	query := fr.f.Firestore.Collection("files").
-							OrderBy("CreatedAt", firestore.Desc).
-							Limit(limit)
+func (fr *FileRepository) FindByLimitAndStartIdAndUserId(limit int, startId, userId string) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").OrderBy("UpdatedAt", firestore.Desc);
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if startId != "" {
+		dsnap, err := fr.f.Firestore.Collection("files").Doc(startId).Get(conf.Ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get the file metadata; err = %w", err)
+		}
+		query = query.StartAfter(dsnap)
+	}
+	if userId != "" {
+		query = query.Where("Creater", "==", userId)
+	}
 	files, err := fr.executeQuery(&query)
 	if err != nil {
 		return nil, err
 	}
-	conf.Log.Info("Successfully find the file metadata with", zap.Int("limit", limit))
-	return files, nil
-}
-
-func (fr *FileRepository) FindByLimitAndStartId(limit int, startId string) ([]entity.File, error) {
-	dsnap, err := fr.f.Firestore.Collection("files").Doc(startId).Get(conf.Ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get the file metadata; err = %w", err)
-	}
-	query := fr.f.Firestore.Collection("files").
-							OrderBy("CreatedAt", firestore.Desc).
-							StartAfter(dsnap).
-							Limit(limit)
-	files, err := fr.executeQuery(&query)
-	if err != nil {
-		return nil, err
-	}
-	conf.Log.Info("Successfully find the file metadata with", zap.Int("limit", limit), zap.String("startId", startId))
+	conf.Log.Info("Successfully find the file metadata with", zap.Int("file count", len(files)), zap.Int("limit", limit), zap.String("startId", startId), zap.String("userId", userId))
 	return files, nil
 }

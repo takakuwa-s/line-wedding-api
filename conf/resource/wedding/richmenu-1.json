@@ -15,8 +15,9 @@
         "height": 843
       },
       "action": {
-        "type": "uri",
-        "uri": "https://liff.line.me/1657103786-yAJBxJnk/image/list"
+        "type": "message",
+        "label": "help",
+        "text": "help"
       }
     },
     {
@@ -27,9 +28,8 @@
         "height": 843
       },
       "action": {
-        "type": "message",
-        "label": "写真共有",
-        "text": "写真共有"
+        "type": "uri",
+        "uri": "https://liff.line.me/1657103786-yAJBxJnk"
       }
     },
     {
@@ -53,7 +53,7 @@
       },
       "action": {
         "type": "uri",
-        "uri": "https://liff.line.me/1657103786-yAJBxJnk"
+        "uri": "https://liff.line.me/1657103786-yAJBxJnk/image/list"
       }
     },
     {
@@ -65,8 +65,8 @@
       },
       "action": {
         "type": "message",
-        "label": "受付",
-        "text": "受付"
+        "label": "写真共有",
+        "text": "写真共有"
       }
     },
     {
@@ -79,7 +79,7 @@
       "action": {
         "type": "richmenuswitch",
         "richMenuAliasId": "richmenu-alias-2",
-        "data": "richmenu-changed-to-2"
+        "data": "{}"
       }
     }
   ]

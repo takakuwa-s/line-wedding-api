@@ -7,26 +7,27 @@ import (
 )
 
 type User struct {
-	Id string
-	LineName string
-	FollowStatus bool
-	Language string
-	IconUrl string
-	StatusMessage string
-	Attendance bool
-  GuestType string
-  FamilyName string
-  FirstName string
-  FamilyNameKana string
-  FirstNameKana string
-  PhoneNumber string
-  PostalCode string
-  Address string
-  Allergy string
-  Message string
-	IsAdmin bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id string `json:"id"`
+	LineName string `json:"lineName"`
+	FollowStatus bool `json:"followStatus"`
+	Language string `json:"language"`
+	IconUrl string `json:"iconUrl"`
+	StatusMessage string `json:"statusMessage"`
+	Attendance bool `json:"attendance"`
+  GuestType string `json:"guestType"`
+  FamilyName string `json:"familyName"`
+  FirstName string `json:"firstName"`
+  FamilyNameKana string `json:"familyNameKana"`
+  FirstNameKana string `json:"firstNameKana"`
+  PhoneNumber string `json:"phoneNumber"`
+  PostalCode string `json:"postalCode"`
+  Address string `json:"address"`
+  Allergy string `json:"allergy"`
+  Message string `json:"message"`
+	IsAdmin bool `json:"isAdmin"`
+	IsRegistered bool `json:"isRegistered"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 func NewUser(res *linebot.UserProfileResponse) *User {
@@ -34,6 +35,7 @@ func NewUser(res *linebot.UserProfileResponse) *User {
 		Id: res.UserID,
 		LineName: res.DisplayName,
 		IsAdmin: false,
+		IsRegistered: false,
 		FollowStatus: true,
 		Language: res.Language,
 		IconUrl: res.PictureURL,
