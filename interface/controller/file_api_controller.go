@@ -28,13 +28,16 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 	}
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		conf.Log.Error("[GetFileList] limit must be number", zap.String("error", err.Error()))
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "limit is required and must be number"})
 		return
 	}
 	startId := c.Query("startId")
 	userId := c.Query("userId")
-	files, err := fac.au.GetFileList(limit, startId, userId)
+	orderBy := c.Query("orderBy")
+	if orderBy == "" {
+		orderBy = "UpdatedAt"	
+	}
+	files, err := fac.au.GetFileList(limit, startId, userId, orderBy)
 	if err != nil {
 		conf.Log.Error("[GetFileList] Getting file list failed", zap.String("error", err.Error()))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

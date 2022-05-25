@@ -13,14 +13,14 @@ import (
 
 type CommonUtils struct {
 	p   ipresenter.IPresenter
-	lr  igateway.ILineRepository
+	lg  igateway.ILineGateway
 }
 
 // Newコンストラクタ
 func NewCommonUtils(
 	p ipresenter.IPresenter,
-	lr igateway.ILineRepository) *CommonUtils {
-	return &CommonUtils{p: p, lr: lr}
+	lg igateway.ILineGateway) *CommonUtils {
+	return &CommonUtils{p: p, lg: lg}
 }
 
 func (cu *CommonUtils) SendReplyMessage(
@@ -39,7 +39,7 @@ func (cu *CommonUtils) MulticastMessage(
 	m []map[string]interface{},
 	botType dto.BotType) error {
 	userCnt := len(users)
-	quotaComsuption, err := cu.lr.GetQuotaComsuption(botType)
+	quotaComsuption, err := cu.lg.GetQuotaComsuption(botType)
 	if err != nil {
 		return fmt.Errorf("failed to get the quota comsuption; err = %w", err)
 	}

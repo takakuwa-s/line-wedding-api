@@ -9,7 +9,7 @@ import (
 
 type AdminReplyUsecase struct {
 	mr  igateway.IMessageRepository
-	lr  igateway.ILineRepository
+	lg  igateway.ILineGateway
 	wpu *WeddingPushUsecase
 	cu  *CommonUtils
 }
@@ -17,10 +17,10 @@ type AdminReplyUsecase struct {
 // Newコンストラクタ
 func NewAdminReplyUsecase(
 	mr igateway.IMessageRepository,
-	lr igateway.ILineRepository,
+	lg igateway.ILineGateway,
 	wpu *WeddingPushUsecase,
 	cu *CommonUtils) *AdminReplyUsecase {
-	return &AdminReplyUsecase{mr: mr, lr: lr, wpu: wpu, cu:cu}
+	return &AdminReplyUsecase{mr: mr, lg: lg, wpu: wpu, cu:cu}
 }
 
 func (aru *AdminReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
@@ -80,11 +80,11 @@ func (aru *AdminReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 }
 
 func (aru *AdminReplyUsecase) handleQuotaCheck(m []map[string]interface{}) ([]map[string]interface{}, error) {
-	weddingComsuption, err := aru.lr.GetQuotaComsuption(dto.WeddingBotType)
+	weddingComsuption, err := aru.lg.GetQuotaComsuption(dto.WeddingBotType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the wedding quota comsuption; err = %w", err)
 	}
-	adminComsuption, err := aru.lr.GetQuotaComsuption(dto.AdminBotType)
+	adminComsuption, err := aru.lg.GetQuotaComsuption(dto.AdminBotType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the admin quota comsuption; err = %w", err)
 	}

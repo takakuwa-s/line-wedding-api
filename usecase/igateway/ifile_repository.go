@@ -8,5 +8,5 @@ type IFileRepository interface {
 	SaveFile(file *entity.File) error
 	DeleteFile(id string) error
 	FindById(id string) (*entity.File, error)
-	FindByLimitAndStartIdAndUserId(limit int, startId, userId string) ([]entity.File, error)
+	FindByLimitAndStartIdAndUserId(limit int, startId, userId, orderBy string) ([]entity.File, error)
 }

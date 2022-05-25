@@ -12,18 +12,18 @@ import (
 	"github.com/takakuwa-s/line-wedding-api/entity"
 )
 
-type LineRepository struct {
+type LineGateway struct {
 	wlb *dto.WeddingLineBot
 	alb *dto.AdminLineBot
 }
 
 // Newコンストラクタ
-func NewLineRepository(wlb *dto.WeddingLineBot, alb *dto.AdminLineBot) *LineRepository {
-	return &LineRepository{wlb: wlb, alb: alb}
+func NewLineGateway(wlb *dto.WeddingLineBot, alb *dto.AdminLineBot) *LineGateway {
+	return &LineGateway{wlb: wlb, alb: alb}
 }
 
-func (lr *LineRepository) GetUserProfileById(id string, botType dto.BotType) (*entity.User, error) {
-	bot, err := lr.getBot(botType)
+func (lg *LineGateway) GetUserProfileById(id string, botType dto.BotType) (*entity.User, error) {
+	bot, err := lg.getBot(botType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
 	}
@@ -35,8 +35,8 @@ func (lr *LineRepository) GetUserProfileById(id string, botType dto.BotType) (*e
 	return entity.NewUser(res), nil
 }
 
-func (lr *LineRepository) GetQuotaComsuption(botType dto.BotType) (int64, error) {
-	bot, err := lr.getBot(botType)
+func (lg *LineGateway) GetQuotaComsuption(botType dto.BotType) (int64, error) {
+	bot, err := lg.getBot(botType)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get the line bot client; err = %w", err)
 	}
@@ -48,8 +48,8 @@ func (lr *LineRepository) GetQuotaComsuption(botType dto.BotType) (int64, error)
 	return res.TotalUsage, nil
 }
 
-func (lr *LineRepository) GetFileContent(botType dto.BotType, messageId string) (io.ReadCloser, error) {
-	bot, err := lr.getBot(botType)
+func (lg *LineGateway) GetFileContent(botType dto.BotType, messageId string) (io.ReadCloser, error) {
+	bot, err := lg.getBot(botType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
 	}
@@ -62,12 +62,12 @@ func (lr *LineRepository) GetFileContent(botType dto.BotType, messageId string) 
 	return content.Content, nil
 }
 
-func (lr *LineRepository) getBot(botType dto.BotType) (*linebot.Client, error) {
+func (lg *LineGateway) getBot(botType dto.BotType) (*linebot.Client, error) {
 	switch botType {
 	case dto.WeddingBotType:
-		return lr.wlb.Client, nil
+		return lg.wlb.Client, nil
 	case dto.AdminBotType:
-		return lr.alb.Client, nil
+		return lg.alb.Client, nil
 	default:
 		return nil, fmt.Errorf("unknown bot type; %s", botType)
 	}

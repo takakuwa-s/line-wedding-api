@@ -58,7 +58,11 @@ func (fr *FileRepository)	FindById(id string) (*entity.File, error) {
 func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, error) {
 	var files []entity.File
 	iter := query.Documents(conf.Ctx)
-	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
+	for {
+		dsnap, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
 		if err != nil {
 			return nil, fmt.Errorf("failed to get a file metadata ; err = %w", err)
 		}
@@ -69,15 +73,19 @@ func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, e
 	return files, nil
 }
 
-func (fr *FileRepository) FindByLimitAndStartIdAndUserId(limit int, startId, userId string) ([]entity.File, error) {
-	query := fr.f.Firestore.Collection("files").OrderBy("UpdatedAt", firestore.Desc);
+func (fr *FileRepository) FindByLimitAndStartIdAndUserId(limit int, startId, userId, orderBy string) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").OrderBy(orderBy, firestore.Desc)
 	if limit > 0 {
 		query = query.Limit(limit)
 	}
 	if startId != "" {
 		dsnap, err := fr.f.Firestore.Collection("files").Doc(startId).Get(conf.Ctx)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get the file metadata; err = %w", err)
+			if status.Code(err) == codes.NotFound {
+				return []entity.File{}, nil
+			} else {
+				return nil, fmt.Errorf("failed to get the file metadata by startId; id =  %s err = %w", startId, err)
+			}
 		}
 		query = query.StartAfter(dsnap)
 	}

@@ -65,31 +65,39 @@ func (ur *UserRepository) FindById(id string) (*entity.User, error) {
 }
 
 
-func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
+func (ur *UserRepository) executeQuery(query *firestore.Query) ([]entity.User, error) {
 	var users []entity.User
-	iter := ur.f.Firestore.Collection("users").Where("IsAdmin", "==", isAdmin).Documents(conf.Ctx)
-	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
+	iter := query.Documents(conf.Ctx)
+	for {
+		dsnap, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
 		if err != nil {
-			return nil, fmt.Errorf("failed get a user; err = %w", err)
+			return nil, fmt.Errorf("failed to get a user ; err = %w", err)
 		}
 		var u entity.User
 		dsnap.DataTo(&u)
 		users = append(users, u)
+	}
+	return users, nil
+}
+
+func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
+	query := ur.f.Firestore.Collection("users").Where("IsAdmin", "==", isAdmin)
+	users, err := ur.executeQuery(&query)
+	if err != nil {
+		return nil, err
 	}
 	conf.Log.Info("Successfully find the users with IsAdmin flag", zap.Bool("IsAdmin", isAdmin), zap.Any("users", users))
 	return users, nil
 }
 
 func (ur *UserRepository) FindByAttendanceAndFollowStatus(attendance, followStatus bool) ([]entity.User, error) {
-	var users []entity.User
-	iter := ur.f.Firestore.Collection("users").Where("Attendance", "==", attendance).Where("FollowStatus", "==", followStatus).Documents(conf.Ctx)
-	for dsnap, err := iter.Next(); err != iterator.Done; dsnap, err = iter.Next() {
-		if err != nil {
-			return nil, fmt.Errorf("failed get a user; err = %w", err)
-		}
-		var u entity.User
-		dsnap.DataTo(&u)
-		users = append(users, u)
+	query := ur.f.Firestore.Collection("users").Where("Attendance", "==", attendance).Where("FollowStatus", "==", followStatus)
+	users, err := ur.executeQuery(&query)
+	if err != nil {
+		return nil, err
 	}
 	conf.Log.Info("Successfully find the users with Attendance and FollowStatus flag", zap.Bool("Attendance", attendance), zap.Bool("FollowStatus", followStatus), zap.Any("user", users))
 	return users, nil

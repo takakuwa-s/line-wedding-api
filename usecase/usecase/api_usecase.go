@@ -14,19 +14,20 @@ import (
 
 type ApiUsecase struct {
 	ur igateway.IUserRepository
-	lr igateway.ILineRepository
+	lg igateway.ILineGateway
 	fr igateway.IFileRepository
 	br igateway.IBinaryRepository
 }
 
 // Newコンストラクタ
-func NewApiUsecase(ur igateway.IUserRepository, lr igateway.ILineRepository, fr igateway.IFileRepository, br igateway.IBinaryRepository) *ApiUsecase {
-	return &ApiUsecase{ur: ur, lr: lr, fr: fr, br: br}
+func NewApiUsecase(ur igateway.IUserRepository, lg igateway.ILineGateway, fr igateway.IFileRepository, br igateway.IBinaryRepository) *ApiUsecase {
+	return &ApiUsecase{ur: ur, lg: lg, fr: fr, br: br}
 }
 
 func (au *ApiUsecase) ValidateToken(token string) error {
 	client := &http.Client{}
-	resp, err := client.Get("https://api.line.me/oauth2/v2.1/verify?access_token=" + token)
+	url := os.Getenv("LIFF_API_BASE_URL")
+	resp, err := client.Get(url + "?access_token=" + token)
 	if err != nil {
 		return err
 	}
@@ -66,7 +67,7 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 	}
 
 	if user == nil {
-		user, err = au.lr.GetUserProfileById(r.Id, dto.WeddingBotType)
+		user, err = au.lg.GetUserProfileById(r.Id, dto.WeddingBotType)
 		if err != nil {
 			return nil, err
 		}
@@ -79,8 +80,8 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 	return user, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startId, userId string) ([]entity.File, error) {
-	files, err :=  au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId)
+func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string) ([]entity.File, error) {
+	files, err :=  au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId, orderBy)
 	if err != nil {
 		return nil, err
 	}

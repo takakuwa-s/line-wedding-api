@@ -24,6 +24,11 @@ type File struct {
 	Height int `json:"height"`
 	MimeType string `json:"mimeType"`
 	IsUploaded bool `json:"isUploaded"`
+	FaceIds []string `json:"faceIds"`
+	FaceCount int `json:"faceCount"`
+	FaceHappinessLevel float32 `json:"faceHappinessLevel"`
+	FacePhotoBeauty float32 `json:"facePhotoBeauty"`
+	FaceScore float32	`json:"faceScore"`
 	CreatedAt time.Time `json:"createdAt"`
 	Creater string `json:"creater"`
 	UpdatedAt time.Time `json:"updatedAt"`

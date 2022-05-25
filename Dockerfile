@@ -22,7 +22,7 @@ FROM alpine:latest as runner
 WORKDIR app
 
 COPY --from=builder /go/app/main /app/main
-COPY --from=builder /go/app/environments/ /app/environments/
+COPY --from=builder /go/app/.env /app/.env
 COPY --from=builder /go/app/resource/ /app/resource/
 
 ENTRYPOINT "/app/main"
