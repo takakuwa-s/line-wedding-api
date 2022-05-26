@@ -18,18 +18,18 @@ import (
 func InitializeRouter() *driver.Router {
 	wire.Build(
 		// dto
-		dto.NewWeddingLineBot,
-		dto.NewAdminLineBot,
+		dto.NewLineBot,
 		dto.NewFirestore,
 
 		// driver
 		driver.NewRouter,
 
 		// controller
-		controller.NewWeddingLineController,
-		controller.NewAdminLineController,
+		controller.NewLineBotController,
+		controller.NewInitApiController,
 		controller.NewUserApiController,
 		controller.NewFileApiController,
+		controller.NewLineApiController,
 
 		// gateway
 		gateway.NewMessageRepository,
@@ -50,12 +50,9 @@ func InitializeRouter() *driver.Router {
 		wire.Bind(new(ipresenter.IPresenter), new(*presenter.LinePresenter)),
 
 		// usecase
-		usecase.NewWeddingReplyUsecase,
-		usecase.NewWeddingPushUsecase,
-		usecase.NewAdminReplyUsecase,
-		usecase.NewAdminPushUsecase,
+		usecase.NewLineReplyUsecase,
+		usecase.NewLinePushUsecase,
 		usecase.NewApiUsecase,
-		usecase.NewCommonUtils,
 	)
 	return nil
 }

@@ -11,11 +11,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func GetRichmenuList(botType dto.BotType) ([]*linebot.RichMenuResponse, error) {
-	bot, err := getBot(botType)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
+func GetRichmenuList() ([]*linebot.RichMenuResponse, error) {
+	bot := dto.NewLineBot().Client
 	res, err := bot.GetRichMenuList().Do()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the richmenu list; err = %w", err)
@@ -27,11 +24,8 @@ func GetRichmenuList(botType dto.BotType) ([]*linebot.RichMenuResponse, error) {
 	return res, nil
 }
 
-func GetRichmenuAliasList(botType dto.BotType) ([]*linebot.RichMenuAliasResponse, error) {
-	bot, err := getBot(botType)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
+func GetRichmenuAliasList() ([]*linebot.RichMenuAliasResponse, error) {
+	bot := dto.NewLineBot().Client
 	res, err := bot.GetRichMenuAliasList().Do()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the richmenu alias list; err = %w", err)
@@ -43,11 +37,8 @@ func GetRichmenuAliasList(botType dto.BotType) ([]*linebot.RichMenuAliasResponse
 	return res, nil
 }
 
-func DeleteRichmenu(richMenuID string, botType dto.BotType) error {
-	bot, err := getBot(botType)
-	if err != nil {
-		return fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
+func DeleteRichmenu(richMenuID string) error {
+	bot := dto.NewLineBot().Client
 	if _, err := bot.DeleteRichMenu(richMenuID).Do(); err != nil {
 		return fmt.Errorf("failed to delete the richmenu; err = %w", err)
 	}
@@ -55,11 +46,8 @@ func DeleteRichmenu(richMenuID string, botType dto.BotType) error {
 	return nil
 }
 
-func DeleteRichmenuAlias(richMenuAliasID string, botType dto.BotType) error {
-	bot, err := getBot(botType)
-	if err != nil {
-		return fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
+func DeleteRichmenuAlias(richMenuAliasID string) error {
+	bot := dto.NewLineBot().Client
 	if _, err := bot.DeleteRichMenuAlias(richMenuAliasID).Do(); err != nil {
 		return fmt.Errorf("failed to delete the richmenu alias; err = %w", err)
 	}
@@ -87,26 +75,14 @@ func createRichmenu(jsonPath, imagePath string, bot *linebot.Client) (string, er
 	return res.RichMenuID, nil
 }
 
-func createAdminRichmenu() error {
-	bot := dto.NewAdminLineBot().Client
-	id, err := createRichmenu("./conf/resource/admin/richmenu.json", "./conf/resource/admin/richmenu.png", bot);
-	if err != nil {
-		return err
-	}
-	if _, err := bot.SetDefaultRichMenu(id).Do(); err != nil {
-		return fmt.Errorf("failed to set the menu default; err = %w", err)
-	}
-	return nil
-}
-
-func createWeddingRichmenu() error {
-	bot := dto.NewWeddingLineBot().Client
+func CreateRichmenu() error {
+	bot := dto.NewLineBot().Client
 	bot.GetRichMenuAliasList()
-	id1, err := createRichmenu("./conf/resource/wedding/richmenu-1.json", "./conf/resource/wedding/richmenu-1.png", bot);
+	id1, err := createRichmenu("./conf/resource/richmenu-1.json", "./conf/resource/richmenu-1.png", bot);
 	if err != nil {
 		return err
 	}
-	id2, err := createRichmenu("./conf/resource/wedding/richmenu-2.json", "./conf/resource/wedding/richmenu-2.png", bot);
+	id2, err := createRichmenu("./conf/resource/richmenu-2.json", "./conf/resource/richmenu-2.png", bot);
 	if err != nil {
 		return err
 	}
@@ -120,26 +96,4 @@ func createWeddingRichmenu() error {
 		return fmt.Errorf("failed to set the menu 2 as alias 2 ; err = %w", err)
 	}
 	return nil
-}
-
-func CreateRichmenu(botType dto.BotType) error {
-	switch botType {
-	case dto.WeddingBotType:
-		return createWeddingRichmenu()
-	case dto.AdminBotType:
-		return createAdminRichmenu()
-	default:
-		return fmt.Errorf("unknown bot type; %s", botType)
-	}
-}
-
-func getBot(botType dto.BotType) (*linebot.Client, error) {
-	switch botType {
-	case dto.WeddingBotType:
-		return dto.NewWeddingLineBot().Client, nil
-	case dto.AdminBotType:
-		return dto.NewAdminLineBot().Client, nil
-	default:
-		return nil, fmt.Errorf("unknown bot type; %s", botType)
-	}
 }

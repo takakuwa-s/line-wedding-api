@@ -3,67 +3,70 @@ package usecase
 import (
 	"fmt"
 
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
+	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
+	"go.uber.org/zap"
 )
 
-type WeddingReplyUsecase struct {
+type LineReplyUsecase struct {
 	mr  igateway.IMessageRepository
 	lg  igateway.ILineGateway
-	fg igateway.IFaceGateway
+	fg  igateway.IFaceGateway
 	ur  igateway.IUserRepository
 	fr  igateway.IFileRepository
 	br  igateway.IBinaryRepository
-	apu *AdminPushUsecase
-	cu  *CommonUtils
+	lpu *LinePushUsecase
+	p   ipresenter.IPresenter
 }
 
 // Newコンストラクタ
-func NewWeddingReplyUsecase(
+func NewLineReplyUsecase(
 	mr igateway.IMessageRepository,
 	lg igateway.ILineGateway,
 	fg igateway.IFaceGateway,
 	ur igateway.IUserRepository,
 	fr igateway.IFileRepository,
 	br igateway.IBinaryRepository,
-	apu *AdminPushUsecase,
-	cu *CommonUtils) *WeddingReplyUsecase {
-	return &WeddingReplyUsecase{mr: mr, lg: lg, fg: fg, ur: ur, fr: fr, br: br, apu: apu, cu: cu}
+	lpu *LinePushUsecase,
+	p   ipresenter.IPresenter) *LineReplyUsecase {
+	return &LineReplyUsecase{mr: mr, lg: lg, fg: fg, ur: ur, fr: fr, br: br, lpu: lpu, p: p}
 }
 
-func (wru *WeddingReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
+func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 	// Get the file binary
-	content, err := wru.lg.GetFileContent(dto.WeddingBotType, m.File.Id)
+	content, err := lru.lg.GetFileContent(m.File.Id)
 	if err != nil {
 		return err
 	}
 
 	// upload the file binary
-	file, err := wru.br.SaveImageBinary(m.File, content)
+	file, err := lru.br.SaveImageBinary(m.File, content)
 	if err != nil {
 		return err
 	}
-	faceRes, err := wru.fg.GetFaceAnalysis(file.ContentUrl)
+	faceRes, err := lru.fg.GetFaceAnalysis(file.ContentUrl)
 	if err != nil {
 		return err
 	}
-	wru.calcurateFaceScore(faceRes, file)
+	lru.calcurateFaceScore(faceRes, file)
 
 	// Save file data
-	err = wru.fr.SaveFile(file)
+	err = lru.fr.SaveFile(file)
 	if err != nil {
 		return err
 	}
 
 	// Reply message
-	messages := wru.mr.FindMessageByKey(dto.WeddingBotType, "image")
-	return wru.cu.SendReplyMessage(m.ReplyToken, messages, dto.WeddingBotType)
+	messages := lru.mr.FindMessageByKey("image")
+	return lru.sendReplyMessage(m.ReplyToken, messages)
 }
 
-func (wru *WeddingReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
+func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	// Get user
-	user, err := wru.ur.FindById(m.SenderUserId)
+	user, err := lru.ur.FindById(m.SenderUserId)
 	if err != nil {
 		return fmt.Errorf("failed to find the user; err = %w", err)
 	}
@@ -72,72 +75,103 @@ func (wru *WeddingReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	// follow the bot in the first time
 	if user == nil {
 		// Get the detail user profile
-		profile, err = wru.lg.GetUserProfileById(m.SenderUserId, dto.WeddingBotType)
+		profile, err = lru.lg.GetUserProfileById(m.SenderUserId)
 		if err != nil {
 			return fmt.Errorf("failed to find the user; err = %w", err)
 		}
 
 		// Save users
-		if err = wru.ur.SaveUser(profile); err != nil {
+		if err = lru.ur.SaveUser(profile); err != nil {
 			return fmt.Errorf("failed to save a user; err = %w", err)
 		}
 	} else {
 		// update user status
-		if err := wru.ur.UpdateFollowStatusById(m.SenderUserId, true); err != nil {
+		if err := lru.ur.UpdateFollowStatusById(m.SenderUserId, true); err != nil {
 			return fmt.Errorf("failed to update the follow status; err = %w", err)
 		}
 		profile = user
 	}
 
 	// Send notification to admin bot
-	if err = wru.apu.SendFollowNotification(profile, user == nil); err != nil {
+	if err = lru.lpu.SendFollowNotification(profile, user == nil); err != nil {
 		return fmt.Errorf("failed to send notification to admin bot; err = %w", err)
 	}
 
 	// Return message
-	messages := wru.mr.FindMessageByKey(dto.WeddingBotType, "follow")
+	messages := lru.mr.FindMessageByKey("follow")
 	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), user.LineName)
-	return wru.cu.SendReplyMessage(m.ReplyToken, messages, dto.WeddingBotType)
+	return lru.sendReplyMessage(m.ReplyToken, messages)
 }
 
-func (wru *WeddingReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
+func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
 	// Get user
-	user, err := wru.ur.FindById(m.SenderUserId)
+	user, err := lru.ur.FindById(m.SenderUserId)
 	if err != nil {
 		return fmt.Errorf("failed to find the user; err = %w", err)
 	}
 
 	// update user status
-	if err := wru.ur.UpdateFollowStatusById(m.SenderUserId, false); err != nil {
+	if err := lru.ur.UpdateFollowStatusById(m.SenderUserId, false); err != nil {
 		return fmt.Errorf("failed to update the follow status; err = %w", err)
 	}
 
 	// Send notification to admin bot
-	if err := wru.apu.SendUnFollowNotification(user); err != nil {
+	if err := lru.lpu.SendUnFollowNotification(user); err != nil {
 		return fmt.Errorf("failed to send notification to admin bot; err = %w", err)
 	}
 
 	return nil
 }
 
-func (wru *WeddingReplyUsecase) HandleGroupEvent(m *dto.GroupMessage) error {
-	messages := wru.mr.FindMessageByKey(dto.WeddingBotType, "group")
-	return wru.cu.SendReplyMessage(m.ReplyToken, messages, dto.WeddingBotType)
+func (lru *LineReplyUsecase) HandleGroupEvent(m *dto.GroupMessage) error {
+	messages := lru.mr.FindMessageByKey("group")
+	return lru.sendReplyMessage(m.ReplyToken, messages)
 }
 
-func (wru *WeddingReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
-	messages := wru.mr.FindReplyMessage(dto.WeddingBotType, m.Text)
-	if len(messages) == 0 {
-		messages = wru.mr.FindMessageByKey(dto.WeddingBotType, "unknown")
+func (lru *LineReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
+	var messages []map[string]interface{}
+	switch m.Text {
+	case "招待状送信内容確認":
+		if lru.checkAdminRole(m.SenderUserId) {
+			messages = lru.mr.FindMessageByKey("invitation")
+		}
+	case "前日メッセージ送信内容確認":
+		if lru.checkAdminRole(m.SenderUserId) {
+			messages = lru.mr.FindMessageByKey("reminder")
+		}
+	default:
+		messages = lru.mr.FindReplyMessage(m.Text)
 	}
-	return wru.cu.SendReplyMessage(m.ReplyToken, messages, dto.WeddingBotType)
+	if len(messages) == 0 {
+		messages = lru.mr.FindMessageByKey("unknown")
+	}
+	return lru.sendReplyMessage(m.ReplyToken, messages)
 }
 
-func (wru *WeddingReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
+func (lru *LineReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
 	return nil
 }
 
-func (wru *WeddingReplyUsecase) calcurateFaceScore(r []*dto.FaceResponse, f *entity.File) {
+func (lru *LineReplyUsecase) sendReplyMessage(
+	token string,
+	m []map[string]interface{}) error {
+	rm := dto.NewReplyMessage(token, m)
+	if err := lru.p.ReplyMessage(rm); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (lru *LineReplyUsecase) checkAdminRole(userId string) bool {
+	user, err := lru.ur.FindById(userId)
+	if err != nil {
+		conf.Log.Error("failed to find the user", zap.Error(err))
+		return false
+	}
+	return user != nil && user.IsAdmin
+}
+
+func (lru *LineReplyUsecase) calcurateFaceScore(r []*dto.FaceResponse, f *entity.File) {
 	if len(r) <= 0 || len(r) > 4 {
 		f.FaceIds = []string{}
 		f.FaceCount = 0

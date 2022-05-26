@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
-	"github.com/takakuwa-s/line-wedding-api/dto"
 	"go.uber.org/zap"
 )
 
@@ -30,9 +29,8 @@ func (mp *MessageRepository) readJson(path string) map[string][]map[string]inter
 	return obj
 }
 
-func (mp *MessageRepository) FindReplyMessage(botType dto.BotType, text string) []map[string]interface{} {
-	path := fmt.Sprintf("./resource/%s/reply_message.json", botType)
-	ms := mp.readJson(path)
+func (mp *MessageRepository) FindReplyMessage(text string) []map[string]interface{} {
+	ms := mp.readJson("./resource/reply_message.json")
 	m := ms[text]
 	if len(m) > 0 {
 		conf.Log.Info("Successfully find the reply messages data", zap.Any("data", m))
@@ -40,9 +38,8 @@ func (mp *MessageRepository) FindReplyMessage(botType dto.BotType, text string) 
 	return m
 }
 
-func (mp *MessageRepository) FindMessageByKey(botType dto.BotType, key string) []map[string]interface{} {
-	path := fmt.Sprintf("./resource/%s/message.json", botType)
-	ms := mp.readJson(path)
+func (mp *MessageRepository) FindMessageByKey(key string) []map[string]interface{} {
+	ms := mp.readJson("./resource/message.json")
 	m := ms[key]
 	if len(m) > 0 {
 		conf.Log.Info("Successfully find the messages data", zap.Any("message", m))

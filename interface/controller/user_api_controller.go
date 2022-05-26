@@ -19,33 +19,12 @@ func NewUserApiController(au *usecase.ApiUsecase) *UserApiController {
 	return &UserApiController{au: au}
 }
 
-func (uac *UserApiController) GetUser(c *gin.Context) {
-	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
-	if err != nil {
-		conf.Log.Error("[GetUser] Authorization failed", zap.String("error", err.Error()))
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	id := c.Param("id")
-	user, err := uac.au.GetUser(id)
-	if err != nil {
-		conf.Log.Error("[GetUser] Getting user failed", zap.String("error", err.Error()))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if user == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "not found user"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"user": user})
-}
-
 func (uac *UserApiController) UpdateUser(c *gin.Context) {
 	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
 	if err != nil {
 		conf.Log.Error("[UpdateUser] Authorization failed", zap.String("error", err.Error()))
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
+		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		// return
 	}
 	var request dto.UpdateUserRequest
 	if err := c.ShouldBindJSON(&request); err != nil {

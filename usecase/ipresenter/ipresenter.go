@@ -5,6 +5,6 @@ import (
 )
 
 type IPresenter interface {
-	MulticastMessage(message *dto.MulticastMessage, botType dto.BotType) error
-	ReplyMessage(message *dto.ReplyMessage, botType dto.BotType) error
+	MulticastMessage(message *dto.MulticastMessage) error
+	ReplyMessage(message *dto.ReplyMessage) error
 }

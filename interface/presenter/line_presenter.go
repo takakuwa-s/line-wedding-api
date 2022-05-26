@@ -10,54 +10,34 @@ import (
 )
 
 type LinePresenter struct {
-	wlb *dto.WeddingLineBot
-	alb *dto.AdminLineBot
+	lb *dto.LineBot
 }
 
 // コンストラクタ
-func NewLinePresenter(wlb *dto.WeddingLineBot, alb *dto.AdminLineBot) *LinePresenter {
-	return &LinePresenter{wlb:wlb, alb:alb}
+func NewLinePresenter(lb *dto.LineBot) *LinePresenter {
+	return &LinePresenter{lb:lb}
 }
 
-func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage, botType dto.BotType) error {
+func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage) error {
 	messages, err := createMessages(message.Messages)
 	if err != nil {
 		return fmt.Errorf("failed to create the multicast message; err = %w", err)
 	}
-	bot, err := lp.getBot(botType)
-	if err != nil {
-		return fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
-	if _, err := bot.Multicast(message.UserIds, messages...).Do(); err != nil {
+	if _, err := lp.lb.Multicast(message.UserIds, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to multicast the message messages = %v, err = %w", messages, err)
 	}
 	return nil
 }
 
-func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage, botType dto.BotType) error {
+func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage) error {
 	messages, err := createMessages(message.Messages)
 	if err != nil {
 		return fmt.Errorf("failed to create the reply message; err = %w", err)
 	}
-	bot, err := lp.getBot(botType)
-	if err != nil {
-		return fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
-	if _, err := bot.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
+	if _, err := lp.lb.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to send the reply message messages = %v, err = %w", messages, err)
 	}
 	return nil
-}
-
-func (lp *LinePresenter) getBot(botType dto.BotType) (*linebot.Client, error) {
-	switch botType {
-	case dto.WeddingBotType:
-		return lp.wlb.Client, nil
-	case dto.AdminBotType:
-		return lp.alb.Client, nil
-	default:
-		return nil, fmt.Errorf("unknown bot type; %s", botType)
-	}
 }
 
 func createMessages(messages []map[string]interface{}) ([]linebot.SendingMessage, error) {

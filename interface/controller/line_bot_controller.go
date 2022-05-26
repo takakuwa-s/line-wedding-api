@@ -11,18 +11,18 @@ import (
 	"go.uber.org/zap"
 )
 
-type WeddingLineController struct {
-	bot *dto.WeddingLineBot
-	wru *usecase.WeddingReplyUsecase
+type LineBotController struct {
+	bot *dto.LineBot
+	lru *usecase.LineReplyUsecase
 }
 
 // コンストラクタ
-func NewWeddingLineController(bot *dto.WeddingLineBot, wru *usecase.WeddingReplyUsecase) *WeddingLineController {
-	return &WeddingLineController{bot: bot, wru: wru}
+func NewLineBotController(bot *dto.LineBot, lru *usecase.LineReplyUsecase) *LineBotController {
+	return &LineBotController{bot: bot, lru: lru}
 }
 
-func (wlc *WeddingLineController) Webhook(c *gin.Context) {
-	events, err := wlc.bot.ParseRequest(c.Request)
+func (lbc *LineBotController) Webhook(c *gin.Context) {
+	events, err := lbc.bot.ParseRequest(c.Request)
 	if err != nil {
 		conf.Log.Error("Failed to parse the request", zap.Any("err", err))
 		return
@@ -36,27 +36,27 @@ func (wlc *WeddingLineController) Webhook(c *gin.Context) {
 				case *linebot.ImageMessage:
 					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID)
 					message := dto.NewFileMessage(event.ReplyToken, file)
-					err = wlc.wru.HandleImageEvent(message)
+					err = lbc.lru.HandleImageEvent(message)
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text, event.Source.UserID)
-					err = wlc.wru.HandleTextMessage(message)
+					err = lbc.lru.HandleTextMessage(message)
 				default:
 					message := dto.NewTextMessage(event.ReplyToken, "unknown", event.Source.UserID)
-					err = wlc.wru.HandleTextMessage(message)
+					err = lbc.lru.HandleTextMessage(message)
 				}
 			case linebot.EventTypePostback:
 				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Source.UserID, event.Postback.Params)
-				err = wlc.wru.HandlePostbackEvent(message)
+				err = lbc.lru.HandlePostbackEvent(message)
 			case linebot.EventTypeFollow:
 				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
-				err = wlc.wru.HandleFollowEvent(message)
+				err = lbc.lru.HandleFollowEvent(message)
 			case linebot.EventTypeUnfollow:
 				message := dto.NewFollowMessage(event.ReplyToken, event.Source.UserID)
-				err = wlc.wru.HandleUnFollowEvent(message)
+				err = lbc.lru.HandleUnFollowEvent(message)
 			}
 		} else {
 			message := dto.NewGroupMessage(event.ReplyToken)
-			err = wlc.wru.HandleGroupEvent(message)
+			err = lbc.lru.HandleGroupEvent(message)
 		}
 	}
 	if err != nil {

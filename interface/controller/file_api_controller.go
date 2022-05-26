@@ -23,8 +23,8 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 	err := fac.au.ValidateToken(c.GetHeader("Authorization"))
 	if err != nil {
 		conf.Log.Error("[GetFileList] Authorization failed", zap.String("error", err.Error()))
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
+		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		// return
 	}
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
@@ -34,9 +34,6 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 	startId := c.Query("startId")
 	userId := c.Query("userId")
 	orderBy := c.Query("orderBy")
-	if orderBy == "" {
-		orderBy = "UpdatedAt"	
-	}
 	files, err := fac.au.GetFileList(limit, startId, userId, orderBy)
 	if err != nil {
 		conf.Log.Error("[GetFileList] Getting file list failed", zap.String("error", err.Error()))
@@ -50,8 +47,8 @@ func (fac *FileApiController) DeleteFile(c *gin.Context) {
 	err := fac.au.ValidateToken(c.GetHeader("Authorization"))
 	if err != nil {
 		conf.Log.Error("[DeleteFile] Authorization failed", zap.String("error", err.Error()))
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
+		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		// return
 	}
 	id := c.Param("id")
 

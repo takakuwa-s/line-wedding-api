@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/line/line-bot-sdk-go/v7/linebot"
 	"go.uber.org/zap"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
@@ -13,21 +12,16 @@ import (
 )
 
 type LineGateway struct {
-	wlb *dto.WeddingLineBot
-	alb *dto.AdminLineBot
+	lb *dto.LineBot
 }
 
 // Newコンストラクタ
-func NewLineGateway(wlb *dto.WeddingLineBot, alb *dto.AdminLineBot) *LineGateway {
-	return &LineGateway{wlb: wlb, alb: alb}
+func NewLineGateway(lb *dto.LineBot) *LineGateway {
+	return &LineGateway{lb: lb}
 }
 
-func (lg *LineGateway) GetUserProfileById(id string, botType dto.BotType) (*entity.User, error) {
-	bot, err := lg.getBot(botType)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
-	res, err := bot.GetProfile(id).Do()
+func (lg *LineGateway) GetUserProfileById(id string) (*entity.User, error) {
+	res, err := lg.lb.Client.GetProfile(id).Do()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the line profile; err = %w", err)
 	}
@@ -35,12 +29,8 @@ func (lg *LineGateway) GetUserProfileById(id string, botType dto.BotType) (*enti
 	return entity.NewUser(res), nil
 }
 
-func (lg *LineGateway) GetQuotaComsuption(botType dto.BotType) (int64, error) {
-	bot, err := lg.getBot(botType)
-	if err != nil {
-		return 0, fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
-	res, err := bot.GetMessageQuotaConsumption().Do()
+func (lg *LineGateway) GetQuotaComsuption() (int64, error) {
+	res, err := lg.lb.Client.GetMessageQuotaConsumption().Do()
 	if err != nil {
 		return 0, fmt.Errorf("failed to get the message quota consumption; err = %w", err)
 	}
@@ -48,27 +38,12 @@ func (lg *LineGateway) GetQuotaComsuption(botType dto.BotType) (int64, error) {
 	return res.TotalUsage, nil
 }
 
-func (lg *LineGateway) GetFileContent(botType dto.BotType, messageId string) (io.ReadCloser, error) {
-	bot, err := lg.getBot(botType)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get the line bot client; err = %w", err)
-	}
-	content, err := bot.GetMessageContent(messageId).Do()
+func (lg *LineGateway) GetFileContent(messageId string) (io.ReadCloser, error) {
+	content, err := lg.lb.Client.GetMessageContent(messageId).Do()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the file content from LINE; err = %w", err)
 	}
 	defer content.Content.Close()
 	conf.Log.Info("Successfully download the file", zap.String("ContentType", content.ContentType), zap.Int64("size (byte)", content.ContentLength))
 	return content.Content, nil
-}
-
-func (lg *LineGateway) getBot(botType dto.BotType) (*linebot.Client, error) {
-	switch botType {
-	case dto.WeddingBotType:
-		return lg.wlb.Client, nil
-	case dto.AdminBotType:
-		return lg.alb.Client, nil
-	default:
-		return nil, fmt.Errorf("unknown bot type; %s", botType)
-	}
 }

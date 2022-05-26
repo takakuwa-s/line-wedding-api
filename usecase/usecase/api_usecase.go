@@ -50,13 +50,18 @@ func (au *ApiUsecase) ValidateToken(token string) error {
 	return nil
 }
 
-func (au *ApiUsecase) GetUser(id string) (*entity.User, error) {
+func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
 	// Get user
 	user, err := au.ur.FindById(id)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	// Get file list 
+	files, err := au.GetFileList(12, "", "", "")
+	if err != nil {
+		return nil, err
+	}
+	return dto.NewInitApiResponse(user, files), nil
 }
 
 func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error) {
@@ -67,7 +72,7 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 	}
 
 	if user == nil {
-		user, err = au.lg.GetUserProfileById(r.Id, dto.WeddingBotType)
+		user, err = au.lg.GetUserProfileById(r.Id)
 		if err != nil {
 			return nil, err
 		}
@@ -81,6 +86,9 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 }
 
 func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string) ([]entity.File, error) {
+	if orderBy == "" {
+		orderBy = "UpdatedAt"	
+	}
 	files, err :=  au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId, orderBy)
 	if err != nil {
 		return nil, err
@@ -106,4 +114,8 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 		return err
 	}
 	return nil
+}
+
+func (au *ApiUsecase) SendMessageToLineBot(messageKey string) {
+
 }

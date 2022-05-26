@@ -2,6 +2,7 @@ package dto
 
 import (
 	"fmt"
+	"os"
 
 	"cloud.google.com/go/firestore"
 	"cloud.google.com/go/storage"
@@ -22,7 +23,8 @@ func NewFirestore() *Firestore {
 	}
 
 	// Use a service account
-	sa := option.WithCredentialsFile("./resource/common/wedding-343414-3910a4e5d7e9.json")
+	credentialfilePath := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+	sa := option.WithCredentialsFile(credentialfilePath)
 	app, err := firebase.NewApp(conf.Ctx, config, sa)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to create the firebase app instance; err = %v", err))
