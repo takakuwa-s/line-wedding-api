@@ -32,10 +32,10 @@ func (ur *UserRepository) SaveUser(user *entity.User) error {
 	return nil
 }
 
-func (ur *UserRepository) UpdateFollowStatusById(id string, status bool) error {
+func (ur *UserRepository) UpdateFollowById(id string, status bool) error {
 	if _, err := ur.f.Firestore.Collection("users").Doc(id).Update(conf.Ctx, []firestore.Update{
 		{
-			Path:  "FollowStatus",
+			Path:  "Follow",
 			Value: status,
 		},
 		{
@@ -45,7 +45,7 @@ func (ur *UserRepository) UpdateFollowStatusById(id string, status bool) error {
 		}); err != nil {
 		return fmt.Errorf("failed update the user; id =  %s, status =  %t, err = %w", id, status, err)
 	}
-	conf.Log.Info("Successfully update the follow status", zap.String("id", id), zap.Bool("status", status))
+	conf.Log.Info("Successfully update the follow", zap.String("id", id), zap.Bool("status", status))
 	return nil
 }
 
@@ -80,6 +80,9 @@ func (ur *UserRepository) executeQuery(query *firestore.Query) ([]entity.User, e
 		dsnap.DataTo(&u)
 		users = append(users, u)
 	}
+	if users == nil {
+		return []entity.User{}, nil
+	}
 	return users, nil
 }
 
@@ -93,12 +96,44 @@ func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
 	return users, nil
 }
 
-func (ur *UserRepository) FindByAttendanceAndFollowStatus(attendance, followStatus bool) ([]entity.User, error) {
-	query := ur.f.Firestore.Collection("users").Where("Attendance", "==", attendance).Where("FollowStatus", "==", followStatus)
+func (ur *UserRepository) FindByAttendanceAndFollow(attendance, follow bool) ([]entity.User, error) {
+	query := ur.f.Firestore.Collection("users").Where("Attendance", "==", attendance).Where("Follow", "==", follow)
 	users, err := ur.executeQuery(&query)
 	if err != nil {
 		return nil, err
 	}
-	conf.Log.Info("Successfully find the users with Attendance and FollowStatus flag", zap.Bool("Attendance", attendance), zap.Bool("FollowStatus", followStatus), zap.Any("user", users))
+	conf.Log.Info("Successfully find the users with Attendance and follow flag", zap.Bool("Attendance", attendance), zap.Bool("follow", follow), zap.Any("user", users))
+	return users, nil
+}
+
+func (ur *UserRepository) FindByFlagOrderByName(limit int, startId, flag string, val bool) ([]entity.User, error) {
+	query := ur.f.Firestore.Collection("users").OrderBy("FamilyNameKana", firestore.Asc).OrderBy("FirstNameKana", firestore.Asc)
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if startId != "" {
+		dsnap, err := ur.f.Firestore.Collection("users").Doc(startId).Get(conf.Ctx)
+		if err != nil {
+			if status.Code(err) == codes.NotFound {
+				return []entity.User{}, nil
+			} else {
+				return nil, fmt.Errorf("failed to get the users by startId; id =  %s err = %w", startId, err)
+			}
+		}
+		query = query.StartAfter(dsnap)
+	}
+	if flag != "" {
+		query = query.Where(flag, "==", val)
+	}
+	users, err := ur.executeQuery(&query)
+	if err != nil {
+		return nil, err
+	}
+	conf.Log.Info("Successfully find the users",
+		zap.Any("user", users),
+		zap.Int("limit", limit),
+		zap.String("startId", startId),
+		zap.String("flag", flag),
+		zap.Bool("val", val))
 	return users, nil
 }

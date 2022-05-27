@@ -37,6 +37,7 @@ func (r *Router) Init() {
 	router.Use(gin.Logger(), cors.New(config))
 	router.POST("/line-messaging-api/wedding/webhook", r.lbc.Webhook)
 	router.PUT("/api/user", r.uac.UpdateUser)
+	router.GET("/api/user/list", r.uac.GetUserList)
 	router.GET("/api/init/:id", r.iac.GetInitialData)
 	router.GET("/api/file/list", r.fac.GetFileList)
 	router.DELETE("/api/file/:id", r.fac.DeleteFile)

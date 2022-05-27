@@ -78,11 +78,20 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 		}
 	}
 	user = r.ToUser(user)
-	user.IsRegistered = true
+	user.Registered = true
 	if err = au.ur.SaveUser(user); err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]entity.User, error) {
+	// Get users
+	users, err := au.ur.FindByFlagOrderByName(limit, startId, flag, val)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string) ([]entity.File, error) {
@@ -92,9 +101,6 @@ func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string) ([
 	files, err :=  au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId, orderBy)
 	if err != nil {
 		return nil, err
-	}
-	if files == nil {
-		return []entity.File{}, nil
 	}
 	return files, nil
 }
@@ -114,8 +120,4 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 		return err
 	}
 	return nil
-}
-
-func (au *ApiUsecase) SendMessageToLineBot(messageKey string) {
-
 }

@@ -32,9 +32,9 @@ func (lpu *LinePushUsecase) PublishMessageToAttendee(messageKey string) error {
 	if len(messages) == 0 {
 		return fmt.Errorf("not found the message; %v", messageKey)
 	}
-	users, err := lpu.ur.FindByAttendanceAndFollowStatus(true, true)
+	users, err := lpu.ur.FindByAttendanceAndFollow(true, true)
 	if err != nil {
-		return fmt.Errorf("failed to get user by Attendance and FollowStatus; err = %w", err)
+		return fmt.Errorf("failed to get user by Attendance and Follow; err = %w", err)
 	}
 	return lpu.multicastMessage(users, messages)
 }

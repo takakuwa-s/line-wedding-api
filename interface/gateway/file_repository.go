@@ -70,6 +70,9 @@ func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, e
 		dsnap.DataTo(&f)
 		files = append(files, f)
 	}
+	if files == nil {
+		return []entity.File{}, nil
+	}
 	return files, nil
 }
 

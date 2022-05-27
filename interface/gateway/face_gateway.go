@@ -30,7 +30,7 @@ func (fg *FaceGateway) GetFaceAnalysis(imageUrl string) ([]*dto.FaceResponse, er
 	q.Add("detectionModel", "detection_01")
 	q.Add("returnFaceId", "true")
 	q.Add("returnFaceLandmarks", "false")
-	q.Add("returnFaceAttributes", "gender,smile,emotion,blur,exposure,noise,occlusion,headPose")
+	q.Add("returnFaceAttributes", "age,gender,smile,emotion,blur,exposure,noise,occlusion,headPose")
 	q.Add("recognitionModel", "recognition_04")
 	u.RawQuery = q.Encode()
 	req, err := http.NewRequest(

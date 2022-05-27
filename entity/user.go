@@ -9,7 +9,7 @@ import (
 type User struct {
 	Id string `json:"id"`
 	LineName string `json:"lineName"`
-	FollowStatus bool `json:"followStatus"`
+	Follow bool `json:"follow"`
 	Language string `json:"language"`
 	IconUrl string `json:"iconUrl"`
 	StatusMessage string `json:"statusMessage"`
@@ -25,7 +25,7 @@ type User struct {
   Allergy string `json:"allergy"`
   Message string `json:"message"`
 	IsAdmin bool `json:"isAdmin"`
-	IsRegistered bool `json:"isRegistered"`
+	Registered bool `json:"registered"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -35,8 +35,8 @@ func NewUser(res *linebot.UserProfileResponse) *User {
 		Id: res.UserID,
 		LineName: res.DisplayName,
 		IsAdmin: false,
-		IsRegistered: false,
-		FollowStatus: true,
+		Registered: false,
+		Follow: true,
 		Language: res.Language,
 		IconUrl: res.PictureURL,
 		StatusMessage: res.StatusMessage,

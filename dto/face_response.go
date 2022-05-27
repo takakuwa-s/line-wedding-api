@@ -58,6 +58,7 @@ type Occlusion struct {
 type FaceAttributes struct {
 	Smile float32 `json:"smile"`
 	HeadPose HeadPose `json:"headPose"`
+	Age	float32 `json:"age"`
 	Gender string `json:"gender"`
 	Emotion Emotion `json:"emotion"`
 	Blur Blur `json:"blur"`
