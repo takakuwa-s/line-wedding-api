@@ -1,24 +1,22 @@
 package dto
 
 import (
-	"time"
-
 	"github.com/takakuwa-s/line-wedding-api/entity"
 )
 
 type UpdateUserRequest struct {
-	Id string
-  Attendance bool
-  GuestType string
-  FamilyName string
-  FirstName string
-  FamilyNameKana string
-  FirstNameKana string
-  PhoneNumber string
-  PostalCode string
-  Address string
-  Allergy string
-  Message string
+	Id             string
+	Attendance     bool
+	GuestType      string
+	FamilyName     string
+	FirstName      string
+	FamilyNameKana string
+	FirstNameKana  string
+	PhoneNumber    string
+	PostalCode     string
+	Address        string
+	Allergy        string
+	Message        string
 }
 
 func (ur *UpdateUserRequest) ToUser(u *entity.User) *entity.User {
@@ -33,6 +31,5 @@ func (ur *UpdateUserRequest) ToUser(u *entity.User) *entity.User {
 	u.Address = ur.Address
 	u.Allergy = ur.Allergy
 	u.Message = ur.Message
-	u.UpdatedAt = time.Now()
-  return u
+	return u
 }

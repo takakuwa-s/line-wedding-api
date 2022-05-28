@@ -45,6 +45,50 @@ func (uac *UserApiController) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
+func (uac *UserApiController) PatchUser(c *gin.Context) {
+	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
+	if err != nil {
+		conf.Log.Error("[PatchUser] Authorization failed", zap.String("error", err.Error()))
+		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		// return
+	}
+	var request dto.PatchUserRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		conf.Log.Error("[UpdateUser] json convestion failed", zap.String("error", err.Error()))
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	id := c.Param("id")
+	field, val, err := request.GetFieldAndVal()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := uac.au.PatchUser(id, field, val); err != nil {
+		conf.Log.Error("[PatchUser] Updating user field failed", zap.String("error", err.Error()))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
+
+func (uac *UserApiController) GetUser(c *gin.Context) {
+	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
+	if err != nil {
+		conf.Log.Error("[GetUser] Authorization failed", zap.String("error", err.Error()))
+		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		// return
+	}
+	id := c.Param("id")
+	user, err := uac.au.GetUser(id)
+	if err != nil {
+		conf.Log.Error("[GetUser] Failed to get user", zap.String("error", err.Error()))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"user": user})
+}
+
 func (uac *UserApiController) GetUserList(c *gin.Context) {
 	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
 	if err != nil {
@@ -92,9 +136,9 @@ func (uac *UserApiController) GetUserList(c *gin.Context) {
 			cw.Flush()
 			if err := cw.Error(); err != nil {
 				conf.Log.Error("[GetUserList] Failed to download user list csv", zap.String("error", err.Error()))
-    	}
+			}
 			return false
-	})
+		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"users": users})
 	}
@@ -107,6 +151,7 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 		"名前",
 		"かな",
 		"管理者",
+		"フォロー",
 		"回答済",
 		"出席",
 		"ゲスト",
@@ -120,17 +165,18 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 		var guest string
 		switch u.GuestType {
 		case "GROOM":
-				guest = "新郎側"
+			guest = "新郎側"
 		case "BRIDE":
-				guest = "新婦側"
+			guest = "新婦側"
 		default:
-				guest = ""
+			guest = ""
 		}
 		data = append(data, []string{
 			strconv.Itoa(i + 1),
 			u.FamilyName + " " + u.FirstName,
 			u.FamilyNameKana + " " + u.FirstNameKana,
 			uac.convertBoolToStr(u.IsAdmin),
+			uac.convertBoolToStr(u.Follow),
 			uac.convertBoolToStr(u.Registered),
 			uac.convertBoolToStr(u.Attendance),
 			guest,
@@ -151,4 +197,3 @@ func (uac *UserApiController) convertBoolToStr(b bool) string {
 		return "×"
 	}
 }
-

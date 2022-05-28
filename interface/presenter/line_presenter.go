@@ -15,13 +15,13 @@ type LinePresenter struct {
 
 // コンストラクタ
 func NewLinePresenter(lb *dto.LineBot) *LinePresenter {
-	return &LinePresenter{lb:lb}
+	return &LinePresenter{lb: lb}
 }
 
 func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage) error {
 	messages, err := createMessages(message.Messages)
 	if err != nil {
-		return fmt.Errorf("failed to create the multicast message; err = %w", err)
+		return err
 	}
 	if _, err := lp.lb.Multicast(message.UserIds, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to multicast the message messages = %v, err = %w", messages, err)
@@ -32,7 +32,7 @@ func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage) error {
 func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage) error {
 	messages, err := createMessages(message.Messages)
 	if err != nil {
-		return fmt.Errorf("failed to create the reply message; err = %w", err)
+		return err
 	}
 	if _, err := lp.lb.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to send the reply message messages = %v, err = %w", messages, err)
@@ -112,7 +112,7 @@ func createAction(m map[string]interface{}) linebot.Action {
 		action = linebot.NewURIAction(m["label"].(string), m["uri"].(string))
 	case "datetimepicker":
 		action = linebot.NewDatetimePickerAction(m["label"].(string), m["data"].(string),
-		m["mode"].(string), m["initial"].(string), m["max"].(string), m["min"].(string))
+			m["mode"].(string), m["initial"].(string), m["max"].(string), m["min"].(string))
 	case "camera":
 		action = linebot.NewCameraAction(m["label"].(string))
 	case "cameraRoll":
@@ -128,9 +128,9 @@ func createImageMapMessage(m map[string]interface{}) *linebot.ImagemapMessage {
 	for i, action := range m["actions"].([]interface{}) {
 		a := action.(map[string]interface{})
 		area := linebot.ImagemapArea{
-			X: int(a["area"].(map[string]interface{})["x"].(float64)),
-			Y: int(a["area"].(map[string]interface{})["y"].(float64)),
-			Width: int(a["area"].(map[string]interface{})["width"].(float64)),
+			X:      int(a["area"].(map[string]interface{})["x"].(float64)),
+			Y:      int(a["area"].(map[string]interface{})["y"].(float64)),
+			Width:  int(a["area"].(map[string]interface{})["width"].(float64)),
 			Height: int(a["area"].(map[string]interface{})["height"].(float64)),
 		}
 		switch a["type"] {
@@ -141,7 +141,7 @@ func createImageMapMessage(m map[string]interface{}) *linebot.ImagemapMessage {
 		}
 	}
 	baseSize := linebot.ImagemapBaseSize{
-		Width: int(m["baseSize"].(map[string]interface{})["width"].(float64)),
+		Width:  int(m["baseSize"].(map[string]interface{})["width"].(float64)),
 		Height: int(m["baseSize"].(map[string]interface{})["height"].(float64)),
 	}
 	return linebot.NewImagemapMessage(m["baseUrl"].(string), m["altText"].(string), baseSize, actions...)
@@ -187,9 +187,9 @@ func createTemplateActions(m []interface{}) []linebot.TemplateAction {
 
 func createFlexMessage(m map[string]interface{}) (*linebot.FlexMessage, error) {
 	c := m["contents"].(map[string]interface{})
-	b, err :=	json.Marshal(c)
+	b, err := json.Marshal(c)
 	if err != nil {
-		return nil, fmt.Errorf("failed to convert contents to byte; err = %w", err)
+		return nil, fmt.Errorf("failed to convert flexContainer message contents to byte; err = %w", err)
 	}
 	flexContainer, err := linebot.UnmarshalFlexMessageJSON(b)
 	if err != nil {

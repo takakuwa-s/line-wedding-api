@@ -22,9 +22,9 @@ type LinePushUsecase struct {
 func NewLinePushUsecase(
 	mr igateway.IMessageRepository,
 	ur igateway.IUserRepository,
-	p  ipresenter.IPresenter,
+	p ipresenter.IPresenter,
 	lg igateway.ILineGateway) *LinePushUsecase {
-	return &LinePushUsecase{mr:mr, ur:ur, p:p, lg:lg}
+	return &LinePushUsecase{mr: mr, ur: ur, p: p, lg: lg}
 }
 
 func (lpu *LinePushUsecase) PublishMessageToAttendee(messageKey string) error {
@@ -34,7 +34,7 @@ func (lpu *LinePushUsecase) PublishMessageToAttendee(messageKey string) error {
 	}
 	users, err := lpu.ur.FindByAttendanceAndFollow(true, true)
 	if err != nil {
-		return fmt.Errorf("failed to get user by Attendance and Follow; err = %w", err)
+		return err
 	}
 	return lpu.multicastMessage(users, messages)
 }
@@ -51,7 +51,7 @@ func (lpu *LinePushUsecase) SendFollowNotification(follower *entity.User, isFirs
 	messages[1]["previewImageUrl"] = fmt.Sprintf(messages[1]["previewImageUrl"].(string), follower.IconUrl)
 	users, err := lpu.ur.FindByIsAdmin(true)
 	if err != nil {
-		return fmt.Errorf("failed to get user by IsAdmin; err = %w", err)
+		return err
 	}
 	return lpu.multicastMessage(users, messages)
 }
@@ -61,7 +61,7 @@ func (lpu *LinePushUsecase) SendUnFollowNotification(unFollower *entity.User) er
 	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), unFollower.LineName)
 	users, err := lpu.ur.FindByIsAdmin(true)
 	if err != nil {
-		return fmt.Errorf("failed to get user by IsAdmin; err = %w", err)
+		return err
 	}
 	return lpu.multicastMessage(users, messages)
 }
@@ -72,19 +72,19 @@ func (lpu *LinePushUsecase) multicastMessage(
 	userCnt := len(users)
 	quotaComsuption, err := lpu.lg.GetQuotaComsuption()
 	if err != nil {
-		return fmt.Errorf("failed to get the quota comsuption; err = %w", err)
+		return err
 	}
-	// To avoid sending more than 1000 notifications 
+	// To avoid sending more than 1000 notifications
 	// https://www.linebiz.com/jp/service/line-official-account/plan/
 	conf.Log.Info("publish message counts", zap.Int("user count", userCnt), zap.Int("message cnt", len(m)), zap.Int64("Quota Comsuption", quotaComsuption))
-	if (userCnt * (len(m) / 3 + 1)  + int(quotaComsuption) <= 1000) {
+	if userCnt*(len(m)/3+1)+int(quotaComsuption) <= 1000 {
 		userIds := make([]string, userCnt)
 		for i, user := range users {
 			userIds[i] = user.Id
 		}
 		pm := dto.NewMulticastMessage(userIds, m)
 		if err = lpu.p.MulticastMessage(pm); err != nil {
-			return fmt.Errorf("failed to send the multicast message; err = %w", err)
+			return err
 		}
 	} else {
 		return fmt.Errorf("there is no remaining quota; userCnt = %d, quotaComsuption = %d", userCnt, quotaComsuption)

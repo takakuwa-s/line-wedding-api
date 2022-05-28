@@ -6,7 +6,7 @@ import (
 
 type IUserRepository interface {
 	SaveUser(user *entity.User) error
-	UpdateFollowById(id string, follow bool) error
+	UpdateBoolFieldById(id, field string, val bool) error
 	FindById(id string) (*entity.User, error)
 	FindByIsAdmin(isAdmin bool) ([]entity.User, error)
 	FindByAttendanceAndFollow(attendance, follow bool) ([]entity.User, error)

@@ -2,9 +2,9 @@ package controller
 
 import (
 	"github.com/takakuwa-s/line-wedding-api/conf"
+	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
-	"github.com/takakuwa-s/line-wedding-api/dto"
 
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"

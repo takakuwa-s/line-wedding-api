@@ -18,8 +18,9 @@ type Firestore struct {
 
 // Newコンストラクタ
 func NewFirestore() *Firestore {
+	bucketName := os.Getenv("FIREBASE_STORAGE_BUCKET")
 	config := &firebase.Config{
-    StorageBucket: "wedding-343414.appspot.com",
+    StorageBucket: bucketName,
 	}
 
 	// Use a service account

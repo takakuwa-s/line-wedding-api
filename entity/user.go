@@ -12,7 +12,6 @@ type User struct {
 	Follow bool `json:"follow"`
 	Language string `json:"language"`
 	IconUrl string `json:"iconUrl"`
-	StatusMessage string `json:"statusMessage"`
 	Attendance bool `json:"attendance"`
   GuestType string `json:"guestType"`
   FamilyName string `json:"familyName"`
@@ -39,7 +38,6 @@ func NewUser(res *linebot.UserProfileResponse) *User {
 		Follow: true,
 		Language: res.Language,
 		IconUrl: res.PictureURL,
-		StatusMessage: res.StatusMessage,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

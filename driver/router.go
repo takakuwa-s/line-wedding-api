@@ -24,7 +24,7 @@ func NewRouter(
 	uac *controller.UserApiController,
 	fac *controller.FileApiController,
 	lac *controller.LineApiController) *Router {
-	return &Router{lbc: lbc, iac:iac, uac:uac, fac:fac, lac:lac}
+	return &Router{lbc: lbc, iac: iac, uac: uac, fac: fac, lac: lac}
 }
 
 // Init ルーティング設定
@@ -36,14 +36,16 @@ func (r *Router) Init() {
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	router.Use(gin.Logger(), cors.New(config))
 	router.POST("/line-messaging-api/wedding/webhook", r.lbc.Webhook)
-	router.PUT("/api/user", r.uac.UpdateUser)
+	router.PUT("/api/user/:id", r.uac.UpdateUser)
+	router.GET("/api/user/:id", r.uac.GetUser)
+	router.PATCH("/api/user/:id", r.uac.PatchUser)
 	router.GET("/api/user/list", r.uac.GetUserList)
 	router.GET("/api/init/:id", r.iac.GetInitialData)
 	router.GET("/api/file/list", r.fac.GetFileList)
 	router.DELETE("/api/file/:id", r.fac.DeleteFile)
 	router.POST("/api/line/message", r.lac.SendMessageToLineBot)
-  port := os.Getenv("PORT")
-  if port == "" {
+	port := os.Getenv("PORT")
+	if port == "" {
 		port = "8080"
 	}
 	router.Run(":" + port)

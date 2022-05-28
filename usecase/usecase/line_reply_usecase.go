@@ -3,12 +3,10 @@ package usecase
 import (
 	"fmt"
 
-	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
 	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
-	"go.uber.org/zap"
 )
 
 type LineReplyUsecase struct {
@@ -31,7 +29,7 @@ func NewLineReplyUsecase(
 	fr igateway.IFileRepository,
 	br igateway.IBinaryRepository,
 	lpu *LinePushUsecase,
-	p   ipresenter.IPresenter) *LineReplyUsecase {
+	p ipresenter.IPresenter) *LineReplyUsecase {
 	return &LineReplyUsecase{mr: mr, lg: lg, fg: fg, ur: ur, fr: fr, br: br, lpu: lpu, p: p}
 }
 
@@ -68,7 +66,7 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	// Get user
 	user, err := lru.ur.FindById(m.SenderUserId)
 	if err != nil {
-		return fmt.Errorf("failed to find the user; err = %w", err)
+		return err
 	}
 
 	var profile *entity.User
@@ -77,24 +75,24 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 		// Get the detail user profile
 		profile, err = lru.lg.GetUserProfileById(m.SenderUserId)
 		if err != nil {
-			return fmt.Errorf("failed to find the user; err = %w", err)
+			return err
 		}
 
 		// Save users
 		if err = lru.ur.SaveUser(profile); err != nil {
-			return fmt.Errorf("failed to save a user; err = %w", err)
+			return err
 		}
 	} else {
 		// update user status
-		if err := lru.ur.UpdateFollowById(m.SenderUserId, true); err != nil {
-			return fmt.Errorf("failed to update the follow status; err = %w", err)
+		if err := lru.ur.UpdateBoolFieldById(m.SenderUserId, "Follow", true); err != nil {
+			return err
 		}
 		profile = user
 	}
 
 	// Send notification to admin bot
 	if err = lru.lpu.SendFollowNotification(profile, user == nil); err != nil {
-		return fmt.Errorf("failed to send notification to admin bot; err = %w", err)
+		return fmt.Errorf("failed to send notification to admin user; err = %w", err)
 	}
 
 	// Return message
@@ -107,20 +105,20 @@ func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
 	// Get user
 	user, err := lru.ur.FindById(m.SenderUserId)
 	if err != nil {
-		return fmt.Errorf("failed to find the user; err = %w", err)
+		return err
 	}
 	if user == nil {
 		return fmt.Errorf("not found the user")
 	}
 
 	// update user status
-	if err := lru.ur.UpdateFollowById(m.SenderUserId, false); err != nil {
-		return fmt.Errorf("failed to update the follow status; err = %w", err)
+	if err := lru.ur.UpdateBoolFieldById(m.SenderUserId, "Follow", false); err != nil {
+		return err
 	}
 
 	// Send notification to admin bot
 	if err := lru.lpu.SendUnFollowNotification(user); err != nil {
-		return fmt.Errorf("failed to send notification to admin bot; err = %w", err)
+		return fmt.Errorf("failed to send notification to admin user; err = %w", err)
 	}
 
 	return nil
@@ -168,7 +166,6 @@ func (lru *LineReplyUsecase) sendReplyMessage(
 func (lru *LineReplyUsecase) checkAdminRole(userId string) bool {
 	user, err := lru.ur.FindById(userId)
 	if err != nil {
-		conf.Log.Error("failed to find the user", zap.Error(err))
 		return false
 	}
 	return user != nil && user.IsAdmin
@@ -207,12 +204,12 @@ func (lru *LineReplyUsecase) calcurateFaceScore(r []*dto.FaceResponse, f *entity
 		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Blur.Value)
 		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Noise.Value)
 		switch f.FaceAttributes.Exposure.ExposureLevel {
-			case "GoodExposure":
-				facePhotoBeautySum += 10
-			case "OverExposure":
-				facePhotoBeautySum -= 5
-			case "UnderExposure":
-				facePhotoBeautySum -= 5
+		case "GoodExposure":
+			facePhotoBeautySum += 10
+		case "OverExposure":
+			facePhotoBeautySum -= 5
+		case "UnderExposure":
+			facePhotoBeautySum -= 5
 		}
 		if f.FaceAttributes.Occlusion.ForeheadOccluded {
 			facePhotoBeautySum -= 2

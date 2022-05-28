@@ -56,7 +56,7 @@ func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Get file list 
+	// Get file list
 	files, err := au.GetFileList(12, "", "", "")
 	if err != nil {
 		return nil, err
@@ -85,6 +85,27 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 	return user, nil
 }
 
+func (au *ApiUsecase) PatchUser(userId, field string, val bool) error {
+	// Check if user exists
+	if _, err := au.GetUser(userId); err != nil {
+		return err
+	}
+
+	return au.ur.UpdateBoolFieldById(userId, field, val)
+}
+
+func (au *ApiUsecase) GetUser(id string) (*entity.User, error) {
+	// Get user
+	user, err := au.ur.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, fmt.Errorf("not found the user with id = %s", id)
+	}
+	return user, nil
+}
+
 func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]entity.User, error) {
 	// Get users
 	users, err := au.ur.FindByFlagOrderByName(limit, startId, flag, val)
@@ -96,9 +117,9 @@ func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]ent
 
 func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string) ([]entity.File, error) {
 	if orderBy == "" {
-		orderBy = "UpdatedAt"	
+		orderBy = "UpdatedAt"
 	}
-	files, err :=  au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId, orderBy)
+	files, err := au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId, orderBy)
 	if err != nil {
 		return nil, err
 	}
