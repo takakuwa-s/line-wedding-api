@@ -1,11 +1,7 @@
 package usecase
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"os"
 
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
@@ -22,32 +18,6 @@ type ApiUsecase struct {
 // Newコンストラクタ
 func NewApiUsecase(ur igateway.IUserRepository, lg igateway.ILineGateway, fr igateway.IFileRepository, br igateway.IBinaryRepository) *ApiUsecase {
 	return &ApiUsecase{ur: ur, lg: lg, fr: fr, br: br}
-}
-
-func (au *ApiUsecase) ValidateToken(token string) error {
-	client := &http.Client{}
-	url := os.Getenv("LIFF_API_BASE_URL")
-	resp, err := client.Get(url + "?access_token=" + token)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	var obj map[string]interface{}
-	if err := json.Unmarshal(body, &obj); err != nil {
-		return err
-	}
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("token validation failed; %s", obj["error_description"])
-	} else if obj["client_id"].(string) != os.Getenv("LIFF_CHANNEL_ID") {
-		return fmt.Errorf("invalid access token audience")
-	} else if obj["expires_in"].(float64) <= 0 {
-		return fmt.Errorf("access token expired")
-	}
-	return nil
 }
 
 func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
@@ -134,11 +104,33 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 	if file == nil {
 		return fmt.Errorf("not found the file with id = %s", id)
 	}
+	if err := au.fr.DeleteFileById(id); err != nil {
+		return err
+	}
 	if err := au.br.DeleteBinary(file.Name); err != nil {
 		return err
 	}
-	if err := au.fr.DeleteFile(id); err != nil {
+	return nil
+}
+
+func (au *ApiUsecase) DeleteFileList(ids []string) error {
+	files, err := au.fr.FindByIds(ids)
+	if err != nil {
 		return err
+	}
+	if len(files) == 0 {
+		return fmt.Errorf("not found the files with ids = %s", ids)
+	}
+	if len(files) != len(ids) {
+		return fmt.Errorf("some ids is invalid and not found; ids = %s", ids)
+	}
+	for i, f := range files {
+		if err := au.fr.DeleteFileById(f.Id); err != nil {
+			return fmt.Errorf("successfully delete %d files, but failed to delete the file metadata of id = %s", i, f.Id)
+		}
+		if err := au.br.DeleteBinary(f.Name); err != nil {
+			return fmt.Errorf("successfully delete %d files, but failed to delete the file binary of id = %s", i, f.Id)
+		}
 	}
 	return nil
 }

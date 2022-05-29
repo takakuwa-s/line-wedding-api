@@ -11,6 +11,7 @@ import (
 
 type Router struct {
 	lbc *controller.LineBotController
+	cac *controller.CommonApiController
 	iac *controller.InitApiController
 	uac *controller.UserApiController
 	fac *controller.FileApiController
@@ -20,11 +21,12 @@ type Router struct {
 // Newコンストラクタ
 func NewRouter(
 	lbc *controller.LineBotController,
+	cac *controller.CommonApiController,
 	iac *controller.InitApiController,
 	uac *controller.UserApiController,
 	fac *controller.FileApiController,
 	lac *controller.LineApiController) *Router {
-	return &Router{lbc: lbc, iac: iac, uac: uac, fac: fac, lac: lac}
+	return &Router{lbc: lbc, cac: cac, iac: iac, uac: uac, fac: fac, lac: lac}
 }
 
 // Init ルーティング設定
@@ -35,15 +37,27 @@ func (r *Router) Init() {
 	config.AllowOrigins = []string{frontDomain, "http://localhost:3000"}
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	router.Use(gin.Logger(), cors.New(config))
+
 	router.POST("/line-messaging-api/wedding/webhook", r.lbc.Webhook)
-	router.PUT("/api/user/:id", r.uac.UpdateUser)
-	router.GET("/api/user/:id", r.uac.GetUser)
-	router.PATCH("/api/user/:id", r.uac.PatchUser)
-	router.GET("/api/user/list", r.uac.GetUserList)
-	router.GET("/api/init/:id", r.iac.GetInitialData)
-	router.GET("/api/file/list", r.fac.GetFileList)
-	router.DELETE("/api/file/:id", r.fac.DeleteFile)
-	router.POST("/api/line/message", r.lac.SendMessageToLineBot)
+	api := router.Group("/api")
+	api.Use(r.cac.ValidateTokenMiddleware)
+	{
+		user := api.Group("/user")
+		{
+			user.GET("/:id", r.uac.GetUser)
+			user.GET("/list", r.uac.GetUserList)
+			user.PUT("/:id", r.uac.UpdateUser)
+			user.PATCH("/:id", r.uac.PatchUser)
+		}
+		file := api.Group("/file")
+		{
+			file.GET("/list", r.fac.GetFileList)
+			file.DELETE("/:id", r.fac.DeleteFile)
+			file.DELETE("/list", r.fac.DeleteFileList)
+		}
+		api.GET("/init/:id", r.iac.GetInitialData)
+		api.POST("/line/message", r.lac.SendMessageToLineBot)
+	}
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

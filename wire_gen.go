@@ -30,11 +30,12 @@ func InitializeRouter() *driver.Router {
 	linePushUsecase := usecase.NewLinePushUsecase(messageRepository, userRepository, linePresenter, lineGateway)
 	lineReplyUsecase := usecase.NewLineReplyUsecase(messageRepository, lineGateway, faceGateway, userRepository, fileRepository, binaryRepository, linePushUsecase, linePresenter)
 	lineBotController := controller.NewLineBotController(lineBot, lineReplyUsecase)
+	commonApiController := controller.NewCommonApiController()
 	apiUsecase := usecase.NewApiUsecase(userRepository, lineGateway, fileRepository, binaryRepository)
 	initApiController := controller.NewInitApiController(apiUsecase)
 	userApiController := controller.NewUserApiController(apiUsecase)
 	fileApiController := controller.NewFileApiController(apiUsecase)
-	lineApiController := controller.NewLineApiController(apiUsecase, linePushUsecase)
-	router := driver.NewRouter(lineBotController, initApiController, userApiController, fileApiController, lineApiController)
+	lineApiController := controller.NewLineApiController(linePushUsecase)
+	router := driver.NewRouter(lineBotController, commonApiController, initApiController, userApiController, fileApiController, lineApiController)
 	return router
 }

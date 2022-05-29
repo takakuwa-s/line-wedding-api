@@ -85,7 +85,7 @@ func (br *BinaryRepository) DeleteBinary(name string) error {
 		return err
 	}
 	if err := br.deleteBinary("thumbnail/" + name); err != nil {
-		return err
+		return fmt.Errorf("successfully deleted the binary content, but failed to delete the thumbnail binary, err = %w", err)
 	}
 	return nil
 }

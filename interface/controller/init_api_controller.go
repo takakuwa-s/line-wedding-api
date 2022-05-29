@@ -19,12 +19,6 @@ func NewInitApiController(au *usecase.ApiUsecase) *InitApiController {
 }
 
 func (iac *InitApiController) GetInitialData(c *gin.Context) {
-	err := iac.au.ValidateToken(c.GetHeader("Authorization"))
-	if err != nil {
-		conf.Log.Error("[GetInitialData] Authorization failed", zap.String("error", err.Error()))
-		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		// return
-	}
 	id := c.Param("id")
 	data, err := iac.au.GetInitialData(id)
 	if err != nil {

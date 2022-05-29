@@ -24,12 +24,6 @@ func NewUserApiController(au *usecase.ApiUsecase) *UserApiController {
 }
 
 func (uac *UserApiController) UpdateUser(c *gin.Context) {
-	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
-	if err != nil {
-		conf.Log.Error("[UpdateUser] Authorization failed", zap.String("error", err.Error()))
-		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		// return
-	}
 	var request dto.UpdateUserRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		conf.Log.Error("[UpdateUser] json convestion failed", zap.String("error", err.Error()))
@@ -46,12 +40,6 @@ func (uac *UserApiController) UpdateUser(c *gin.Context) {
 }
 
 func (uac *UserApiController) PatchUser(c *gin.Context) {
-	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
-	if err != nil {
-		conf.Log.Error("[PatchUser] Authorization failed", zap.String("error", err.Error()))
-		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		// return
-	}
 	var request dto.PatchUserRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		conf.Log.Error("[UpdateUser] json convestion failed", zap.String("error", err.Error()))
@@ -73,12 +61,6 @@ func (uac *UserApiController) PatchUser(c *gin.Context) {
 }
 
 func (uac *UserApiController) GetUser(c *gin.Context) {
-	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
-	if err != nil {
-		conf.Log.Error("[GetUser] Authorization failed", zap.String("error", err.Error()))
-		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		// return
-	}
 	id := c.Param("id")
 	user, err := uac.au.GetUser(id)
 	if err != nil {
@@ -90,12 +72,6 @@ func (uac *UserApiController) GetUser(c *gin.Context) {
 }
 
 func (uac *UserApiController) GetUserList(c *gin.Context) {
-	err := uac.au.ValidateToken(c.GetHeader("Authorization"))
-	if err != nil {
-		conf.Log.Error("[GetUserList] Authorization failed", zap.String("error", err.Error()))
-		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		// return
-	}
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "limit is required and must be number"})
@@ -151,9 +127,9 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 		"名前",
 		"かな",
 		"管理者",
-		"フォロー",
-		"回答済",
 		"出席",
+		"回答済",
+		"フォロー",
 		"ゲスト",
 		"電話番号",
 		"郵便番号",
@@ -176,9 +152,9 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 			u.FamilyName + " " + u.FirstName,
 			u.FamilyNameKana + " " + u.FirstNameKana,
 			uac.convertBoolToStr(u.IsAdmin),
-			uac.convertBoolToStr(u.Follow),
-			uac.convertBoolToStr(u.Registered),
 			uac.convertBoolToStr(u.Attendance),
+			uac.convertBoolToStr(u.Registered),
+			uac.convertBoolToStr(u.Follow),
 			guest,
 			u.PhoneNumber,
 			u.PostalCode,
