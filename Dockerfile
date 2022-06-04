@@ -1,28 +1,37 @@
-FROM golang:1.18.0-alpine3.15 as builder
+FROM golang:alpine as builder
 
-WORKDIR app
+ARG app="wedding-api"
+
+WORKDIR /go/home
 
 RUN apk update \
   && apk add --no-cache git
+  # && apk add bash
 
 COPY . .
 
 RUN go mod download
 
+WORKDIR /go/home/app/${app}
+
 ARG CGO_ENABLED=0
 ARG GOOS=linux
 ARG GOARCH=amd64
 RUN go build \
-    -o /go/app/main \
-    -ldflags '-s -w'
-
+  -o /go/home/app/${app}/main \
+  -ldflags '-s -w'
 
 FROM alpine:latest as runner
+# FROM ubuntu:latest as runner
 
-WORKDIR app
+ARG app="wedding-api"
 
-COPY --from=builder /go/app/main /app/main
-COPY --from=builder /go/app/.env /app/.env
-COPY --from=builder /go/app/resource/ /app/resource/
+WORKDIR /home
 
-ENTRYPOINT "/app/main"
+COPY --from=builder /go/home/app/${app}/main /home/app/${app}/main
+COPY --from=builder /go/home/.env /home/.env
+COPY --from=builder /go/home/resource/ /home/resource/
+
+WORKDIR /home/app/${app}
+
+ENTRYPOINT "./main"

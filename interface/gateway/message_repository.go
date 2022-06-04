@@ -4,17 +4,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"go.uber.org/zap"
 )
 
 type MessageRepository struct {
+	replyMessagePath string
+	messagePath      string
 }
 
 // Newコンストラクタ
 func NewMessageRepository() *MessageRepository {
-	return &MessageRepository{}
+	p1 := os.Getenv("REPLY_MESSAGE_FILE_PATH")
+	p2 := os.Getenv("MESSAGE_FILE_PATH")
+	return &MessageRepository{replyMessagePath: p1, messagePath: p2}
 }
 
 func (mp *MessageRepository) readJson(path string) map[string][]map[string]interface{} {
@@ -30,7 +35,7 @@ func (mp *MessageRepository) readJson(path string) map[string][]map[string]inter
 }
 
 func (mp *MessageRepository) FindReplyMessage(text string) []map[string]interface{} {
-	ms := mp.readJson("./resource/reply_message.json")
+	ms := mp.readJson(mp.replyMessagePath)
 	m := ms[text]
 	if len(m) > 0 {
 		conf.Log.Info("Successfully find the reply messages data", zap.Any("data", m))
@@ -39,11 +44,10 @@ func (mp *MessageRepository) FindReplyMessage(text string) []map[string]interfac
 }
 
 func (mp *MessageRepository) FindMessageByKey(key string) []map[string]interface{} {
-	ms := mp.readJson("./resource/message.json")
+	ms := mp.readJson(mp.messagePath)
 	m := ms[key]
 	if len(m) > 0 {
 		conf.Log.Info("Successfully find the messages data", zap.Any("message", m))
 	}
 	return m
 }
-

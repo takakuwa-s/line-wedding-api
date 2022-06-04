@@ -8,5 +8,5 @@ import (
 
 var (
 	Log, _ = zap.NewProduction()
-	Ctx = context.Background()
+	Ctx    = context.Background()
 )

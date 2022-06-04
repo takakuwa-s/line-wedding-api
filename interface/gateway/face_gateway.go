@@ -34,9 +34,9 @@ func (fg *FaceGateway) GetFaceAnalysis(imageUrl string) ([]*dto.FaceResponse, er
 	q.Add("recognitionModel", "recognition_04")
 	u.RawQuery = q.Encode()
 	req, err := http.NewRequest(
-			"POST",
-			u.String(),
-			bytes.NewBuffer([]byte(jsonStr)),
+		"POST",
+		u.String(),
+		bytes.NewBuffer([]byte(jsonStr)),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the http request for the face api; %w", err)

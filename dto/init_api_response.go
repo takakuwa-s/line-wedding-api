@@ -5,13 +5,13 @@ import (
 )
 
 type InitApiResponse struct {
-	User *entity.User `json:"user"`
+	User  *entity.User  `json:"user"`
 	Files []entity.File `json:"files"`
 }
 
 func NewInitApiResponse(user *entity.User, files []entity.File) *InitApiResponse {
 	return &InitApiResponse{
-		User : user,
-		Files : files,
+		User:  user,
+		Files: files,
 	}
-} 
+}

@@ -13,14 +13,14 @@ import (
 
 type Firestore struct {
 	Firestore *firestore.Client
-	Bucket *storage.BucketHandle
+	Bucket    *storage.BucketHandle
 }
 
 // Newコンストラクタ
 func NewFirestore() *Firestore {
 	bucketName := os.Getenv("FIREBASE_STORAGE_BUCKET")
 	config := &firebase.Config{
-    StorageBucket: bucketName,
+		StorageBucket: bucketName,
 	}
 
 	// Use a service account

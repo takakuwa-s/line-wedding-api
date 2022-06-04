@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
@@ -203,14 +204,8 @@ func (lru *LineReplyUsecase) calcurateFaceScore(r []*dto.FaceResponse, f *entity
 		// calculate the face photo beauty (max: 30)
 		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Blur.Value)
 		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Noise.Value)
-		switch f.FaceAttributes.Exposure.ExposureLevel {
-		case "GoodExposure":
-			facePhotoBeautySum += 10
-		case "OverExposure":
-			facePhotoBeautySum -= 5
-		case "UnderExposure":
-			facePhotoBeautySum -= 5
-		}
+		facePhotoBeautySum += 10 * (1 - 2*float32(math.Abs(0.5-float64(f.FaceAttributes.Exposure.Value))))
+
 		if f.FaceAttributes.Occlusion.ForeheadOccluded {
 			facePhotoBeautySum -= 2
 		}

@@ -1,2 +1,2 @@
 # exclude the file used in conf/resource
-./conf/resource/*
+./app/lineconf/*

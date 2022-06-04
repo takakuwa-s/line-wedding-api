@@ -1,4 +1,4 @@
-package lineconf
+package main
 
 import (
 	"encoding/json"
@@ -78,11 +78,11 @@ func createRichmenu(jsonPath, imagePath string, bot *linebot.Client) (string, er
 func CreateRichmenu() error {
 	bot := dto.NewLineBot().Client
 	bot.GetRichMenuAliasList()
-	id1, err := createRichmenu("./conf/resource/richmenu-1.json", "./conf/resource/richmenu-1.png", bot);
+	id1, err := createRichmenu("./resource/richmenu-1.json", "./resource/richmenu-1.png", bot)
 	if err != nil {
 		return err
 	}
-	id2, err := createRichmenu("./conf/resource/richmenu-2.json", "./conf/resource/richmenu-2.png", bot);
+	id2, err := createRichmenu("./resource/richmenu-2.json", "./resource/richmenu-2.png", bot)
 	if err != nil {
 		return err
 	}
