@@ -24,12 +24,14 @@ func NewTextMessage(replyToken, text, senderUserId string) *TextMessage {
 type FileMessage struct {
 	ReplyToken string
 	File       *entity.File
+	ImageSet   *entity.ImageSet
 }
 
-func NewFileMessage(replyToken string, file *entity.File) *FileMessage {
+func NewFileMessage(replyToken string, file *entity.File, imageSet *entity.ImageSet) *FileMessage {
 	return &FileMessage{
 		ReplyToken: replyToken,
 		File:       file,
+		ImageSet:   imageSet,
 	}
 }
 

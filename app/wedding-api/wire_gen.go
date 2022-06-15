@@ -17,25 +17,27 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeRouter() *driver.Router {
+func InitializeRouter() *driver.WeddingRouter {
+	commonRouter := driver.NewCommonRouter()
 	lineBot := dto.NewLineBot()
 	messageRepository := gateway.NewMessageRepository()
 	lineGateway := gateway.NewLineGateway(lineBot)
-	faceGateway := gateway.NewFaceGateway()
 	firestore := dto.NewFirestore()
-	userRepository := gateway.NewUserRepository(firestore)
-	fileRepository := gateway.NewFileRepository(firestore)
-	binaryRepository := gateway.NewBinaryRepository(firestore)
+	commonRepository := gateway.NewCommonRepository(firestore)
+	userRepository := gateway.NewUserRepository(commonRepository, firestore)
+	fileRepository := gateway.NewFileRepository(commonRepository, firestore)
+	imageSetRepository := gateway.NewImageSetRepository(commonRepository, firestore)
+	fileUploadGateway := gateway.NewFileUploadGateway()
 	linePresenter := presenter.NewLinePresenter(lineBot)
 	linePushUsecase := usecase.NewLinePushUsecase(messageRepository, userRepository, linePresenter, lineGateway)
-	lineReplyUsecase := usecase.NewLineReplyUsecase(messageRepository, lineGateway, faceGateway, userRepository, fileRepository, binaryRepository, linePushUsecase, linePresenter)
+	lineReplyUsecase := usecase.NewLineReplyUsecase(messageRepository, lineGateway, userRepository, fileRepository, imageSetRepository, fileUploadGateway, linePushUsecase, linePresenter)
 	lineBotController := controller.NewLineBotController(lineBot, lineReplyUsecase)
-	commonApiController := controller.NewCommonApiController()
+	binaryRepository := gateway.NewBinaryRepository(firestore)
 	apiUsecase := usecase.NewApiUsecase(userRepository, lineGateway, fileRepository, binaryRepository)
 	initApiController := controller.NewInitApiController(apiUsecase)
 	userApiController := controller.NewUserApiController(apiUsecase)
 	fileApiController := controller.NewFileApiController(apiUsecase)
 	lineApiController := controller.NewLineApiController(linePushUsecase)
-	router := driver.NewRouter(lineBotController, commonApiController, initApiController, userApiController, fileApiController, lineApiController)
-	return router
+	weddingRouter := driver.NewWeddingRouter(commonRouter, lineBotController, initApiController, userApiController, fileApiController, lineApiController)
+	return weddingRouter
 }

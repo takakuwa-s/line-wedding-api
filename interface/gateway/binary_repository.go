@@ -75,7 +75,7 @@ func (br *BinaryRepository) SaveImageBinary(file *entity.File, content io.ReadCl
 	file.ThumbnailUrl = thumbWriter.Attrs().MediaLink
 	file.ContentUrl = contentWriter.Attrs().MediaLink
 	file.MimeType = contentWriter.Attrs().ContentType
-	file.IsUploaded = true
+	file.Uploaded = true
 	file.Name = name
 	return file, nil
 }

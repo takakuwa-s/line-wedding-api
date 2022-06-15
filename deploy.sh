@@ -6,12 +6,12 @@ if test $# -ne 2 ; then
   exit 1
 fi
 
-if [[ "$1" != "wedding-api" ]] && [[ "$1" != "file-service" ]] ; then
+if [[ "$1" != "wedding-api" ]] && [[ "$1" != "file-upload-api" ]] ; then
   echo "argument 1 is not correct: $1"
   exit 1
 fi
 
-if [[ "$2" != "local" ]] && [[ "$2" != "heroku" ]] ; then
+if [[ "$2" != "local" ]] && [[ "$2" != "heroku" ]] && [[ "$2" != "docker-hub" ]] ; then
   echo "argument 2 is not correct: $2"
   exit 1
 fi
@@ -40,6 +40,18 @@ if test $2 = "local" ; then
 
   docker run --rm -it $1 -b localhost -p 8080:8080
 
+elif test $2 = "docker-hub" ; then
+  echo "----- dwploying to docker-hub -----"
+  tag="takakuwa5docker/line-wedding-api"
+
+  echo "----- remove docker image -----"
+  docker rmi $tag -f
+
+  echo "----- build the docker image -----"
+  docker build . -t $tag --build-arg app=$1
+
+  echo "----- push the docker image to docker hub -----"
+  docker push takakuwa5docker/line-wedding-api:latest
 elif test $2 = "heroku" ; then
   echo "----- dwploying to heroku -----"
   ID="line-wedding-api"
@@ -48,7 +60,7 @@ elif test $2 = "heroku" ; then
   docker rmi registry.heroku.com/$ID/web -f
 
   echo "----- push the docker image to heroku Container Registry -----"
-  heroku container:push web -a $ID
+  heroku container:push web -a $ID --arg app=$1
 
   echo "----- release the heroku application -----"
   heroku container:release web -a $ID

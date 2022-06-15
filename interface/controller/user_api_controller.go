@@ -47,6 +47,10 @@ func (uac *UserApiController) PatchUser(c *gin.Context) {
 		return
 	}
 	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
 	field, val, err := request.GetFieldAndVal()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -62,6 +66,10 @@ func (uac *UserApiController) PatchUser(c *gin.Context) {
 
 func (uac *UserApiController) GetUser(c *gin.Context) {
 	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
 	user, err := uac.au.GetUser(id)
 	if err != nil {
 		conf.Log.Error("[GetUser] Failed to get user", zap.String("error", err.Error()))
@@ -74,7 +82,7 @@ func (uac *UserApiController) GetUser(c *gin.Context) {
 func (uac *UserApiController) GetUserList(c *gin.Context) {
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "limit is required and must be number"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "limit is required and must be number"})
 		return
 	}
 	startId := c.Query("startId")
@@ -83,7 +91,7 @@ func (uac *UserApiController) GetUserList(c *gin.Context) {
 	if flag != "" {
 		val, err = strconv.ParseBool(c.Query("val"))
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "val must be boolean"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "val must be boolean"})
 			return
 		}
 	}
@@ -92,7 +100,7 @@ func (uac *UserApiController) GetUserList(c *gin.Context) {
 	if csvDownloadStr != "" {
 		csvDownload, err = strconv.ParseBool(csvDownloadStr)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "csvDownload must be boolean"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "csvDownload must be boolean"})
 			return
 		}
 	}

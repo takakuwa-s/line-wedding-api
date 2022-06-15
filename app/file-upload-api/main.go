@@ -9,8 +9,9 @@ import (
 func main() {
 	err := godotenv.Load("../../.env")
 	if err != nil {
-		conf.Log.Error("Error loading .env file", zap.Any("err", err))
+		conf.Log.Error("Error loading .env file", zap.Error(err))
 		return
 	}
-	conf.Log.Info("hello world")
+	router := InitializeRouter()
+	router.Init()
 }

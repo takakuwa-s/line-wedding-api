@@ -24,7 +24,7 @@ func NewLineBotController(bot *dto.LineBot, lru *usecase.LineReplyUsecase) *Line
 func (lbc *LineBotController) Webhook(c *gin.Context) {
 	events, err := lbc.bot.ParseRequest(c.Request)
 	if err != nil {
-		conf.Log.Error("Failed to parse the request", zap.Any("err", err))
+		conf.Log.Error("Failed to parse the request", zap.Error(err))
 		return
 	}
 	conf.Log.Info("Successfully parse the request", zap.Any("events", events))
@@ -34,8 +34,13 @@ func (lbc *LineBotController) Webhook(c *gin.Context) {
 			case linebot.EventTypeMessage:
 				switch event.Message.(type) {
 				case *linebot.ImageMessage:
-					file := entity.NewFile(event.Message.(*linebot.ImageMessage).ID, event.Source.UserID)
-					message := dto.NewFileMessage(event.ReplyToken, file)
+					imageMessage := event.Message.(*linebot.ImageMessage)
+					file := entity.NewFile(imageMessage.ID, event.Source.UserID)
+					var imageSet *entity.ImageSet
+					if imageMessage.ImageSet != nil {
+						imageSet = entity.NewImageSet(imageMessage.ImageSet.ID, imageMessage.ImageSet.Total)
+					}
+					message := dto.NewFileMessage(event.ReplyToken, file, imageSet)
 					err = lbc.lru.HandleImageEvent(message)
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text, event.Source.UserID)
@@ -58,8 +63,9 @@ func (lbc *LineBotController) Webhook(c *gin.Context) {
 			message := dto.NewGroupMessage(event.ReplyToken)
 			err = lbc.lru.HandleGroupEvent(message)
 		}
-	}
-	if err != nil {
-		conf.Log.Error("Failed to handle the request", zap.Any("err", err))
+		if err != nil {
+			conf.Log.Error("Failed to handle the request", zap.Error(err))
+			lbc.lru.HandleError(event.ReplyToken)
+		}
 	}
 }

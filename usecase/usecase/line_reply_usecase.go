@@ -2,21 +2,22 @@ package usecase
 
 import (
 	"fmt"
-	"math"
 
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
 	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
+	"go.uber.org/zap"
 )
 
 type LineReplyUsecase struct {
 	mr  igateway.IMessageRepository
 	lg  igateway.ILineGateway
-	fg  igateway.IFaceGateway
 	ur  igateway.IUserRepository
 	fr  igateway.IFileRepository
-	br  igateway.IBinaryRepository
+	isr igateway.IImageSetRepository
+	fug igateway.IFileUploadGateway
 	lpu *LinePushUsecase
 	p   ipresenter.IPresenter
 }
@@ -25,37 +26,49 @@ type LineReplyUsecase struct {
 func NewLineReplyUsecase(
 	mr igateway.IMessageRepository,
 	lg igateway.ILineGateway,
-	fg igateway.IFaceGateway,
 	ur igateway.IUserRepository,
 	fr igateway.IFileRepository,
-	br igateway.IBinaryRepository,
+	isr igateway.IImageSetRepository,
+	fug igateway.IFileUploadGateway,
 	lpu *LinePushUsecase,
 	p ipresenter.IPresenter) *LineReplyUsecase {
-	return &LineReplyUsecase{mr: mr, lg: lg, fg: fg, ur: ur, fr: fr, br: br, lpu: lpu, p: p}
+	return &LineReplyUsecase{mr: mr, lg: lg, ur: ur, fr: fr, isr: isr, fug: fug, lpu: lpu, p: p}
 }
 
+// TODO error handling
 func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
-	// Get the file binary
-	content, err := lru.lg.GetFileContent(m.File.Id)
-	if err != nil {
-		return err
-	}
-
-	// upload the file binary
-	file, err := lru.br.SaveImageBinary(m.File, content)
-	if err != nil {
-		return err
-	}
-	faceRes, err := lru.fg.GetFaceAnalysis(file.ContentUrl)
-	if err != nil {
-		return err
-	}
-	lru.calcurateFaceScore(faceRes, file)
-
 	// Save file data
-	err = lru.fr.SaveFile(file)
+	err := lru.fr.SaveFile(m.File)
 	if err != nil {
 		return err
+	}
+
+	if m.ImageSet == nil {
+		// Start file uploading
+		err = lru.fug.StartUploadingFiles([]string{m.File.Id})
+		if err != nil {
+			lru.fr.DeleteFileById(m.File.Id)
+			return err
+		}
+	} else {
+		// Save image set
+		imageSet, err := lru.isr.AppendFileIdByImageSet(m.ImageSet, m.File.Id)
+		if err != nil {
+			return err
+		}
+		if len(imageSet.FileIds) < imageSet.Total {
+			return nil
+		}
+		err = lru.isr.DeleteById(m.ImageSet.Id)
+		if err != nil {
+			conf.Log.Error("failed to delete the image set", zap.Error(err))
+		}
+		// Start file uploading
+		err = lru.fug.StartUploadingFiles(imageSet.FileIds)
+		if err != nil {
+			lru.fr.DeleteFileByIds(imageSet.FileIds)
+			return err
+		}
 	}
 
 	// Reply message
@@ -63,6 +76,7 @@ func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 	return lru.sendReplyMessage(m.ReplyToken, messages)
 }
 
+// TODO error handling
 func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	// Get user
 	user, err := lru.ur.FindById(m.SenderUserId)
@@ -102,6 +116,7 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	return lru.sendReplyMessage(m.ReplyToken, messages)
 }
 
+// TODO error handling
 func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
 	// Get user
 	user, err := lru.ur.FindById(m.SenderUserId)
@@ -154,6 +169,13 @@ func (lru *LineReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
 	return nil
 }
 
+func (lru *LineReplyUsecase) HandleError(token string) {
+	messages := lru.mr.FindMessageByKey("error")
+	if err := lru.sendReplyMessage(token, messages); err != nil {
+		conf.Log.Error("failed to send error reply message", zap.Error(err))
+	}
+}
+
 func (lru *LineReplyUsecase) sendReplyMessage(
 	token string,
 	m []map[string]interface{}) error {
@@ -170,80 +192,4 @@ func (lru *LineReplyUsecase) checkAdminRole(userId string) bool {
 		return false
 	}
 	return user != nil && user.IsAdmin
-}
-
-func (lru *LineReplyUsecase) calcurateFaceScore(r []*dto.FaceResponse, f *entity.File) {
-	if len(r) <= 0 || len(r) > 10 {
-		f.FaceCount = 0
-		f.FaceHappinessLevel = 0
-		f.FacePhotoBeauty = 0
-		f.FaceScore = 0
-		return
-	}
-	faceCount := len(r)
-	faceIds := make([]string, faceCount)
-	var faceHappinessLevelSum float32
-	var facePhotoBeautySum float32
-	var hasMale bool
-	var hasFemale bool
-	var hasYoung bool
-	var hasElderly bool
-	for i, f := range r {
-		faceIds[i] = f.FaceId
-
-		// calculate the face happiness level (max: 40)
-		faceHappinessLevelSum += 20 * f.FaceAttributes.Smile
-		faceHappinessLevelSum -= 20 * f.FaceAttributes.Emotion.Anger
-		faceHappinessLevelSum -= 10 * f.FaceAttributes.Emotion.Contempt
-		faceHappinessLevelSum -= 15 * f.FaceAttributes.Emotion.Disgust
-		faceHappinessLevelSum -= 5 * f.FaceAttributes.Emotion.Fear
-		faceHappinessLevelSum += 20 * f.FaceAttributes.Emotion.Happiness
-		faceHappinessLevelSum += 1 * f.FaceAttributes.Emotion.Neutral
-		faceHappinessLevelSum += 5 * f.FaceAttributes.Emotion.Surprise
-
-		// calculate the face photo beauty (max: 30)
-		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Blur.Value)
-		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Noise.Value)
-		facePhotoBeautySum += 10 * (1 - 2*float32(math.Abs(0.5-float64(f.FaceAttributes.Exposure.Value))))
-
-		if f.FaceAttributes.Occlusion.ForeheadOccluded {
-			facePhotoBeautySum -= 2
-		}
-		if f.FaceAttributes.Occlusion.EyeOccluded {
-			facePhotoBeautySum -= 4
-		}
-		if f.FaceAttributes.Occlusion.MouthOccluded {
-			facePhotoBeautySum -= 2
-		}
-
-		// For bonus
-		if f.FaceAttributes.Gender == "male" {
-			hasMale = true
-		}
-		if f.FaceAttributes.Gender == "female" {
-			hasFemale = true
-		}
-		if f.FaceAttributes.Age < 10 {
-			hasYoung = true
-		}
-		if f.FaceAttributes.Age > 50 {
-			hasElderly = true
-		}
-	}
-	// calculate the face count bonus point (max: 20)
-	bonusPoint := 2 * float32(faceCount)
-	if hasMale && hasFemale {
-		bonusPoint += 4
-	}
-	if hasYoung {
-		bonusPoint += 3
-	}
-	if hasElderly {
-		bonusPoint += 3
-	}
-
-	f.FaceCount = faceCount
-	f.FaceHappinessLevel = faceHappinessLevelSum / float32(faceCount)
-	f.FacePhotoBeauty = facePhotoBeautySum / float32(faceCount)
-	f.FaceScore = f.FaceHappinessLevel + f.FacePhotoBeauty + bonusPoint
 }

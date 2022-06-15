@@ -16,21 +16,18 @@ import (
 )
 
 type UserRepository struct {
-	f *dto.Firestore
+	cr *CommonRepository
+	f  *dto.Firestore
 }
 
 // Newコンストラクタ
-func NewUserRepository(f *dto.Firestore) *UserRepository {
-	return &UserRepository{f: f}
+func NewUserRepository(cr *CommonRepository, f *dto.Firestore) *UserRepository {
+	return &UserRepository{cr: cr, f: f}
 }
 
 func (ur *UserRepository) SaveUser(user *entity.User) error {
 	user.UpdatedAt = time.Now()
-	if _, err := ur.f.Firestore.Collection("users").Doc(user.Id).Set(conf.Ctx, user); err != nil {
-		return fmt.Errorf("failed adding a new user; user =  %v, err = %w", user, err)
-	}
-	conf.Log.Info("Successfully save the user", zap.Any("user", user))
-	return nil
+	return ur.cr.Save("users", user.Id, user)
 }
 
 func (ur *UserRepository) UpdateBoolFieldById(id, field string, val bool) error {
@@ -51,17 +48,15 @@ func (ur *UserRepository) UpdateBoolFieldById(id, field string, val bool) error 
 }
 
 func (ur *UserRepository) FindById(id string) (*entity.User, error) {
-	dsnap, err := ur.f.Firestore.Collection("users").Doc(id).Get(conf.Ctx)
+	dsnap, err := ur.cr.FindById("users", id)
 	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			return nil, nil
-		} else {
-			return nil, fmt.Errorf("failed find a user by id; id = %s, err = %w", id, err)
-		}
+		return nil, err
+	}
+	if dsnap == nil {
+		return nil, nil
 	}
 	var user entity.User
 	dsnap.DataTo(&user)
-	conf.Log.Info("Successfully find the users by Id", zap.String("id", id), zap.Any("user", user))
 	return &user, nil
 }
 

@@ -20,6 +20,10 @@ func NewInitApiController(au *usecase.ApiUsecase) *InitApiController {
 
 func (iac *InitApiController) GetInitialData(c *gin.Context) {
 	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
 	data, err := iac.au.GetInitialData(id)
 	if err != nil {
 		conf.Log.Error("[GetInitialData] Getting user failed", zap.String("error", err.Error()))

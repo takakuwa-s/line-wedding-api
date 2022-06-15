@@ -21,6 +21,10 @@ func NewLineApiController(
 
 func (lac *LineApiController) SendMessageToLineBot(c *gin.Context) {
 	messageKey := c.Query("messageKey")
+	if messageKey == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "messageKey is required"})
+		return
+	}
 	if err := lac.lpu.PublishMessageToAttendee(messageKey); err != nil {
 		conf.Log.Error("[SendMessageToLineBot] Sending messages failed", zap.String("error", err.Error()))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

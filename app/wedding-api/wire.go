@@ -16,36 +16,39 @@ import (
 	"github.com/google/wire"
 )
 
-func InitializeRouter() *driver.Router {
+func InitializeRouter() *driver.WeddingRouter {
 	wire.Build(
 		// dto
 		dto.NewLineBot,
 		dto.NewFirestore,
 
 		// driver
-		driver.NewRouter,
+		driver.NewWeddingRouter,
+		driver.NewCommonRouter,
 
 		// controller
 		controller.NewLineBotController,
-		controller.NewCommonApiController,
 		controller.NewInitApiController,
 		controller.NewUserApiController,
 		controller.NewFileApiController,
 		controller.NewLineApiController,
 
 		// gateway
+		gateway.NewCommonRepository,
 		gateway.NewMessageRepository,
 		wire.Bind(new(igateway.IMessageRepository), new(*gateway.MessageRepository)),
-		gateway.NewFaceGateway,
-		wire.Bind(new(igateway.IFaceGateway), new(*gateway.FaceGateway)),
-		gateway.NewLineGateway,
-		wire.Bind(new(igateway.ILineGateway), new(*gateway.LineGateway)),
 		gateway.NewUserRepository,
 		wire.Bind(new(igateway.IUserRepository), new(*gateway.UserRepository)),
 		gateway.NewFileRepository,
 		wire.Bind(new(igateway.IFileRepository), new(*gateway.FileRepository)),
 		gateway.NewBinaryRepository,
 		wire.Bind(new(igateway.IBinaryRepository), new(*gateway.BinaryRepository)),
+		gateway.NewImageSetRepository,
+		wire.Bind(new(igateway.IImageSetRepository), new(*gateway.ImageSetRepository)),
+		gateway.NewLineGateway,
+		wire.Bind(new(igateway.ILineGateway), new(*gateway.LineGateway)),
+		gateway.NewFileUploadGateway,
+		wire.Bind(new(igateway.IFileUploadGateway), new(*gateway.FileUploadGateway)),
 
 		// presenter
 		presenter.NewLinePresenter,

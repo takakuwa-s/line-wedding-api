@@ -70,10 +70,16 @@ func (lpu *LinePushUsecase) multicastMessage(
 	users []entity.User,
 	m []map[string]interface{}) error {
 	userCnt := len(users)
+	if userCnt > 500 {
+		// https://developers.line.biz/ja/reference/messaging-api/#send-multicast-request-body
+		return fmt.Errorf("userCnt is more than 500 limitation; userCnt = %d", userCnt)
+	}
+
 	quotaComsuption, err := lpu.lg.GetQuotaComsuption()
 	if err != nil {
 		return err
 	}
+
 	// To avoid sending more than 1000 notifications
 	// https://www.linebiz.com/jp/service/line-official-account/plan/
 	conf.Log.Info("publish message counts", zap.Int("user count", userCnt), zap.Int("message cnt", len(m)), zap.Int64("Quota Comsuption", quotaComsuption))

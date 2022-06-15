@@ -1,4 +1,4 @@
-package controller
+package driver
 
 import (
 	"encoding/json"
@@ -7,30 +7,43 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"go.uber.org/zap"
 )
 
-type CommonApiController struct {
+type CommonRouter struct {
 }
 
 // コンストラクタ
-func NewCommonApiController() *CommonApiController {
-	return &CommonApiController{}
+func NewCommonRouter() *CommonRouter {
+	return &CommonRouter{}
 }
 
-func (cac *CommonApiController) ValidateTokenMiddleware(c *gin.Context) {
-	if err := cac.validateToken(c.GetHeader("Authorization")); err != nil {
+func (cr *CommonRouter) GetDefaultRouter() *gin.Engine {
+	router := gin.Default()
+	config := cors.DefaultConfig()
+	frontDomain := os.Getenv("FRONT_DOMAIN")
+	//TOTO localhost
+	config.AllowOrigins = []string{frontDomain, "http://localhost:3000"}
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
+	router.Use(gin.Logger(), cors.New(config))
+	return router
+}
+
+func (cr *CommonRouter) ValidateTokenMiddleware(c *gin.Context) {
+	if err := cr.validateToken(c.GetHeader("Authorization")); err != nil {
 		conf.Log.Error("Authorization failed", zap.String("error", err.Error()))
+		//TOTO
 		// c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		// c.Abort()
 	}
 }
 
-func (cac *CommonApiController) validateToken(token string) error {
+func (cr *CommonRouter) validateToken(token string) error {
 	client := &http.Client{}
-	url := os.Getenv("LIFF_API_BASE_URL")
+	url := os.Getenv("LINE_API_BASE_URL")
 	resp, err := client.Get(url + "?access_token=" + token)
 	if err != nil {
 		return err
@@ -52,4 +65,8 @@ func (cac *CommonApiController) validateToken(token string) error {
 		return fmt.Errorf("access token expired")
 	}
 	return nil
+}
+
+func (cr *CommonRouter) HealthCheck(c *gin.Context) {
+	c.Status(http.StatusOK)
 }

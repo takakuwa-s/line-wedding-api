@@ -12,7 +12,8 @@ type File struct {
 	Width              int       `json:"width"`
 	Height             int       `json:"height"`
 	MimeType           string    `json:"mimeType"`
-	IsUploaded         bool      `json:"isUploaded"`
+	Uploaded           bool      `json:"uploaded"`
+	Calculated         bool      `json:"calculated"`
 	FaceCount          int       `json:"faceCount"`
 	FaceHappinessLevel float32   `json:"faceHappinessLevel"`
 	FacePhotoBeauty    float32   `json:"facePhotoBeauty"`
@@ -20,13 +21,13 @@ type File struct {
 	CreatedAt          time.Time `json:"createdAt"`
 	Creater            string    `json:"creater"`
 	UpdatedAt          time.Time `json:"updatedAt"`
-	Updater            string    `json:"updater"`
 }
 
 func NewFile(messageId, creater string) *File {
 	return &File{
 		Id:         messageId,
-		IsUploaded: false,
+		Uploaded:   false,
+		Calculated: false,
 		CreatedAt:  time.Now(),
 		Creater:    creater,
 		UpdatedAt:  time.Now(),

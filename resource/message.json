@@ -17,6 +17,17 @@
       "stickerID": "10551379"
     }
   ],
+  "error": [
+    {
+      "type": "text",
+      "text": "ごめんなさい！不明なエラーが発生しました。時間をおいて再度お試し下さい"
+    },
+    {
+      "type": "sticker",
+      "packageID": "6136",
+      "stickerID": "10551385"
+    }
+  ],
   "group": [
     {
       "type": "text",

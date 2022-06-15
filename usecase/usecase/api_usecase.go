@@ -27,7 +27,8 @@ func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
 		return nil, err
 	}
 	// Get file list
-	files, err := au.GetFileList(12, "", "", "")
+	uploaded := true
+	files, err := au.GetFileList(12, "", "", "", &uploaded)
 	if err != nil {
 		return nil, err
 	}
@@ -85,11 +86,11 @@ func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]ent
 	return users, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string) ([]entity.File, error) {
+func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string, uploaded *bool) ([]entity.File, error) {
 	if orderBy == "" {
 		orderBy = "UpdatedAt"
 	}
-	files, err := au.fr.FindByLimitAndStartIdAndUserId(limit, startId, userId, orderBy)
+	files, err := au.fr.FindByLimitAndStartIdAndUserIdAndUploaded(limit, startId, userId, orderBy, uploaded)
 	if err != nil {
 		return nil, err
 	}
@@ -107,8 +108,10 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 	if err := au.fr.DeleteFileById(id); err != nil {
 		return err
 	}
-	if err := au.br.DeleteBinary(file.Name); err != nil {
-		return err
+	if file.Uploaded {
+		if err := au.br.DeleteBinary(file.Name); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -128,8 +131,10 @@ func (au *ApiUsecase) DeleteFileList(ids []string) error {
 		if err := au.fr.DeleteFileById(f.Id); err != nil {
 			return fmt.Errorf("successfully delete %d files, but failed to delete the file metadata of id = %s", i, f.Id)
 		}
-		if err := au.br.DeleteBinary(f.Name); err != nil {
-			return fmt.Errorf("successfully delete %d files, but failed to delete the file binary of id = %s", i, f.Id)
+		if f.Uploaded {
+			if err := au.br.DeleteBinary(f.Name); err != nil {
+				return fmt.Errorf("successfully delete %d files, but failed to delete the file binary of id = %s", i, f.Id)
+			}
 		}
 	}
 	return nil

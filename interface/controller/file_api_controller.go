@@ -22,13 +22,23 @@ func NewFileApiController(au *usecase.ApiUsecase) *FileApiController {
 func (fac *FileApiController) GetFileList(c *gin.Context) {
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "limit is required and must be number"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "limit is required and must be number"})
 		return
+	}
+	uploadedStr := c.Query("uploaded")
+	var uploaded *bool
+	if uploadedStr != "" {
+		u, err := strconv.ParseBool(uploadedStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "uploaded must be boolean"})
+			return
+		}
+		uploaded = &u
 	}
 	startId := c.Query("startId")
 	userId := c.Query("userId")
 	orderBy := c.Query("orderBy")
-	files, err := fac.au.GetFileList(limit, startId, userId, orderBy)
+	files, err := fac.au.GetFileList(limit, startId, userId, orderBy, uploaded)
 	if err != nil {
 		conf.Log.Error("[GetFileList] Getting file list failed", zap.String("error", err.Error()))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -39,6 +49,10 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 
 func (fac *FileApiController) DeleteFile(c *gin.Context) {
 	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
 
 	if err := fac.au.DeleteFile(id); err != nil {
 		conf.Log.Error("[DeleteFile] Deleting file failed", zap.String("error", err.Error()))

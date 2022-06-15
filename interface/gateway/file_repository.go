@@ -15,43 +15,37 @@ import (
 )
 
 type FileRepository struct {
-	f *dto.Firestore
+	cr *CommonRepository
+	f  *dto.Firestore
 }
 
 // Newコンストラクタ
-func NewFileRepository(f *dto.Firestore) *FileRepository {
-	return &FileRepository{f: f}
+func NewFileRepository(cr *CommonRepository, f *dto.Firestore) *FileRepository {
+	return &FileRepository{cr: cr, f: f}
 }
 
 func (fr *FileRepository) SaveFile(file *entity.File) error {
-	if _, err := fr.f.Firestore.Collection("files").Doc(file.Id).Set(conf.Ctx, file); err != nil {
-		return fmt.Errorf("failed to save a new file metadata; file =  %v, err = %w", file, err)
-	}
-	conf.Log.Info("Successfully save the file metadata", zap.Any("file", file))
-	return nil
+	return fr.cr.Save("files", file.Id, file)
 }
 
 func (fr *FileRepository) DeleteFileById(id string) error {
-	_, err := fr.f.Firestore.Collection("files").Doc(id).Delete(conf.Ctx)
-	if err != nil {
-		return fmt.Errorf("failed to delete the file metadata; id =  %s, err = %w", id, err)
-	}
-	conf.Log.Info("Successfully delete the file metadata", zap.String("id", id))
-	return nil
+	return fr.cr.DeleteById("files", id)
+}
+
+func (fr *FileRepository) DeleteFileByIds(ids []string) error {
+	return fr.cr.DeleteByIds("files", ids)
 }
 
 func (fr *FileRepository) FindById(id string) (*entity.File, error) {
-	dsnap, err := fr.f.Firestore.Collection("files").Doc(id).Get(conf.Ctx)
+	dsnap, err := fr.cr.FindById("files", id)
 	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			return nil, nil
-		} else {
-			return nil, fmt.Errorf("failed to find the file metadata; id =  %s, err = %w", id, err)
-		}
+		return nil, err
+	}
+	if dsnap == nil {
+		return nil, nil
 	}
 	var file entity.File
 	dsnap.DataTo(&file)
-	conf.Log.Info("Successfully find the file metadata by Id", zap.String("id", id), zap.Any("file", file))
 	return &file, nil
 }
 
@@ -77,16 +71,35 @@ func (fr *FileRepository) executeQuery(query *firestore.Query) ([]entity.File, e
 }
 
 func (fr *FileRepository) FindByIds(ids []string) ([]entity.File, error) {
-	query := fr.f.Firestore.Collection("files").Where("Id", "in", ids)
-	files, err := fr.executeQuery(&query)
-	if err != nil {
-		return nil, err
+	var files []entity.File
+	for _, list := range fr.cr.SplitSlice(ids) {
+		query := fr.f.Firestore.Collection("files").Where("Id", "in", list)
+		f, err := fr.executeQuery(&query)
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, f...)
 	}
 	conf.Log.Info("Successfully find the file metadata with", zap.Int("file count", len(files)), zap.Strings("ids", ids))
 	return files, nil
 }
 
-func (fr *FileRepository) FindByLimitAndStartIdAndUserId(limit int, startId, userId, orderBy string) ([]entity.File, error) {
+func (fr *FileRepository) FindByIdsAndUploaded(ids []string, uploaded bool) ([]entity.File, error) {
+	var files []entity.File
+	for _, list := range fr.cr.SplitSlice(ids) {
+		query := fr.f.Firestore.Collection("files").Where("Id", "in", list).Where("Uploaded", "==", uploaded)
+		f, err := fr.executeQuery(&query)
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, f...)
+	}
+	conf.Log.Info("Successfully find the file metadata with", zap.Int("file count", len(files)), zap.Strings("ids", ids), zap.Bool("uploaded", uploaded))
+	return files, nil
+}
+
+func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndUploaded(limit int, startId, userId, orderBy string, uploaded *bool) ([]entity.File, error) {
+	conf.Log.Info("3", zap.Any("uploaded", &uploaded))
 	query := fr.f.Firestore.Collection("files").OrderBy(orderBy, firestore.Desc)
 	if limit > 0 {
 		query = query.Limit(limit)
@@ -104,6 +117,9 @@ func (fr *FileRepository) FindByLimitAndStartIdAndUserId(limit int, startId, use
 	}
 	if userId != "" {
 		query = query.Where("Creater", "==", userId)
+	}
+	if uploaded != nil {
+		query = query.Where("Uploaded", "==", &uploaded)
 	}
 	files, err := fr.executeQuery(&query)
 	if err != nil {
