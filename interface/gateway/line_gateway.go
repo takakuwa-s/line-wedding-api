@@ -21,7 +21,11 @@ func NewLineGateway(lb *dto.LineBot) *LineGateway {
 }
 
 func (lg *LineGateway) GetUserProfileById(id string) (*entity.User, error) {
-	res, err := lg.lb.Client.GetProfile(id).Do()
+	bot, err := lg.lb.GetClient()
+	if err != nil {
+		return nil, err
+	}
+	res, err := bot.GetProfile(id).Do()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the line profile; id = %s, err = %w", id, err)
 	}
@@ -30,7 +34,11 @@ func (lg *LineGateway) GetUserProfileById(id string) (*entity.User, error) {
 }
 
 func (lg *LineGateway) GetQuotaComsuption() (int64, error) {
-	res, err := lg.lb.Client.GetMessageQuotaConsumption().Do()
+	bot, err := lg.lb.GetClient()
+	if err != nil {
+		return 0, err
+	}
+	res, err := bot.GetMessageQuotaConsumption().Do()
 	if err != nil {
 		return 0, fmt.Errorf("failed to get the message quota consumption; err = %w", err)
 	}
@@ -39,7 +47,11 @@ func (lg *LineGateway) GetQuotaComsuption() (int64, error) {
 }
 
 func (lg *LineGateway) GetFileContent(messageId string) (io.ReadCloser, error) {
-	content, err := lg.lb.Client.GetMessageContent(messageId).Do()
+	bot, err := lg.lb.GetClient()
+	if err != nil {
+		return nil, err
+	}
+	content, err := bot.GetMessageContent(messageId).Do()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get the file content from LINE; messageId = %s, err = %w", messageId, err)
 	}

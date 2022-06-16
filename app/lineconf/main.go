@@ -13,29 +13,30 @@ func main() {
 		return
 	}
 
-	menuList, err := GetRichmenuList()
+	lrc := NewLineRichmenuConf()
+	menuList, err := lrc.GetRichmenuList()
 	if err != nil {
 		conf.Log.Error("Failed to get rich menu list", zap.Error(err))
 		return
 	}
-	aliasList, err := GetRichmenuAliasList()
+	aliasList, err := lrc.GetRichmenuAliasList()
 	if err != nil {
 		conf.Log.Error("Failed to get rich menu alias list", zap.Error(err))
 		return
 	}
 	for _, menu := range menuList {
-		if err := DeleteRichmenu(menu.RichMenuID); err != nil {
+		if err := lrc.DeleteRichmenu(menu.RichMenuID); err != nil {
 			conf.Log.Error("Failed to delete the rich menu", zap.Error(err))
 			return
 		}
 	}
 	for _, alias := range aliasList {
-		if err := DeleteRichmenuAlias(alias.RichMenuAliasID); err != nil {
+		if err := lrc.DeleteRichmenuAlias(alias.RichMenuAliasID); err != nil {
 			conf.Log.Error("Failed to delete the rich menu", zap.Error(err))
 			return
 		}
 	}
-	if err := CreateRichmenu(); err != nil {
+	if err := lrc.CreateRichmenu(); err != nil {
 		conf.Log.Error("Failed to create the rich menu", zap.Error(err))
 		return
 	}

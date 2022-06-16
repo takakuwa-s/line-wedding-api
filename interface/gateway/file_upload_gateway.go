@@ -9,15 +9,17 @@ import (
 	"os"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
+	"github.com/takakuwa-s/line-wedding-api/dto"
 	"go.uber.org/zap"
 )
 
 type FileUploadGateway struct {
+	lb *dto.LineBot
 }
 
 // Newコンストラクタ
-func NewFileUploadGateway() *FileUploadGateway {
-	return &FileUploadGateway{}
+func NewFileUploadGateway(lb *dto.LineBot) *FileUploadGateway {
+	return &FileUploadGateway{lb: lb}
 }
 
 func (fug *FileUploadGateway) StartUploadingFiles(ids []string) error {
@@ -36,6 +38,11 @@ func (fug *FileUploadGateway) StartUploadingFiles(ids []string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create the http request for the file upload api; %w", err)
 	}
+	token, err := fug.lb.GetToken()
+	if err != nil {
+		return err
+	}
+	req.Header["Authorization"] = []string{"Bearer " + token}
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {

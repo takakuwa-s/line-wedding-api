@@ -23,7 +23,11 @@ func (lp *LinePresenter) MulticastMessage(message *dto.MulticastMessage) error {
 	if err != nil {
 		return err
 	}
-	if _, err := lp.lb.Multicast(message.UserIds, messages...).Do(); err != nil {
+	bot, err := lp.lb.GetClient()
+	if err != nil {
+		return err
+	}
+	if _, err := bot.Multicast(message.UserIds, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to multicast the message messages = %v, err = %w", messages, err)
 	}
 	return nil
@@ -34,7 +38,11 @@ func (lp *LinePresenter) ReplyMessage(message *dto.ReplyMessage) error {
 	if err != nil {
 		return err
 	}
-	if _, err := lp.lb.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
+	bot, err := lp.lb.GetClient()
+	if err != nil {
+		return err
+	}
+	if _, err := bot.ReplyMessage(message.ReplyToken, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to send the reply message messages = %v, err = %w", messages, err)
 	}
 	return nil

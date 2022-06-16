@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
 
 	"os"
@@ -33,7 +34,7 @@ func (wr *WeddingRouter) Init() {
 	router.POST("/line-messaging-api/wedding/webhook", wr.lbc.Webhook)
 	router.GET("/health-check", wr.cr.HealthCheck)
 	api := router.Group("/api")
-	api.Use(wr.cr.ValidateTokenMiddleware)
+	api.Use(wr.validateTokenMiddleware)
 	{
 		user := api.Group("/user")
 		{
@@ -56,4 +57,8 @@ func (wr *WeddingRouter) Init() {
 		port = "8080"
 	}
 	router.Run(":" + port)
+}
+
+func (wr *WeddingRouter) validateTokenMiddleware(c *gin.Context) {
+	wr.cr.ValidateTokenMiddleware(c, os.Getenv("LIFF_CHANNEL_ID"))
 }

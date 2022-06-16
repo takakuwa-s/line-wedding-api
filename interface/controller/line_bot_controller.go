@@ -12,17 +12,22 @@ import (
 )
 
 type LineBotController struct {
-	bot *dto.LineBot
+	lb  *dto.LineBot
 	lru *usecase.LineReplyUsecase
 }
 
 // コンストラクタ
-func NewLineBotController(bot *dto.LineBot, lru *usecase.LineReplyUsecase) *LineBotController {
-	return &LineBotController{bot: bot, lru: lru}
+func NewLineBotController(lb *dto.LineBot, lru *usecase.LineReplyUsecase) *LineBotController {
+	return &LineBotController{lb: lb, lru: lru}
 }
 
 func (lbc *LineBotController) Webhook(c *gin.Context) {
-	events, err := lbc.bot.ParseRequest(c.Request)
+	bot, err := lbc.lb.GetClient()
+	if err != nil {
+		conf.Log.Error("Failed to get the line bot instance", zap.Error(err))
+		return
+	}
+	events, err := bot.ParseRequest(c.Request)
 	if err != nil {
 		conf.Log.Error("Failed to parse the request", zap.Error(err))
 		return

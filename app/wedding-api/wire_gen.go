@@ -27,7 +27,7 @@ func InitializeRouter() *driver.WeddingRouter {
 	userRepository := gateway.NewUserRepository(commonRepository, firestore)
 	fileRepository := gateway.NewFileRepository(commonRepository, firestore)
 	imageSetRepository := gateway.NewImageSetRepository(commonRepository, firestore)
-	fileUploadGateway := gateway.NewFileUploadGateway()
+	fileUploadGateway := gateway.NewFileUploadGateway(lineBot)
 	linePresenter := presenter.NewLinePresenter(lineBot)
 	linePushUsecase := usecase.NewLinePushUsecase(messageRepository, userRepository, linePresenter, lineGateway)
 	lineReplyUsecase := usecase.NewLineReplyUsecase(messageRepository, lineGateway, userRepository, fileRepository, imageSetRepository, fileUploadGateway, linePushUsecase, linePresenter)
