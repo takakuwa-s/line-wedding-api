@@ -12,6 +12,9 @@ func main() {
 		conf.Log.Error("Error loading .env file", zap.Error(err))
 		return
 	}
+	scheduler := InitializeScheduler()
+	scheduler.Init()
+
 	router := InitializeRouter()
 	router.Init()
 }

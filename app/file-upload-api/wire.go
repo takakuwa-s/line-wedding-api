@@ -43,3 +43,29 @@ func InitializeRouter() *driver.FileUploadRouter {
 	)
 	return nil
 }
+
+func InitializeScheduler() *driver.FileUploadScheduler {
+	wire.Build(
+		// dto
+		dto.NewLineBot,
+		dto.NewFirestore,
+
+		// driver
+		driver.NewFileUploadScheduler,
+
+		// gateway
+		gateway.NewCommonRepository,
+		gateway.NewFileRepository,
+		wire.Bind(new(igateway.IFileRepository), new(*gateway.FileRepository)),
+		gateway.NewBinaryRepository,
+		wire.Bind(new(igateway.IBinaryRepository), new(*gateway.BinaryRepository)),
+		gateway.NewFaceGateway,
+		wire.Bind(new(igateway.IFaceGateway), new(*gateway.FaceGateway)),
+		gateway.NewLineGateway,
+		wire.Bind(new(igateway.ILineGateway), new(*gateway.LineGateway)),
+
+		// usecase
+		usecase.NewFileUploadUsecase,
+	)
+	return nil
+}

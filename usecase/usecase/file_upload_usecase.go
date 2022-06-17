@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"math"
+	"time"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
@@ -22,42 +23,51 @@ func NewFileUploadUsecase(lg igateway.ILineGateway, fg igateway.IFaceGateway, fr
 	return &FileUploadUsecase{lg: lg, fg: fg, fr: fr, br: br}
 }
 
-func (fuu *FileUploadUsecase) UploadFiles(ids []string) error {
-	conf.Log.Info("Start uploading file binary", zap.Strings("ids", ids))
+func (fuu *FileUploadUsecase) RecoverFileUploading() {
+	conf.Log.Info("[BATCH] Start the recovery process")
+	files, err := fuu.fr.FindByUploadedOrCalculatedFalse()
+	if err != nil {
+		conf.Log.Error("[BATCH] failed to get the file metadata", zap.String("error", err.Error()))
+		return
+	}
+	conf.Log.Info("[BATCH] Start uploading file binary", zap.Int("file count", len(files)))
+	for idx, f := range files {
+		if err := fuu.uploadFile(f, idx); err != nil {
+			conf.Log.Error("[BATCH] Failed to upload file", zap.Int("idx", idx), zap.String("id", f.Id), zap.Error(err))
+		}
+	}
+	conf.Log.Info("[BATCH] Complete the recovery process", zap.Int("len", len(files)))
+}
+
+func (fuu *FileUploadUsecase) UploadFiles(ids []string) {
+	conf.Log.Info("[API] Start uploading file binary", zap.Int("len", len(ids)), zap.Strings("ids", ids))
 	files, err := fuu.fr.FindByIdsAndUploaded(ids, false)
 	if err != nil {
-		return err
+		conf.Log.Error("[API] failed to get the file metadata", zap.String("error", err.Error()))
+		return
 	}
 	for idx, f := range files {
 		if err := fuu.uploadFile(f, idx); err != nil {
-			conf.Log.Error("Failed to upload file", zap.Int("idx", idx), zap.String("id", f.Id), zap.Error(err))
+			conf.Log.Error("[API] Failed to upload file", zap.Int("idx", idx), zap.String("id", f.Id), zap.Error(err))
 		}
 	}
-	conf.Log.Info("Complete uploading file binary", zap.Strings("ids", ids))
-	return nil
+	conf.Log.Info("[API] Complete uploading file binary", zap.Int("len", len(ids)), zap.Strings("ids", ids))
 }
 
 func (fuu *FileUploadUsecase) uploadFile(f entity.File, i int) error {
 	conf.Log.Info("Start uploading file", zap.Int("idx", i), zap.String("id", f.Id))
 
-	// Get the file binary
-	content, err := fuu.lg.GetFileContent(f.Id)
-	if err != nil {
-		return err
-	}
 	// upload the file binary
-	file, err := fuu.br.SaveImageBinary(&f, content)
+	f1, err := fuu.uploadBinary(f)
 	if err != nil {
 		return err
 	}
 
-	faceRes, faceErr := fuu.fg.GetFaceAnalysis(file.ContentUrl)
-	if faceErr == nil {
-		fuu.calcurateFaceScore(faceRes, file)
-	}
+	f2, faceErr := fuu.updateFaceScore(*f1)
 
 	// Save file data
-	err = fuu.fr.SaveFile(file)
+	f2.UpdatedAt = time.Now()
+	err = fuu.fr.SaveFile(f2)
 	if err != nil {
 		if faceErr != nil {
 			return fmt.Errorf("failed to call face api and save file metadata; face err = %s ,file err = %w", faceErr, err)
@@ -68,17 +78,46 @@ func (fuu *FileUploadUsecase) uploadFile(f entity.File, i int) error {
 	if faceErr != nil {
 		return faceErr
 	}
-	conf.Log.Info("Complete uploading file", zap.Int("idx", i), zap.String("id", f.Id))
+	conf.Log.Info("Complete uploading file", zap.Int("idx", i), zap.String("id", f2.Id))
 	return nil
 }
 
-func (fuu *FileUploadUsecase) calcurateFaceScore(r []*dto.FaceResponse, f *entity.File) {
+func (fuu *FileUploadUsecase) uploadBinary(f entity.File) (*entity.File, error) {
+	if f.Uploaded {
+		return &f, nil
+	}
+	// Get the file binary
+	content, err := fuu.lg.GetFileContent(f.Id)
+	if err != nil {
+		return nil, err
+	}
+	// upload the file binary
+	if file, err := fuu.br.SaveImageBinary(f, content); err != nil {
+		return nil, err
+	} else {
+		return file, nil
+	}
+}
+
+func (fuu *FileUploadUsecase) updateFaceScore(f entity.File) (*entity.File, error) {
+	if f.Calculated {
+		return &f, nil
+	}
+	res, err := fuu.fg.GetFaceAnalysis(f.ContentUrl)
+	if err != nil {
+		return &f, err
+	}
+	return fuu.calculateFaceScore(res, f), nil
+}
+
+func (fuu *FileUploadUsecase) calculateFaceScore(r []*dto.FaceResponse, f entity.File) *entity.File {
 	if len(r) <= 0 || len(r) > 10 {
 		f.FaceCount = 0
 		f.FaceHappinessLevel = 0
 		f.FacePhotoBeauty = 0
 		f.FaceScore = 0
-		return
+		f.Calculated = true
+		return &f
 	}
 	faceCount := len(r)
 	faceIds := make([]string, faceCount)
@@ -147,4 +186,5 @@ func (fuu *FileUploadUsecase) calcurateFaceScore(r []*dto.FaceResponse, f *entit
 	f.FacePhotoBeauty = facePhotoBeautySum / float32(faceCount)
 	f.FaceScore = f.FaceHappinessLevel + f.FacePhotoBeauty + bonusPoint
 	f.Calculated = true
+	return &f
 }

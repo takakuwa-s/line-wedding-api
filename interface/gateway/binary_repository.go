@@ -53,7 +53,7 @@ func (br *BinaryRepository) deleteBinary(name string) error {
 	return nil
 }
 
-func (br *BinaryRepository) SaveImageBinary(file *entity.File, content io.ReadCloser) (*entity.File, error) {
+func (br *BinaryRepository) SaveImageBinary(file entity.File, content io.ReadCloser) (*entity.File, error) {
 	name := file.Id + "-" + time.Now().Format("2006-01-02-15:04:05")
 	contentWriter := br.getUploadWriter("content/" + name)
 	reader := io.TeeReader(content, contentWriter)
@@ -77,7 +77,7 @@ func (br *BinaryRepository) SaveImageBinary(file *entity.File, content io.ReadCl
 	file.MimeType = contentWriter.Attrs().ContentType
 	file.Uploaded = true
 	file.Name = name
-	return file, nil
+	return &file, nil
 }
 
 func (br *BinaryRepository) DeleteBinary(name string) error {

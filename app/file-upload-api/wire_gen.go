@@ -30,3 +30,16 @@ func InitializeRouter() *driver.FileUploadRouter {
 	fileUploadRouter := driver.NewFileUploadRouter(commonRouter, fileUploadController)
 	return fileUploadRouter
 }
+
+func InitializeScheduler() *driver.FileUploadScheduler {
+	lineBot := dto.NewLineBot()
+	lineGateway := gateway.NewLineGateway(lineBot)
+	faceGateway := gateway.NewFaceGateway()
+	firestore := dto.NewFirestore()
+	commonRepository := gateway.NewCommonRepository(firestore)
+	fileRepository := gateway.NewFileRepository(commonRepository, firestore)
+	binaryRepository := gateway.NewBinaryRepository(firestore)
+	fileUploadUsecase := usecase.NewFileUploadUsecase(lineGateway, faceGateway, fileRepository, binaryRepository)
+	fileUploadScheduler := driver.NewFileUploadScheduler(fileUploadUsecase)
+	return fileUploadScheduler
+}

@@ -7,6 +7,6 @@ import (
 )
 
 type IBinaryRepository interface {
-	SaveImageBinary(file *entity.File, content io.ReadCloser) (*entity.File, error)
+	SaveImageBinary(file entity.File, content io.ReadCloser) (*entity.File, error)
 	DeleteBinary(name string) error
 }

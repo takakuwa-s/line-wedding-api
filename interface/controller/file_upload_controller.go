@@ -4,9 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
-	"go.uber.org/zap"
 )
 
 type FileUploadController struct {
@@ -26,8 +24,6 @@ func (fuc *FileUploadController) UploadFile(c *gin.Context) {
 	}
 	c.Status(http.StatusAccepted)
 	go func() {
-		if err := fuc.fuu.UploadFiles(ids); err != nil {
-			conf.Log.Error("[UploadFile] Uploading file failed", zap.String("error", err.Error()))
-		}
+		fuc.fuu.UploadFiles(ids)
 	}()
 }
