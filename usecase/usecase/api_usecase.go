@@ -3,9 +3,11 @@ package usecase
 import (
 	"fmt"
 
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
+	"go.uber.org/zap"
 )
 
 type ApiUsecase struct {
@@ -28,7 +30,7 @@ func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
 	}
 	// Get file list
 	uploaded := true
-	files, err := au.GetFileList(12, "", "", "", &uploaded)
+	files, err := au.GetFileList(12, "", "", "", &uploaded, user.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +88,7 @@ func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]ent
 	return users, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string, uploaded *bool) ([]entity.File, error) {
+func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string, uploaded *bool, needCreaterName bool) ([]dto.FileResponce, error) {
 	if orderBy == "" {
 		orderBy = "UpdatedAt"
 	}
@@ -94,7 +96,26 @@ func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string, up
 	if err != nil {
 		return nil, err
 	}
-	return files, nil
+	uMap := make(map[string]string)
+	if needCreaterName {
+		set := make(map[string]struct{})
+		for _, f := range files {
+			set[f.Creater] = struct{}{}
+		}
+		var ids []string
+		for id, _ := range set {
+			ids = append(ids, id)
+		}
+		users, err := au.ur.FindByIds(ids)
+		conf.Log.Info("a", zap.Any("set", set), zap.Any("ids", ids), zap.Any("users", users))
+		if err != nil {
+			return nil, err
+		}
+		for _, u := range users {
+			uMap[u.Id] = u.FamilyName + u.FirstName
+		}
+	}
+	return dto.NewFileResponceList(files, uMap), nil
 }
 
 func (au *ApiUsecase) DeleteFile(id string) error {

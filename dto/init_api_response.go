@@ -5,11 +5,11 @@ import (
 )
 
 type InitApiResponse struct {
-	User  *entity.User  `json:"user"`
-	Files []entity.File `json:"files"`
+	User  *entity.User   `json:"user"`
+	Files []FileResponce `json:"files"`
 }
 
-func NewInitApiResponse(user *entity.User, files []entity.File) *InitApiResponse {
+func NewInitApiResponse(user *entity.User, files []FileResponce) *InitApiResponse {
 	return &InitApiResponse{
 		User:  user,
 		Files: files,

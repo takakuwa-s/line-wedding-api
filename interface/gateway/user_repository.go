@@ -81,6 +81,20 @@ func (ur *UserRepository) executeQuery(query *firestore.Query) ([]entity.User, e
 	return users, nil
 }
 
+func (ur *UserRepository) FindByIds(ids []string) ([]entity.User, error) {
+	var users []entity.User
+	for _, list := range ur.cr.SplitSlice(ids) {
+		query := ur.f.Firestore.Collection("users").Where("Id", "in", list)
+		u, err := ur.executeQuery(&query)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, u...)
+	}
+	conf.Log.Info("Successfully find users with", zap.Int("user count", len(users)), zap.Strings("ids", ids))
+	return users, nil
+}
+
 func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
 	query := ur.f.Firestore.Collection("users").Where("IsAdmin", "==", isAdmin)
 	users, err := ur.executeQuery(&query)

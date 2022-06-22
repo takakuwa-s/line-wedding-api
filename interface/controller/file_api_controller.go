@@ -25,6 +25,11 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "limit is required and must be number"})
 		return
 	}
+	needCreaterName, err := strconv.ParseBool(c.Query("needCreaterName"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "needCreaterName must be boolean"})
+		return
+	}
 	uploadedStr := c.Query("uploaded")
 	var uploaded *bool
 	if uploadedStr != "" {
@@ -38,7 +43,7 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 	startId := c.Query("startId")
 	userId := c.Query("userId")
 	orderBy := c.Query("orderBy")
-	files, err := fac.au.GetFileList(limit, startId, userId, orderBy, uploaded)
+	files, err := fac.au.GetFileList(limit, startId, userId, orderBy, uploaded, needCreaterName)
 	if err != nil {
 		conf.Log.Error("[GetFileList] Getting file list failed", zap.String("error", err.Error()))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
