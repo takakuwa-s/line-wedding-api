@@ -16,6 +16,11 @@ if [[ "$2" != "local" ]] && [[ "$2" != "heroku" ]] && [[ "$2" != "docker-hub" ]]
   exit 1
 fi
 
+dokcerFilePath="./Dockerfile"
+if [[ "$1" == "file-upload-api" ]] ; then
+  dokcerFilePath="./DockerfileWithFfmpeg"
+fi
+
 echo "----- show docker containers -----"
 docker ps -a
 
@@ -25,7 +30,6 @@ docker images
 echo "----- remove stopped docker containers -----"
 docker container prune -f
 
-
 if test $2 = "local" ; then
   echo "----- dwploying to local -----"
 
@@ -33,7 +37,7 @@ if test $2 = "local" ; then
   docker rmi $1 -f
 
   echo "----- build the docker image -----"
-  docker build . -t $1 --build-arg app=$1
+  docker build . -t $1 -f $dokcerFilePath --build-arg app=$1
 
   echo "----- run the docker container -----"
   # docker run --rm -it $1 /bin/bash
@@ -48,19 +52,23 @@ elif test $2 = "docker-hub" ; then
   docker rmi $tag -f
 
   echo "----- build the docker image -----"
-  docker build . -t $tag --build-arg app=$1
+  docker build . -t $tag -f $dokcerFilePath --build-arg app=$1
 
   echo "----- push the docker image to docker hub -----"
   docker push takakuwa5docker/line-wedding-api:latest
 elif test $2 = "heroku" ; then
   echo "----- dwploying to heroku -----"
   ID="line-wedding-api"
+  tag="registry.heroku.com/$ID/web"
 
   echo "----- remove docker image -----"
-  docker rmi registry.heroku.com/$ID/web -f
+  docker rmi $tag -f
+
+  echo "----- build the docker image -----"
+  docker build . -t $tag -f $dokcerFilePath --build-arg app=$1
 
   echo "----- push the docker image to heroku Container Registry -----"
-  heroku container:push web -a $ID --arg app=$1
+  docker push registry.heroku.com/$ID/web
 
   echo "----- release the heroku application -----"
   heroku container:release web -a $ID
@@ -70,7 +78,3 @@ elif test $2 = "heroku" ; then
 else
   exit 1
 fi
-
-
-
-

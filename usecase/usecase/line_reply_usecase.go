@@ -36,7 +36,7 @@ func NewLineReplyUsecase(
 }
 
 // TODO error handling
-func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
+func (lru *LineReplyUsecase) HandleImageEvent(m *dto.ImageMessage) error {
 	// Save file data
 	err := lru.fr.SaveFile(m.File)
 	if err != nil {
@@ -73,6 +73,31 @@ func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 
 	// Reply message
 	messages := lru.mr.FindMessageByKey("image")
+	return lru.sendReplyMessage(m.ReplyToken, messages)
+}
+
+// TODO error handling
+func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.VideoMessage) error {
+	if m.Duration > 120*1000 {
+		messages := lru.mr.FindMessageByKey("video_error")
+		return lru.sendReplyMessage(m.ReplyToken, messages)
+	}
+
+	// Save file data
+	err := lru.fr.SaveFile(m.File)
+	if err != nil {
+		return err
+	}
+
+	// Start file uploading
+	err = lru.fug.StartUploadingFiles([]string{m.File.Id})
+	if err != nil {
+		lru.fr.DeleteFileById(m.File.Id)
+		return err
+	}
+
+	// Reply message
+	messages := lru.mr.FindMessageByKey("video")
 	return lru.sendReplyMessage(m.ReplyToken, messages)
 }
 

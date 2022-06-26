@@ -78,6 +78,58 @@
       }
     }
   ],
+  "video": [
+    {
+      "type": "text",
+      "text": "動画を登録しました",
+      "quickReply": {
+        "items": [
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "cameraRoll",
+              "label": "カメラロールから共有"
+            }
+          },
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "camera",
+              "label": "撮影して共有"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "video_error": [
+    {
+      "type": "text",
+      "text": "ごめんなさい。登録できる動画は2分以内のもののみです",
+      "quickReply": {
+        "items": [
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "cameraRoll",
+              "label": "カメラロールから共有"
+            }
+          },
+          {
+            "type": "action",
+            "imageURL": "",
+            "action": {
+              "type": "camera",
+              "label": "撮影して共有"
+            }
+          }
+        ]
+      }
+    }
+  ],
   "invitation": [
     {
       "type": "text",

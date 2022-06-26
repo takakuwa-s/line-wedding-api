@@ -98,7 +98,7 @@ func (fr *FileRepository) FindByIdsAndUploaded(ids []string, uploaded bool) ([]e
 	return files, nil
 }
 
-func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndUploaded(limit int, startId, userId, orderBy string, uploaded *bool) ([]entity.File, error) {
+func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(limit int, startId, userId, orderBy, fileType string, uploaded *bool) ([]entity.File, error) {
 	query := fr.f.Firestore.Collection("files").OrderBy(orderBy, firestore.Desc)
 	if limit > 0 {
 		query = query.Limit(limit)
@@ -117,6 +117,9 @@ func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndUploaded(limit int, s
 	if userId != "" {
 		query = query.Where("Creater", "==", userId)
 	}
+	if fileType != "" {
+		query = query.Where("FileType", "==", fileType)
+	}
 	if uploaded != nil {
 		query = query.Where("Uploaded", "==", &uploaded)
 	}
@@ -134,7 +137,7 @@ func (fr *FileRepository) FindByUploadedOrCalculatedFalse() ([]entity.File, erro
 	if err != nil {
 		return nil, err
 	}
-	query = fr.f.Firestore.Collection("files").Where("Uploaded", "==", true).Where("Calculated", "==", false).OrderBy("UpdatedAt", firestore.Asc)
+	query = fr.f.Firestore.Collection("files").Where("Uploaded", "==", true).Where("Calculated", "==", false).Where("FileType", "==", entity.Image).OrderBy("UpdatedAt", firestore.Asc)
 	f2, err := fr.executeQuery(&query)
 	if err != nil {
 		return nil, err

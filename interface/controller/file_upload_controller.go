@@ -24,6 +24,6 @@ func (fuc *FileUploadController) UploadFile(c *gin.Context) {
 	}
 	c.Status(http.StatusAccepted)
 	go func() {
-		fuc.fuu.UploadFiles(ids)
+		fuc.fuu.UploadFilesByIds(ids)
 	}()
 }

@@ -31,34 +31,43 @@ func (fuu *FileUploadUsecase) RecoverFileUploading() {
 		return
 	}
 	conf.Log.Info("[BATCH] Start uploading file binary", zap.Int("file count", len(files)))
-	for idx, f := range files {
-		if err := fuu.uploadFile(f, idx); err != nil {
-			conf.Log.Error("[BATCH] Failed to upload file", zap.Int("idx", idx), zap.String("id", f.Id), zap.Error(err))
-		}
-	}
+	fuu.uploadFiles(files, "[BATCH]")
 	conf.Log.Info("[BATCH] Complete the recovery process", zap.Int("len", len(files)))
 }
 
-func (fuu *FileUploadUsecase) UploadFiles(ids []string) {
+func (fuu *FileUploadUsecase) UploadFilesByIds(ids []string) {
 	conf.Log.Info("[API] Start uploading file binary", zap.Int("len", len(ids)), zap.Strings("ids", ids))
 	files, err := fuu.fr.FindByIdsAndUploaded(ids, false)
 	if err != nil {
 		conf.Log.Error("[API] failed to get the file metadata", zap.String("error", err.Error()))
 		return
 	}
-	for idx, f := range files {
-		if err := fuu.uploadFile(f, idx); err != nil {
-			conf.Log.Error("[API] Failed to upload file", zap.Int("idx", idx), zap.String("id", f.Id), zap.Error(err))
-		}
-	}
+	fuu.uploadFiles(files, "[API]")
 	conf.Log.Info("[API] Complete uploading file binary", zap.Int("len", len(ids)), zap.Strings("ids", ids))
 }
 
-func (fuu *FileUploadUsecase) uploadFile(f entity.File, i int) error {
-	conf.Log.Info("Start uploading file", zap.Int("idx", i), zap.String("id", f.Id))
+func (fuu *FileUploadUsecase) uploadFiles(files []entity.File, triggerName string) {
+	for idx, f := range files {
+		switch f.FileType {
+		case entity.Image:
+			if err := fuu.uploadImage(f, idx); err != nil {
+				conf.Log.Error(triggerName+" Failed to upload image", zap.Int("idx", idx), zap.String("id", f.Id), zap.Error(err))
+			}
+		case entity.Video:
+			if err := fuu.uploadVideo(f, idx); err != nil {
+				conf.Log.Error(triggerName+" Failed to upload video", zap.Int("idx", idx), zap.String("id", f.Id), zap.Error(err))
+			}
+		default:
+			conf.Log.Error(triggerName+" Unknown fileType", zap.Int("idx", idx), zap.String("id", f.Id), zap.String("fileType", string(f.FileType)))
+		}
+	}
+}
+
+func (fuu *FileUploadUsecase) uploadImage(f entity.File, i int) error {
+	conf.Log.Info("Start uploading image", zap.Int("idx", i), zap.String("id", f.Id))
 
 	// upload the file binary
-	f1, err := fuu.uploadBinary(f)
+	f1, err := fuu.uploadBinary(f, entity.Image)
 	if err != nil {
 		return err
 	}
@@ -70,7 +79,7 @@ func (fuu *FileUploadUsecase) uploadFile(f entity.File, i int) error {
 	err = fuu.fr.SaveFile(f2)
 	if err != nil {
 		if faceErr != nil {
-			return fmt.Errorf("failed to call face api and save file metadata; face err = %s ,file err = %w", faceErr, err)
+			return fmt.Errorf("failed to call face api and save image metadata; face err = %s ,file err = %w", faceErr, err)
 		} else {
 			return err
 		}
@@ -78,11 +87,29 @@ func (fuu *FileUploadUsecase) uploadFile(f entity.File, i int) error {
 	if faceErr != nil {
 		return faceErr
 	}
-	conf.Log.Info("Complete uploading file", zap.Int("idx", i), zap.String("id", f2.Id))
+	conf.Log.Info("Complete uploading image", zap.Int("idx", i), zap.String("id", f2.Id))
 	return nil
 }
 
-func (fuu *FileUploadUsecase) uploadBinary(f entity.File) (*entity.File, error) {
+func (fuu *FileUploadUsecase) uploadVideo(f entity.File, i int) error {
+	conf.Log.Info("Start uploading video", zap.Int("idx", i), zap.String("id", f.Id))
+
+	// upload the file binary
+	f1, err := fuu.uploadBinary(f, entity.Video)
+	if err != nil {
+		return err
+	}
+
+	// Save file data
+	f1.UpdatedAt = time.Now()
+	if err := fuu.fr.SaveFile(f1); err != nil {
+		return err
+	}
+	conf.Log.Info("Complete uploading video", zap.Int("idx", i), zap.String("id", f1.Id))
+	return nil
+}
+
+func (fuu *FileUploadUsecase) uploadBinary(f entity.File, fileType entity.FileType) (*entity.File, error) {
 	if f.Uploaded {
 		return &f, nil
 	}
@@ -91,8 +118,15 @@ func (fuu *FileUploadUsecase) uploadBinary(f entity.File) (*entity.File, error) 
 	if err != nil {
 		return nil, err
 	}
-	// upload the file binary
-	if file, err := fuu.br.SaveImageBinary(f, content); err != nil {
+	defer content.Close()
+	var file *entity.File
+	switch f.FileType {
+	case entity.Image:
+		file, err = fuu.br.SaveImageBinary(f, content)
+	case entity.Video:
+		file, err = fuu.br.SaveVideoBinary(f, content)
+	}
+	if err != nil {
 		return nil, err
 	} else {
 		return file, nil

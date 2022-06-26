@@ -30,7 +30,7 @@ func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
 	}
 	// Get file list
 	uploaded := true
-	files, err := au.GetFileList(12, "", "", "", &uploaded, user.IsAdmin)
+	files, err := au.GetFileList(12, "", "", "", "", &uploaded, user.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -88,11 +88,11 @@ func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]ent
 	return users, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy string, uploaded *bool, needCreaterName bool) ([]dto.FileResponce, error) {
+func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy, fileType string, uploaded *bool, needCreaterName bool) ([]dto.FileResponce, error) {
 	if orderBy == "" {
 		orderBy = "UpdatedAt"
 	}
-	files, err := au.fr.FindByLimitAndStartIdAndUserIdAndUploaded(limit, startId, userId, orderBy, uploaded)
+	files, err := au.fr.FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(limit, startId, userId, orderBy, fileType, uploaded)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 		return err
 	}
 	if file.Uploaded {
-		if err := au.br.DeleteBinary(file.Name); err != nil {
+		if err := au.br.DeleteBinary(file.Name, file.FileType); err != nil {
 			return err
 		}
 	}
@@ -153,7 +153,7 @@ func (au *ApiUsecase) DeleteFileList(ids []string) error {
 			return fmt.Errorf("successfully delete %d files, but failed to delete the file metadata of id = %s", i, f.Id)
 		}
 		if f.Uploaded {
-			if err := au.br.DeleteBinary(f.Name); err != nil {
+			if err := au.br.DeleteBinary(f.Name, f.FileType); err != nil {
 				return fmt.Errorf("successfully delete %d files, but failed to delete the file binary of id = %s", i, f.Id)
 			}
 		}

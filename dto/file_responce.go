@@ -18,6 +18,9 @@ func NewFileResponce(file entity.File, createrName string) FileResponce {
 
 func NewFileResponceList(files []entity.File, uMap map[string]string) []FileResponce {
 	var res []FileResponce
+	if len(files) == 0 {
+		return []FileResponce{}
+	}
 	for _, f := range files {
 		res = append(res, NewFileResponce(f, uMap[f.Creater]))
 	}

@@ -40,13 +40,22 @@ func (lbc *LineBotController) Webhook(c *gin.Context) {
 				switch event.Message.(type) {
 				case *linebot.ImageMessage:
 					imageMessage := event.Message.(*linebot.ImageMessage)
-					file := entity.NewFile(imageMessage.ID, event.Source.UserID)
-					var imageSet *entity.ImageSet
-					if imageMessage.ImageSet != nil {
-						imageSet = entity.NewImageSet(imageMessage.ImageSet.ID, imageMessage.ImageSet.Total)
+					if imageMessage.ContentProvider.Type == linebot.ContentProviderTypeLINE {
+						file := entity.NewFile(imageMessage.ID, event.Source.UserID, entity.Image)
+						var imageSet *entity.ImageSet
+						if imageMessage.ImageSet != nil {
+							imageSet = entity.NewImageSet(imageMessage.ImageSet.ID, imageMessage.ImageSet.Total)
+						}
+						message := dto.NewImageMessage(event.ReplyToken, file, imageSet)
+						err = lbc.lru.HandleImageEvent(message)
 					}
-					message := dto.NewFileMessage(event.ReplyToken, file, imageSet)
-					err = lbc.lru.HandleImageEvent(message)
+				case *linebot.VideoMessage:
+					videoMessage := event.Message.(*linebot.VideoMessage)
+					if videoMessage.ContentProvider.Type == linebot.ContentProviderTypeLINE {
+						file := entity.NewFile(videoMessage.ID, event.Source.UserID, entity.Video)
+						message := dto.NewVideoMessage(event.ReplyToken, file, videoMessage.Duration)
+						err = lbc.lru.HandleVideoEvent(message)
+					}
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text, event.Source.UserID)
 					err = lbc.lru.HandleTextMessage(message)

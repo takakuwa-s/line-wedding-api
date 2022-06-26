@@ -11,6 +11,6 @@ type IFileRepository interface {
 	FindById(id string) (*entity.File, error)
 	FindByIds(ids []string) ([]entity.File, error)
 	FindByIdsAndUploaded(ids []string, uploaded bool) ([]entity.File, error)
-	FindByLimitAndStartIdAndUserIdAndUploaded(limit int, startId, userId, orderBy string, uploaded *bool) ([]entity.File, error)
+	FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(limit int, startId, userId, orderBy, fileType string, uploaded *bool) ([]entity.File, error)
 	FindByUploadedOrCalculatedFalse() ([]entity.File, error)
 }
