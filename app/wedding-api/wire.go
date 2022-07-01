@@ -32,6 +32,7 @@ func InitializeRouter() *driver.WeddingRouter {
 		controller.NewUserApiController,
 		controller.NewFileApiController,
 		controller.NewLineApiController,
+		controller.NewSlideShowApiController,
 
 		// gateway
 		gateway.NewCommonRepository,
@@ -49,6 +50,10 @@ func InitializeRouter() *driver.WeddingRouter {
 		wire.Bind(new(igateway.ILineGateway), new(*gateway.LineGateway)),
 		gateway.NewFileUploadGateway,
 		wire.Bind(new(igateway.IFileUploadGateway), new(*gateway.FileUploadGateway)),
+		gateway.NewSlideShowGateway,
+		wire.Bind(new(igateway.ISlideShowGateway), new(*gateway.SlideShowGateway)),
+		gateway.NewFSlideShowRepository,
+		wire.Bind(new(igateway.ISlideShowRepository), new(*gateway.SlideShowRepository)),
 
 		// presenter
 		presenter.NewLinePresenter,
@@ -58,6 +63,7 @@ func InitializeRouter() *driver.WeddingRouter {
 		usecase.NewLineReplyUsecase,
 		usecase.NewLinePushUsecase,
 		usecase.NewApiUsecase,
+		usecase.NewSlideShowUsecase,
 	)
 	return nil
 }

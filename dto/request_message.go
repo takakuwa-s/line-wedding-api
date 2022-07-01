@@ -21,31 +21,17 @@ func NewTextMessage(replyToken, text, senderUserId string) *TextMessage {
 	}
 }
 
-type ImageMessage struct {
+type FileMessage struct {
 	ReplyToken string
 	File       *entity.File
 	ImageSet   *entity.ImageSet
 }
 
-func NewImageMessage(replyToken string, file *entity.File, imageSet *entity.ImageSet) *ImageMessage {
-	return &ImageMessage{
+func NewFileMessage(replyToken string, file *entity.File, imageSet *entity.ImageSet) *FileMessage {
+	return &FileMessage{
 		ReplyToken: replyToken,
 		File:       file,
 		ImageSet:   imageSet,
-	}
-}
-
-type VideoMessage struct {
-	ReplyToken string
-	File       *entity.File
-	Duration   int
-}
-
-func NewVideoMessage(replyToken string, file *entity.File, duration int) *VideoMessage {
-	return &VideoMessage{
-		ReplyToken: replyToken,
-		File:       file,
-		Duration:   duration,
 	}
 }
 

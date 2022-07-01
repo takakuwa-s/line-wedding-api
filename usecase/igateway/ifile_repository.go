@@ -13,4 +13,6 @@ type IFileRepository interface {
 	FindByIdsAndUploaded(ids []string, uploaded bool) ([]entity.File, error)
 	FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(limit int, startId, userId, orderBy, fileType string, uploaded *bool) ([]entity.File, error)
 	FindByUploadedOrCalculatedFalse() ([]entity.File, error)
+	FindByUploadedAndFileType(limit int, uploaded bool, fileType entity.FileType) ([]entity.File, error)
+	FindByUploadedAndFileTypeAndDuration(limit int, uploaded bool, fileType entity.FileType, duration int) ([]entity.File, error)
 }

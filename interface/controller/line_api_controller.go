@@ -10,13 +10,13 @@ import (
 )
 
 type LineApiController struct {
-	lpu *usecase.LinePushUsecase
+	au *usecase.ApiUsecase
 }
 
 // コンストラクタ
 func NewLineApiController(
-	lpu *usecase.LinePushUsecase) *LineApiController {
-	return &LineApiController{lpu: lpu}
+	au *usecase.ApiUsecase) *LineApiController {
+	return &LineApiController{au: au}
 }
 
 func (lac *LineApiController) SendMessageToLineBot(c *gin.Context) {
@@ -25,8 +25,8 @@ func (lac *LineApiController) SendMessageToLineBot(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "messageKey is required"})
 		return
 	}
-	if err := lac.lpu.PublishMessageToAttendee(messageKey); err != nil {
-		conf.Log.Error("[SendMessageToLineBot] Sending messages failed", zap.String("error", err.Error()))
+	if err := lac.au.PublishMessageToAttendee(messageKey); err != nil {
+		conf.Log.Error("[SendMessageToLineBot] Sending messages failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -27,11 +27,11 @@ func NewBinaryRepository(f *dto.Firestore) *BinaryRepository {
 	return &BinaryRepository{f: f}
 }
 
-func (br *BinaryRepository) getStoragePath(name string, fileType entity.FileType, isContent bool) string {
+func (br *BinaryRepository) getStoragePath(name, prefix string, isContent bool) string {
 	if isContent {
-		return string(fileType) + "/content/" + name
+		return prefix + "/content/" + name
 	} else {
-		return string(fileType) + "/thumbnail/" + name
+		return prefix + "/thumbnail/" + name
 	}
 }
 
@@ -47,7 +47,7 @@ func (br *BinaryRepository) getUploadWriter(name string) *storage.Writer {
 }
 
 func (br *BinaryRepository) uploadImageThumb(name string, img image.Image) (*storage.Writer, error) {
-	writer := br.getUploadWriter(br.getStoragePath(name, entity.Image, false))
+	writer := br.getUploadWriter(br.getStoragePath(name, string(entity.Image), false))
 	thumb := imaging.Resize(img, 200, 0, imaging.Lanczos)
 	imaging.Encode(writer, thumb, imaging.JPEG)
 	if err := writer.Close(); err != nil {
@@ -60,7 +60,8 @@ func (br *BinaryRepository) uploadImageThumb(name string, img image.Image) (*sto
 func (br *BinaryRepository) SaveImageBinary(file entity.File, content io.ReadCloser) (*entity.File, error) {
 	defer content.Close()
 	name := file.Id + "-" + time.Now().Format("2023-03-19-12:30:00")
-	contentWriter := br.getUploadWriter(br.getStoragePath(name, entity.Image, true))
+	contentPath := br.getStoragePath(name, string(entity.Image), true)
+	contentWriter := br.getUploadWriter(contentPath)
 	reader := io.TeeReader(content, contentWriter)
 	img, _, err := image.Decode(reader)
 	if err != nil {
@@ -71,7 +72,7 @@ func (br *BinaryRepository) SaveImageBinary(file entity.File, content io.ReadClo
 		return nil, err
 	}
 	if err := contentWriter.Close(); err != nil {
-		br.deleteBinary(br.getStoragePath(name, entity.Image, false))
+		br.deleteBinary(contentPath)
 		return nil, fmt.Errorf("failed to close the writer for the image content binary; err = %w", err)
 	}
 	conf.Log.Info("Successfully upload the image binary content", zap.String("name", name), zap.Any("attrs", contentWriter.Attrs()))
@@ -85,7 +86,7 @@ func (br *BinaryRepository) SaveImageBinary(file entity.File, content io.ReadClo
 	return &file, nil
 }
 
-func (br *BinaryRepository) uploadVideoThumb(name, url string) (string, error) {
+func (br *BinaryRepository) uploadVideoThumb(uplodaPath, url string) (string, error) {
 	tempDir, err := ioutil.TempDir("", "thumbnail*")
 	if err != nil {
 		return "", fmt.Errorf("failed to create temp directory; err = %w", err)
@@ -106,7 +107,7 @@ func (br *BinaryRepository) uploadVideoThumb(name, url string) (string, error) {
 		return "", fmt.Errorf("failed to read the created thumbnail image for video; err = %w", err)
 	}
 	content := bytes.NewReader(b)
-	writer := br.getUploadWriter(br.getStoragePath(name, entity.Video, false))
+	writer := br.getUploadWriter(uplodaPath)
 	if _, err := io.Copy(writer, content); err != nil {
 		return "", fmt.Errorf("failed to copy the video thumbnail binary; err = %w", err)
 	}
@@ -117,44 +118,69 @@ func (br *BinaryRepository) uploadVideoThumb(name, url string) (string, error) {
 	return writer.Attrs().MediaLink, nil
 }
 
+func (br *BinaryRepository) saveVideoBinary(name, prefix string, content io.Reader) (string, string, string, error) {
+	contentPath := br.getStoragePath(name, prefix, true)
+	contentWriter := br.getUploadWriter(contentPath)
+	if _, err := io.Copy(contentWriter, content); err != nil {
+		return "", "", "", fmt.Errorf("failed to copy the video content binary; err = %w", err)
+	}
+	if err := contentWriter.Close(); err != nil {
+		return "", "", "", fmt.Errorf("failed to close the writer for the content binary; err = %w", err)
+	}
+	contentUrl := contentWriter.Attrs().MediaLink
+	thumbnailPath := br.getStoragePath(name, prefix, false)
+	thumbUrl, err := br.uploadVideoThumb(thumbnailPath, contentUrl)
+	if err != nil {
+		br.deleteBinary(contentPath)
+		return "", "", "", err
+	}
+	conf.Log.Info("Successfully upload the video binary content", zap.Any("attrs", contentWriter.Attrs()))
+	return thumbUrl, contentUrl, contentWriter.Attrs().ContentType, nil
+}
+
 func (br *BinaryRepository) SaveVideoBinary(file entity.File, content io.ReadCloser) (*entity.File, error) {
 	defer content.Close()
 	name := file.Id + "-" + time.Now().Format("2023-03-19-12:30:00")
-	contentWriter := br.getUploadWriter(br.getStoragePath(name, entity.Video, true))
-	if _, err := io.Copy(contentWriter, content); err != nil {
-		return nil, fmt.Errorf("failed to copy the video content binary; err = %w", err)
-	}
-	if err := contentWriter.Close(); err != nil {
-		return nil, fmt.Errorf("failed to close the writer for the content binary; err = %w", err)
-	}
-	contentUrl := contentWriter.Attrs().MediaLink
-	thumbUrl, err := br.uploadVideoThumb(name, contentUrl)
+	prefix := string(entity.Video)
+	thumbUrl, contentUrl, contentType, err := br.saveVideoBinary(name, prefix, content)
 	if err != nil {
-		br.deleteBinary(br.getStoragePath(name, entity.Video, true))
 		return nil, err
 	}
-	conf.Log.Info("Successfully upload the video binary content", zap.String("name", name), zap.Any("attrs", contentWriter.Attrs()))
 	file.ThumbnailUrl = thumbUrl
 	file.ContentUrl = contentUrl
-	file.MimeType = contentWriter.Attrs().ContentType
+	file.MimeType = contentType
 	file.Uploaded = true
 	file.Name = name
 	return &file, nil
 }
 
+func (br *BinaryRepository) SaveSlideShowBinary(s entity.SlideShow, content io.Reader) (*entity.SlideShow, error) {
+	name := s.Id + "-" + time.Now().Format("2023-03-19-12:30:00")
+	prefix := "slideshow"
+	thumbUrl, contentUrl, contentType, err := br.saveVideoBinary(name, prefix, content)
+	if err != nil {
+		return nil, err
+	}
+	s.Name = name
+	s.ContentUrl = contentUrl
+	s.ThumbnailUrl = thumbUrl
+	s.MimeType = contentType
+	return &s, nil
+}
+
 func (br *BinaryRepository) deleteBinary(name string) error {
 	if err := br.f.Bucket.Object(name).Delete(conf.Ctx); err != nil {
-		return fmt.Errorf("failed to delete the file binary; name = %s, err = %w", name, err)
+		return fmt.Errorf("failed to delete the binary; name = %s, err = %w", name, err)
 	}
-	conf.Log.Info("Successfully delete the file", zap.String("name", name))
+	conf.Log.Info("Successfully delete the binary", zap.String("name", name))
 	return nil
 }
 
-func (br *BinaryRepository) DeleteBinary(name string, fileType entity.FileType) error {
-	if err := br.deleteBinary(br.getStoragePath(name, fileType, true)); err != nil {
+func (br *BinaryRepository) DeleteBinary(name, prefix string) error {
+	if err := br.deleteBinary(br.getStoragePath(name, prefix, true)); err != nil {
 		return err
 	}
-	if err := br.deleteBinary(br.getStoragePath(name, fileType, false)); err != nil {
+	if err := br.deleteBinary(br.getStoragePath(name, prefix, false)); err != nil {
 		return fmt.Errorf("successfully deleted the binary content, but failed to delete the thumbnail binary, err = %w", err)
 	}
 	return nil

@@ -19,6 +19,7 @@ type LineReplyUsecase struct {
 	isr igateway.IImageSetRepository
 	fug igateway.IFileUploadGateway
 	lpu *LinePushUsecase
+	su  *SlideShowUsecase
 	p   ipresenter.IPresenter
 }
 
@@ -31,12 +32,13 @@ func NewLineReplyUsecase(
 	isr igateway.IImageSetRepository,
 	fug igateway.IFileUploadGateway,
 	lpu *LinePushUsecase,
+	su *SlideShowUsecase,
 	p ipresenter.IPresenter) *LineReplyUsecase {
-	return &LineReplyUsecase{mr: mr, lg: lg, ur: ur, fr: fr, isr: isr, fug: fug, lpu: lpu, p: p}
+	return &LineReplyUsecase{mr: mr, lg: lg, ur: ur, fr: fr, isr: isr, fug: fug, lpu: lpu, su: su, p: p}
 }
 
 // TODO error handling
-func (lru *LineReplyUsecase) HandleImageEvent(m *dto.ImageMessage) error {
+func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 	// Save file data
 	err := lru.fr.SaveFile(m.File)
 	if err != nil {
@@ -73,14 +75,14 @@ func (lru *LineReplyUsecase) HandleImageEvent(m *dto.ImageMessage) error {
 
 	// Reply message
 	messages := lru.mr.FindMessageByKey("image")
-	return lru.sendReplyMessage(m.ReplyToken, messages)
+	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
 // TODO error handling
-func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.VideoMessage) error {
-	if m.Duration > 120*1000 {
+func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.FileMessage) error {
+	if m.File.Duration > 120*1000 {
 		messages := lru.mr.FindMessageByKey("video_error")
-		return lru.sendReplyMessage(m.ReplyToken, messages)
+		return lru.p.ReplyMessage(m.ReplyToken, messages)
 	}
 
 	// Save file data
@@ -98,7 +100,7 @@ func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.VideoMessage) error {
 
 	// Reply message
 	messages := lru.mr.FindMessageByKey("video")
-	return lru.sendReplyMessage(m.ReplyToken, messages)
+	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
 // TODO error handling
@@ -138,7 +140,7 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	// Return message
 	messages := lru.mr.FindMessageByKey("follow")
 	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), user.LineName)
-	return lru.sendReplyMessage(m.ReplyToken, messages)
+	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
 // TODO error handling
@@ -167,7 +169,7 @@ func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
 
 func (lru *LineReplyUsecase) HandleGroupEvent(m *dto.GroupMessage) error {
 	messages := lru.mr.FindMessageByKey("group")
-	return lru.sendReplyMessage(m.ReplyToken, messages)
+	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
 func (lru *LineReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
@@ -181,13 +183,21 @@ func (lru *LineReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 		if lru.checkAdminRole(m.SenderUserId) {
 			messages = lru.mr.FindMessageByKey("reminder")
 		}
+	case "スライドショー確認":
+		if lru.checkAdminRole(m.SenderUserId) {
+			var err error
+			messages, err = lru.su.CreateSlideshowMessage()
+			if err != nil {
+				return err
+			}
+		}
 	default:
 		messages = lru.mr.FindReplyMessage(m.Text)
 	}
 	if len(messages) == 0 {
 		messages = lru.mr.FindMessageByKey("unknown")
 	}
-	return lru.sendReplyMessage(m.ReplyToken, messages)
+	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
 func (lru *LineReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
@@ -196,19 +206,9 @@ func (lru *LineReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {
 
 func (lru *LineReplyUsecase) HandleError(token string) {
 	messages := lru.mr.FindMessageByKey("error")
-	if err := lru.sendReplyMessage(token, messages); err != nil {
+	if err := lru.p.ReplyMessage(token, messages); err != nil {
 		conf.Log.Error("failed to send error reply message", zap.Error(err))
 	}
-}
-
-func (lru *LineReplyUsecase) sendReplyMessage(
-	token string,
-	m []map[string]interface{}) error {
-	rm := dto.NewReplyMessage(token, m)
-	if err := lru.p.ReplyMessage(rm); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (lru *LineReplyUsecase) checkAdminRole(userId string) bool {

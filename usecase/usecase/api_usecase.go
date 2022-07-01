@@ -11,15 +11,25 @@ import (
 )
 
 type ApiUsecase struct {
-	ur igateway.IUserRepository
-	lg igateway.ILineGateway
-	fr igateway.IFileRepository
-	br igateway.IBinaryRepository
+	mr  igateway.IMessageRepository
+	ur  igateway.IUserRepository
+	lg  igateway.ILineGateway
+	fr  igateway.IFileRepository
+	br  igateway.IBinaryRepository
+	lpu *LinePushUsecase
+	su  *SlideShowUsecase
 }
 
 // Newコンストラクタ
-func NewApiUsecase(ur igateway.IUserRepository, lg igateway.ILineGateway, fr igateway.IFileRepository, br igateway.IBinaryRepository) *ApiUsecase {
-	return &ApiUsecase{ur: ur, lg: lg, fr: fr, br: br}
+func NewApiUsecase(
+	mr igateway.IMessageRepository,
+	ur igateway.IUserRepository,
+	lg igateway.ILineGateway,
+	fr igateway.IFileRepository,
+	br igateway.IBinaryRepository,
+	lpu *LinePushUsecase,
+	su *SlideShowUsecase) *ApiUsecase {
+	return &ApiUsecase{mr: mr, ur: ur, lg: lg, fr: fr, br: br, lpu: lpu, su: su}
 }
 
 func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
@@ -130,7 +140,7 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 		return err
 	}
 	if file.Uploaded {
-		if err := au.br.DeleteBinary(file.Name, file.FileType); err != nil {
+		if err := au.br.DeleteBinary(file.Name, string(file.FileType)); err != nil {
 			return err
 		}
 	}
@@ -148,15 +158,32 @@ func (au *ApiUsecase) DeleteFileList(ids []string) error {
 	if len(files) != len(ids) {
 		return fmt.Errorf("some ids is invalid and not found; ids = %s", ids)
 	}
-	for i, f := range files {
-		if err := au.fr.DeleteFileById(f.Id); err != nil {
-			return fmt.Errorf("successfully delete %d files, but failed to delete the file metadata of id = %s", i, f.Id)
-		}
+	for _, f := range files {
 		if f.Uploaded {
-			if err := au.br.DeleteBinary(f.Name, f.FileType); err != nil {
-				return fmt.Errorf("successfully delete %d files, but failed to delete the file binary of id = %s", i, f.Id)
+			if err := au.br.DeleteBinary(f.Name, string(f.FileType)); err != nil {
+				conf.Log.Error("failed to delete the file binary", zap.Any("file", f))
 			}
+		}
+		if err := au.fr.DeleteFileById(f.Id); err != nil {
+			conf.Log.Error("failed to delete the file metadata", zap.Any("file", f))
 		}
 	}
 	return nil
+}
+
+func (au *ApiUsecase) PublishMessageToAttendee(messageKey string) error {
+	var messages []map[string]interface{}
+	if messageKey == "slideshow" {
+		var err error
+		messages, err = au.su.CreateSlideshowMessage()
+		if err != nil {
+			return err
+		}
+	} else {
+		messages = au.mr.FindMessageByKey(messageKey)
+	}
+	if len(messages) == 0 {
+		return fmt.Errorf("not found the message; %v", messageKey)
+	}
+	return au.lpu.PublishMessageToAttendee(messages)
 }

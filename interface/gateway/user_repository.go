@@ -41,7 +41,7 @@ func (ur *UserRepository) UpdateBoolFieldById(id, field string, val bool) error 
 			Value: time.Now(),
 		},
 	}); err != nil {
-		return fmt.Errorf("failed update the user; id =  %s, field = %s, val = %t, err = %w", id, field, val, err)
+		return fmt.Errorf("failed to update the user; id =  %s, field = %s, val = %t, err = %w", id, field, val, err)
 	}
 	conf.Log.Info("Successfully update the user", zap.String("id", id), zap.Bool(field, val))
 	return nil

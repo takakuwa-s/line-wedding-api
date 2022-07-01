@@ -54,7 +54,7 @@ func (fg *FaceGateway) GetFaceAnalysis(imageUrl string) ([]*dto.FaceResponse, er
 	if err != nil {
 		return nil, fmt.Errorf("failed to read the face api response body; %w", err)
 	}
-	if resp.StatusCode == 200 {
+	if resp.StatusCode == http.StatusOK {
 		var obj []*dto.FaceResponse
 		if err := json.Unmarshal(body, &obj); err != nil {
 			return nil, fmt.Errorf("failed to json Unmarshal for the face api success response; %w", err)
@@ -62,10 +62,6 @@ func (fg *FaceGateway) GetFaceAnalysis(imageUrl string) ([]*dto.FaceResponse, er
 		conf.Log.Info("Successfully get the face api response", zap.Any("response", obj))
 		return obj, nil
 	} else {
-		var obj map[string]interface{}
-		if err := json.Unmarshal(body, &obj); err != nil {
-			return nil, fmt.Errorf("failed to json Unmarshal for the face api error response; %w", err)
-		}
-		return nil, fmt.Errorf("%s", obj)
+		return nil, fmt.Errorf("face api returns error; %s", string(body))
 	}
 }

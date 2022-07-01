@@ -10,20 +10,26 @@ import (
 type FileUploadRouter struct {
 	cr  *CommonRouter
 	fuc *controller.FileUploadController
+	sac *controller.SlideShowApiController
 }
 
 // Newコンストラクタ
 func NewFileUploadRouter(
 	cr *CommonRouter,
-	fuc *controller.FileUploadController) *FileUploadRouter {
-	return &FileUploadRouter{cr: cr, fuc: fuc}
+	fuc *controller.FileUploadController,
+	sac *controller.SlideShowApiController) *FileUploadRouter {
+	return &FileUploadRouter{cr: cr, fuc: fuc, sac: sac}
 }
 
 // Init ルーティング設定
 func (fur *FileUploadRouter) Init() {
 	router := fur.cr.GetDefaultRouter()
-	router.Use(fur.validateTokenMiddleware)
-	router.POST("/api/file/list", fur.fuc.UploadFile)
+	api := router.Group("/api")
+	api.Use(fur.validateTokenMiddleware)
+	{
+		api.POST("/file/list", fur.fuc.UploadFile)
+	}
+	router.POST("/webhook/slideshow", fur.sac.UploadSlideShowWebhook)
 	router.GET("/health-check", fur.cr.HealthCheck)
 	port := os.Getenv("PORT")
 	if port == "" {

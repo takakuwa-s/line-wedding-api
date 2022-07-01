@@ -130,6 +130,34 @@
       }
     }
   ],
+  "slideshow_create_success": [
+    {
+      "type": "text",
+      "text": "スライドショーの作成に成功しました。"
+    },
+    {
+      "type": "video",
+      "originalContentUrl": "%s",
+      "previewImageUrl": "%s"
+    }
+  ],
+  "slideshow_create_error": [
+    {
+      "type": "text",
+      "text": "スライドショーの作成に失敗しました。\n\n詳細;\n%s"
+    }
+  ],
+  "slideshow": [
+    {
+      "type": "text",
+      "text": "結婚式にお越し頂き、ありがとうございました。AIが皆様から共有頂いた写真からスライドショーを作成しましたので、おねしゃ"
+    },
+    {
+      "type": "video",
+      "originalContentUrl": "%s",
+      "previewImageUrl": "%s"
+    }
+  ],
   "invitation": [
     {
       "type": "text",

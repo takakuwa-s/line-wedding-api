@@ -14,6 +14,7 @@ type WeddingRouter struct {
 	uac *controller.UserApiController
 	fac *controller.FileApiController
 	lac *controller.LineApiController
+	sac *controller.SlideShowApiController
 }
 
 // Newコンストラクタ
@@ -23,8 +24,9 @@ func NewWeddingRouter(
 	iac *controller.InitApiController,
 	uac *controller.UserApiController,
 	fac *controller.FileApiController,
-	lac *controller.LineApiController) *WeddingRouter {
-	return &WeddingRouter{cr: cr, lbc: lbc, iac: iac, uac: uac, fac: fac, lac: lac}
+	lac *controller.LineApiController,
+	sac *controller.SlideShowApiController) *WeddingRouter {
+	return &WeddingRouter{cr: cr, lbc: lbc, iac: iac, uac: uac, fac: fac, lac: lac, sac: sac}
 }
 
 // Init ルーティング設定
@@ -34,7 +36,8 @@ func (wr *WeddingRouter) Init() {
 	router.POST("/line-messaging-api/wedding/webhook", wr.lbc.Webhook)
 	router.GET("/health-check", wr.cr.HealthCheck)
 	api := router.Group("/api")
-	api.Use(wr.validateTokenMiddleware)
+	// ToDo
+	// api.Use(wr.validateTokenMiddleware)
 	{
 		user := api.Group("/user")
 		{
@@ -48,6 +51,13 @@ func (wr *WeddingRouter) Init() {
 			file.GET("/list", wr.fac.GetFileList)
 			file.DELETE("/:id", wr.fac.DeleteFile)
 			file.DELETE("/list", wr.fac.DeleteFileList)
+		}
+		slideshow := api.Group("/slideshow")
+		{
+			slideshow.POST("", wr.sac.CreateSlideShow)
+			slideshow.GET("/list", wr.sac.ListSlideshow)
+			slideshow.DELETE("/:id", wr.sac.DeleteSlideshow)
+			slideshow.PATCH("/:id", wr.sac.PatchSlideshow)
 		}
 		api.GET("/init/:id", wr.iac.GetInitialData)
 		api.POST("/line/message", wr.lac.SendMessageToLineBot)

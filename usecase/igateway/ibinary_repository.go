@@ -9,5 +9,6 @@ import (
 type IBinaryRepository interface {
 	SaveImageBinary(file entity.File, content io.ReadCloser) (*entity.File, error)
 	SaveVideoBinary(file entity.File, content io.ReadCloser) (*entity.File, error)
-	DeleteBinary(name string, fileType entity.FileType) error
+	SaveSlideShowBinary(s entity.SlideShow, content io.Reader) (*entity.SlideShow, error)
+	DeleteBinary(name, prefix string) error
 }

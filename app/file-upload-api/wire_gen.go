@@ -11,6 +11,7 @@ import (
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/interface/controller"
 	"github.com/takakuwa-s/line-wedding-api/interface/gateway"
+	"github.com/takakuwa-s/line-wedding-api/interface/presenter"
 	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
 )
 
@@ -27,7 +28,15 @@ func InitializeRouter() *driver.FileUploadRouter {
 	binaryRepository := gateway.NewBinaryRepository(firestore)
 	fileUploadUsecase := usecase.NewFileUploadUsecase(lineGateway, faceGateway, fileRepository, binaryRepository)
 	fileUploadController := controller.NewFileUploadController(fileUploadUsecase)
-	fileUploadRouter := driver.NewFileUploadRouter(commonRouter, fileUploadController)
+	messageRepository := gateway.NewMessageRepository()
+	slideShowGateway := gateway.NewSlideShowGateway()
+	slideShowRepository := gateway.NewFSlideShowRepository(commonRepository, firestore)
+	userRepository := gateway.NewUserRepository(commonRepository, firestore)
+	linePresenter := presenter.NewLinePresenter(lineBot)
+	linePushUsecase := usecase.NewLinePushUsecase(messageRepository, userRepository, linePresenter, lineGateway)
+	slideShowUsecase := usecase.NewSlideShowUsecase(messageRepository, fileRepository, slideShowGateway, slideShowRepository, binaryRepository, linePushUsecase)
+	slideShowApiController := controller.NewSlideShowApiController(slideShowUsecase)
+	fileUploadRouter := driver.NewFileUploadRouter(commonRouter, fileUploadController, slideShowApiController)
 	return fileUploadRouter
 }
 

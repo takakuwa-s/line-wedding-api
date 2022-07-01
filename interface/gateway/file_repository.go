@@ -145,3 +145,21 @@ func (fr *FileRepository) FindByUploadedOrCalculatedFalse() ([]entity.File, erro
 	files := append(f1, f2...)
 	return files, nil
 }
+
+func (fr *FileRepository) FindByUploadedAndFileType(limit int, uploaded bool, fileType entity.FileType) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").Where("Uploaded", "==", uploaded).Where("FileType", "==", string(fileType)).Limit(limit)
+	f, err := fr.executeQuery(&query)
+	if err != nil {
+		return nil, err
+	}
+	return f, nil
+}
+
+func (fr *FileRepository) FindByUploadedAndFileTypeAndDuration(limit int, uploaded bool, fileType entity.FileType, duration int) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").Where("Uploaded", "==", uploaded).Where("FileType", "==", string(fileType)).Where("Duration", ">=", duration).Limit(limit)
+	f, err := fr.executeQuery(&query)
+	if err != nil {
+		return nil, err
+	}
+	return f, nil
+}

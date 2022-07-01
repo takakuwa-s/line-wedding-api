@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
-	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
 	"github.com/takakuwa-s/line-wedding-api/usecase/ipresenter"
@@ -27,11 +26,20 @@ func NewLinePushUsecase(
 	return &LinePushUsecase{mr: mr, ur: ur, p: p, lg: lg}
 }
 
-func (lpu *LinePushUsecase) PublishMessageToAttendee(messageKey string) error {
-	messages := lpu.mr.FindMessageByKey(messageKey)
-	if len(messages) == 0 {
-		return fmt.Errorf("not found the message; %v", messageKey)
-	}
+func (lpu *LinePushUsecase) SendSlideshowSuccessNotification(contentUrl, thumbUrl string) error {
+	messages := lpu.mr.FindMessageByKey("slideshow_create_success")
+	messages[1]["originalContentUrl"] = fmt.Sprintf(messages[1]["originalContentUrl"].(string), contentUrl)
+	messages[1]["previewImageUrl"] = fmt.Sprintf(messages[1]["previewImageUrl"].(string), thumbUrl)
+	return lpu.multicastMessageToAdmin(messages)
+}
+
+func (lpu *LinePushUsecase) SendSlideshowErrorNotification(note string) error {
+	messages := lpu.mr.FindMessageByKey("slideshow_create_error")
+	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), note)
+	return lpu.multicastMessageToAdmin(messages)
+}
+
+func (lpu *LinePushUsecase) PublishMessageToAttendee(messages []map[string]interface{}) error {
 	users, err := lpu.ur.FindByAttendanceAndFollow(true, true)
 	if err != nil {
 		return err
@@ -49,21 +57,21 @@ func (lpu *LinePushUsecase) SendFollowNotification(follower *entity.User, isFirs
 	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), follower.LineName)
 	messages[1]["originalContentUrl"] = fmt.Sprintf(messages[1]["originalContentUrl"].(string), follower.IconUrl)
 	messages[1]["previewImageUrl"] = fmt.Sprintf(messages[1]["previewImageUrl"].(string), follower.IconUrl)
-	users, err := lpu.ur.FindByIsAdmin(true)
-	if err != nil {
-		return err
-	}
-	return lpu.multicastMessage(users, messages)
+	return lpu.multicastMessageToAdmin(messages)
 }
 
 func (lpu *LinePushUsecase) SendUnFollowNotification(unFollower *entity.User) error {
 	messages := lpu.mr.FindMessageByKey("wedding_unfollow")
 	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), unFollower.LineName)
+	return lpu.multicastMessageToAdmin(messages)
+}
+
+func (lpu *LinePushUsecase) multicastMessageToAdmin(m []map[string]interface{}) error {
 	users, err := lpu.ur.FindByIsAdmin(true)
 	if err != nil {
 		return err
 	}
-	return lpu.multicastMessage(users, messages)
+	return lpu.multicastMessage(users, m)
 }
 
 func (lpu *LinePushUsecase) multicastMessage(
@@ -88,8 +96,7 @@ func (lpu *LinePushUsecase) multicastMessage(
 		for i, user := range users {
 			userIds[i] = user.Id
 		}
-		pm := dto.NewMulticastMessage(userIds, m)
-		if err = lpu.p.MulticastMessage(pm); err != nil {
+		if err = lpu.p.MulticastMessage(userIds, m); err != nil {
 			return err
 		}
 	} else {

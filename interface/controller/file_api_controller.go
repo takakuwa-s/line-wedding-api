@@ -46,7 +46,7 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 	orderBy := c.Query("orderBy")
 	files, err := fac.au.GetFileList(limit, startId, userId, orderBy, fileType, uploaded, needCreaterName)
 	if err != nil {
-		conf.Log.Error("[GetFileList] Getting file list failed", zap.String("error", err.Error()))
+		conf.Log.Error("[GetFileList] Getting file list failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -61,7 +61,7 @@ func (fac *FileApiController) DeleteFile(c *gin.Context) {
 	}
 
 	if err := fac.au.DeleteFile(id); err != nil {
-		conf.Log.Error("[DeleteFile] Deleting file failed", zap.String("error", err.Error()))
+		conf.Log.Error("[DeleteFile] Deleting file failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -75,7 +75,7 @@ func (fac *FileApiController) DeleteFileList(c *gin.Context) {
 		return
 	}
 	if err := fac.au.DeleteFileList(ids); err != nil {
-		conf.Log.Error("[DeleteFileList] Deleting multiple files failed", zap.String("error", err.Error()))
+		conf.Log.Error("[DeleteFileList] Deleting multiple files failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

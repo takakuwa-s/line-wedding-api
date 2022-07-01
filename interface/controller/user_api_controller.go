@@ -26,13 +26,13 @@ func NewUserApiController(au *usecase.ApiUsecase) *UserApiController {
 func (uac *UserApiController) UpdateUser(c *gin.Context) {
 	var request dto.UpdateUserRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		conf.Log.Error("[UpdateUser] json convestion failed", zap.String("error", err.Error()))
+		conf.Log.Error("[UpdateUser] json convestion failed", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	user, err := uac.au.UpdateUser(&request)
 	if err != nil {
-		conf.Log.Error("[UpdateUser] Updating user failed", zap.String("error", err.Error()))
+		conf.Log.Error("[UpdateUser] Updating user failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -42,7 +42,7 @@ func (uac *UserApiController) UpdateUser(c *gin.Context) {
 func (uac *UserApiController) PatchUser(c *gin.Context) {
 	var request dto.PatchUserRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		conf.Log.Error("[UpdateUser] json convestion failed", zap.String("error", err.Error()))
+		conf.Log.Error("[UpdateUser] json convestion failed", zap.Error(err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -57,7 +57,7 @@ func (uac *UserApiController) PatchUser(c *gin.Context) {
 		return
 	}
 	if err := uac.au.PatchUser(id, field, val); err != nil {
-		conf.Log.Error("[PatchUser] Updating user field failed", zap.String("error", err.Error()))
+		conf.Log.Error("[PatchUser] Updating user field failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -72,7 +72,7 @@ func (uac *UserApiController) GetUser(c *gin.Context) {
 	}
 	user, err := uac.au.GetUser(id)
 	if err != nil {
-		conf.Log.Error("[GetUser] Failed to get user", zap.String("error", err.Error()))
+		conf.Log.Error("[GetUser] Failed to get user", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -106,7 +106,7 @@ func (uac *UserApiController) GetUserList(c *gin.Context) {
 	}
 	users, err := uac.au.GetUsers(limit, startId, flag, val)
 	if err != nil {
-		conf.Log.Error("[GetUserList] Failed to get user list", zap.String("error", err.Error()))
+		conf.Log.Error("[GetUserList] Failed to get user list", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -119,7 +119,7 @@ func (uac *UserApiController) GetUserList(c *gin.Context) {
 			cw.WriteAll(data)
 			cw.Flush()
 			if err := cw.Error(); err != nil {
-				conf.Log.Error("[GetUserList] Failed to download user list csv", zap.String("error", err.Error()))
+				conf.Log.Error("[GetUserList] Failed to download user list csv", zap.Error(err))
 			}
 			return false
 		})

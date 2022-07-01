@@ -21,6 +21,7 @@ type File struct {
 	Height             int       `json:"height"`
 	MimeType           string    `json:"mimeType"`
 	Uploaded           bool      `json:"uploaded"`
+	Duration           int       `json:"duration"`
 	Calculated         bool      `json:"calculated"`
 	FaceCount          int       `json:"faceCount"`
 	FaceHappinessLevel float32   `json:"faceHappinessLevel"`
@@ -31,10 +32,11 @@ type File struct {
 	UpdatedAt          time.Time `json:"updatedAt"`
 }
 
-func NewFile(messageId, creater string, fileType FileType) *File {
+func NewFile(messageId, creater string, fileType FileType, duration int) *File {
 	return &File{
 		Id:         messageId,
 		FileType:   fileType,
+		Duration:   duration,
 		Uploaded:   false,
 		Calculated: false,
 		CreatedAt:  time.Now(),

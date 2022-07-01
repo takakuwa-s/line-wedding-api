@@ -26,7 +26,7 @@ func (iac *InitApiController) GetInitialData(c *gin.Context) {
 	}
 	data, err := iac.au.GetInitialData(id)
 	if err != nil {
-		conf.Log.Error("[GetInitialData] Getting user failed", zap.String("error", err.Error()))
+		conf.Log.Error("[GetInitialData] Getting user failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

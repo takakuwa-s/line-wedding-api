@@ -41,19 +41,19 @@ func (lbc *LineBotController) Webhook(c *gin.Context) {
 				case *linebot.ImageMessage:
 					imageMessage := event.Message.(*linebot.ImageMessage)
 					if imageMessage.ContentProvider.Type == linebot.ContentProviderTypeLINE {
-						file := entity.NewFile(imageMessage.ID, event.Source.UserID, entity.Image)
+						file := entity.NewFile(imageMessage.ID, event.Source.UserID, entity.Image, 0)
 						var imageSet *entity.ImageSet
 						if imageMessage.ImageSet != nil {
 							imageSet = entity.NewImageSet(imageMessage.ImageSet.ID, imageMessage.ImageSet.Total)
 						}
-						message := dto.NewImageMessage(event.ReplyToken, file, imageSet)
+						message := dto.NewFileMessage(event.ReplyToken, file, imageSet)
 						err = lbc.lru.HandleImageEvent(message)
 					}
 				case *linebot.VideoMessage:
 					videoMessage := event.Message.(*linebot.VideoMessage)
 					if videoMessage.ContentProvider.Type == linebot.ContentProviderTypeLINE {
-						file := entity.NewFile(videoMessage.ID, event.Source.UserID, entity.Video)
-						message := dto.NewVideoMessage(event.ReplyToken, file, videoMessage.Duration)
+						file := entity.NewFile(videoMessage.ID, event.Source.UserID, entity.Video, videoMessage.Duration)
+						message := dto.NewFileMessage(event.ReplyToken, file, nil)
 						err = lbc.lru.HandleVideoEvent(message)
 					}
 				case *linebot.TextMessage:
