@@ -103,11 +103,22 @@ func (su *SlideShowUsecase) uploadSlideshow(r dto.SlideshowWebhook) error {
 	if r.Type != "edit" || r.Action != "render" {
 		return nil
 	}
+	s, err := su.sr.FindById(r.Id)
+	if err != nil {
+		return err
+	}
 	content, err := su.sg.DownloadContent(r.Url)
 	if err != nil {
 		return err
 	}
-	s := entity.NewSlideShow(r.Id)
+	if s == nil {
+		s = entity.NewSlideShow(r.Id)
+	} else {
+		if err := su.br.DeleteBinary(s.Name, "slideshow"); err != nil {
+			return err
+		}
+		s.UpdatedAt = time.Now()
+	}
 	s1, err := su.br.SaveSlideShowBinary(*s, content)
 	if err != nil {
 		return err
