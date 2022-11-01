@@ -1,7 +1,7 @@
 {
   "size": {
     "width": 2500,
-    "height": 1686
+    "height": 1658
   },
   "selected": true,
   "name": "richmenu-1",
@@ -11,57 +11,70 @@
       "bounds": {
         "x": 0,
         "y": 0,
-        "width": 834,
-        "height": 843
+        "width": 2500,
+        "height": 223
       },
       "action": {
-        "type": "message",
-        "label": "help",
-        "text": "help"
-      }
-    },
-    {
-      "bounds": {
-        "x": 834,
-        "y": 0,
-        "width": 833,
-        "height": 843
-      },
-      "action": {
-        "type": "uri",
-        "uri": "https://liff.line.me/1657103786-yAJBxJnk"
-      }
-    },
-    {
-      "bounds": {
-        "x": 1667,
-        "y": 0,
-        "width": 833,
-        "height": 843
-      },
-      "action": {
-        "type": "uri",
-        "uri": "https://liff.line.me/1657103786-yAJBxJnk/user"
+        "type": "richmenuswitch",
+        "richMenuAliasId": "richmenu-alias-2",
+        "data": "{}"
       }
     },
     {
       "bounds": {
         "x": 0,
-        "y": 843,
+        "y": 223,
         "width": 834,
-        "height": 843
+        "height": 718
       },
       "action": {
-        "type": "uri",
-        "uri": "https://liff.line.me/1657103786-yAJBxJnk/image/list/all?noLoad=true"
+        "type": "message",
+        "label": "ヘルプ",
+        "text": "ヘルプ"
       }
     },
     {
       "bounds": {
         "x": 834,
-        "y": 843,
+        "y": 223,
         "width": 833,
-        "height": 843
+        "height": 718
+      },
+      "action": {
+        "type": "uri",
+        "uri": "%s"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1667,
+        "y": 223,
+        "width": 833,
+        "height": 718
+      },
+      "action": {
+        "type": "uri",
+        "uri": "%s/user"
+      }
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 941,
+        "width": 834,
+        "height": 717
+      },
+      "action": {
+        "type": "uri",
+        "uri": "%s/image/list/all?noLoad=true"
+      }
+    },
+    {
+      "bounds": {
+        "x": 834,
+        "y": 941,
+        "width": 833,
+        "height": 717
       },
       "action": {
         "type": "message",
@@ -72,14 +85,14 @@
     {
       "bounds": {
         "x": 1667,
-        "y": 843,
+        "y": 941,
         "width": 833,
-        "height": 843
+        "height": 717
       },
       "action": {
-        "type": "richmenuswitch",
-        "richMenuAliasId": "richmenu-alias-2",
-        "data": "{}"
+        "type": "message",
+        "label": "結婚式場はどこ？",
+        "text": "結婚式場はどこ？"
       }
     }
   ]

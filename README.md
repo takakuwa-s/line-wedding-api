@@ -6,7 +6,7 @@ This project aims a clean architecture.
 
 ## contents (plan)
 
-- environments
+- env
   - store the environmental variables
 - entity
   - business data

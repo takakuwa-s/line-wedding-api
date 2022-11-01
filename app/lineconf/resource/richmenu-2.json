@@ -1,7 +1,7 @@
 {
   "size": {
     "width": 2500,
-    "height": 1686
+    "height": 1658
   },
   "selected": true,
   "name": "richmenu-2",
@@ -11,34 +11,47 @@
       "bounds": {
         "x": 0,
         "y": 0,
+        "width": 2500,
+        "height": 223
+      },
+      "action": {
+        "type": "richmenuswitch",
+        "richMenuAliasId": "richmenu-alias-1",
+        "data": "{}"
+      }
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 223,
         "width": 834,
-        "height": 843
+        "height": 718
       },
       "action": {
         "type": "message",
-        "label": "座席表",
-        "text": "座席表"
+        "label": "席次表",
+        "text": "席次表"
       }
     },
     {
       "bounds": {
         "x": 834,
-        "y": 0,
+        "y": 223,
         "width": 833,
-        "height": 843
+        "height": 718
       },
       "action": {
         "type": "message",
-        "label": "料理メニュー",
-        "text": "料理メニュー"
+        "label": "タイムスケジュール",
+        "text": "タイムスケジュール"
       }
     },
     {
       "bounds": {
         "x": 1667,
-        "y": 0,
+        "y": 223,
         "width": 833,
-        "height": 843
+        "height": 718
       },
       "action": {
         "type": "message",
@@ -49,22 +62,22 @@
     {
       "bounds": {
         "x": 0,
-        "y": 843,
+        "y": 941,
         "width": 834,
-        "height": 843
+        "height": 717
       },
       "action": {
         "type": "message",
-        "label": "結婚式場はどこ？",
-        "text": "結婚式場はどこ？"
+        "label": "料理メニュー",
+        "text": "料理メニュー"
       }
     },
     {
       "bounds": {
         "x": 834,
-        "y": 843,
+        "y": 941,
         "width": 833,
-        "height": 843
+        "height": 717
       },
       "action": {
         "type": "uri",
@@ -74,14 +87,14 @@
     {
       "bounds": {
         "x": 1667,
-        "y": 843,
+        "y": 941,
         "width": 833,
-        "height": 843
+        "height": 717
       },
       "action": {
-        "type": "richmenuswitch",
-        "richMenuAliasId": "richmenu-alias-1",
-        "data": "{}"
+        "type": "message",
+        "label": "プロフィール",
+        "text": "プロフィール"
       }
     }
   ]

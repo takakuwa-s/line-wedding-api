@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"strings"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 	"github.com/takakuwa-s/line-wedding-api/conf"
@@ -72,6 +74,12 @@ func (lrc *LineRichmenuConf) createRichmenu(jsonPath, imagePath string) (string,
 	var menu linebot.RichMenu
 	if err = json.Unmarshal(b, &menu); err != nil {
 		return "", fmt.Errorf("failed to parses the JSON-encoded data; err = %w", err)
+	}
+	liffUrl := os.Getenv("LIFF_URL")
+	for i, area := range menu.Areas {
+		if strings.Contains(area.Action.URI, "%s") {
+			menu.Areas[i].Action.URI = fmt.Sprintf(area.Action.URI, liffUrl)
+		}
 	}
 	res, err := lrc.client.CreateRichMenu(menu).Do()
 	if err != nil {

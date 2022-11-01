@@ -177,7 +177,7 @@ func (su *SlideShowUsecase) CreateSlideshowMessage() ([]map[string]interface{}, 
 		return nil, fmt.Errorf("not found created slide show")
 	}
 	messages := su.mr.FindMessageByKey("slideshow")
-	messages[1]["originalContentUrl"] = fmt.Sprintf(messages[1]["originalContentUrl"].(string), list[0].ContentUrl)
-	messages[1]["previewImageUrl"] = fmt.Sprintf(messages[1]["previewImageUrl"].(string), list[0].ThumbnailUrl)
+	messages[3]["originalContentUrl"] = fmt.Sprintf(messages[3]["originalContentUrl"].(string), list[0].ContentUrl)
+	messages[3]["previewImageUrl"] = fmt.Sprintf(messages[3]["previewImageUrl"].(string), list[0].ThumbnailUrl)
 	return messages, nil
 }

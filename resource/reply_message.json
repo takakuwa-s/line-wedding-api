@@ -1,8 +1,26 @@
 {
-  "help": [
+  "ヘルプ": [
     {
       "type": "text",
-      "text": "わからんのか。。。"
+      "text": "このアカウントは、2023年03月19日（日）の高桑駿・瀬山彩華の結婚式の情報を伝えるアカウントです。\n\n\nLINEアカウント下部のメニューをタップすると、それぞれ以下のことができます。"
+    },
+    {
+      "type": "image",
+      "originalContentUrl": "https://drive.google.com/uc?export=view&id=1YF_CNsicIPQbrQqGzii-cHcL11S0WpYK",
+      "previewImageUrl": "https://drive.google.com/uc?export=view&id=1YF_CNsicIPQbrQqGzii-cHcL11S0WpYK"
+    },
+    {
+      "type": "text",
+      "text": "① ヘルプを表示します\n\n\n② WEB招待状を開き、結婚式の詳細を確認できます\n\n\n③ WEB招待状で登録した回答状況を確認・修正できます\n\n\n④ LINEを通してアップロードした写真・動画を確認・削除・ダウンロードできます\n\n\n⑤ LINEアカウントを通して写真・動画をアップロードできます\n\n\n⑥ 結婚式場へのアクセスを確認できます\n\n\n⑦ LINEアカウントのメニューの開閉を操作できます\n\n\n⑧ LINEアカウントのメニューの切り替えができます。切替後のメニューは続くメッセージの通りです"
+    },
+    {
+      "type": "image",
+      "originalContentUrl": "https://drive.google.com/uc?export=view&id=1DPml6edin1RGh3dejeTiSkEVLC9l-EYp",
+      "previewImageUrl": "https://drive.google.com/uc?export=view&id=1DPml6edin1RGh3dejeTiSkEVLC9l-EYp"
+    },
+    {
+      "type": "text",
+      "text": "① 席次表を表示します\n\n\n② 結婚式・披露宴のスケジュールを確認できます\n\n\n③ 披露宴でのドリンクメニューを確認できます\n\n\n④ 披露宴での料理コースメニューを確認できます\n\n\n⑤ 結婚式会場のWEBサイトにアクセスします\n\n\n⑥ 新郎・新婦のプロフィールを表示します"
     }
   ],
   "写真共有": [
@@ -34,7 +52,7 @@
   "結婚式場はどこ？": [
     {
       "type": "text",
-      "text": "SCAPESでやるよ"
+      "text": "下記結婚式会場にて挙式・披露宴を行います"
     },
     {
       "type": "text",
@@ -46,9 +64,13 @@
       "address": "〒240-0112 神奈川県三浦郡葉山町堀内９２２−２",
       "latitude": 35.275178758891705,
       "longitude": 139.57171279571781
+    },
+    {
+      "type": "text",
+      "text": "当日は、JR逗子駅から会場までのタクシーをご用意しておりますので、ぜひご利用下さい"
     }
   ],
-  "座席表": [
+  "席次表": [
     {
       "type": "image",
       "originalContentUrl": "https://drive.google.com/uc?export=view&id=10Ey28paPMoxcch9iSGMvh2BT99-TDMxw",
@@ -67,6 +89,32 @@
       "type": "image",
       "originalContentUrl": "https://drive.google.com/uc?export=view&id=13UpnvPRcsHxOYuH9z-DkCgE7HzwzWAxu",
       "previewImageUrl": "https://drive.google.com/uc?export=view&id=13UpnvPRcsHxOYuH9z-DkCgE7HzwzWAxu"
+    }
+  ],
+  "タイムスケジュール": [
+    {
+      "type": "text",
+      "text": "2023年03月19日（日）\n\n挙式受付　 : 10:00\n挙式　　　 : 10:30\n披露宴受付 : 11:30\n披露宴　　 : 12:00"
+    }
+  ],
+  "プロフィール": [
+    {
+      "type": "image",
+      "originalContentUrl": "https://drive.google.com/uc?export=view&id=16SO75nYjs8bBRpu1supL8FvkErDT8-L4",
+      "previewImageUrl": "https://drive.google.com/uc?export=view&id=16SO75nYjs8bBRpu1supL8FvkErDT8-L4"
+    },
+    {
+      "type": "text",
+      "text": "新郎の高桑駿です。"
+    },
+    {
+      "type": "image",
+      "originalContentUrl": "https://drive.google.com/uc?export=view&id=16QqGBp929_K-IeBRVgojnISsqM9ZGBRj",
+      "previewImageUrl": "https://drive.google.com/uc?export=view&id=16QqGBp929_K-IeBRVgojnISsqM9ZGBRj"
+    },
+    {
+      "type": "text",
+      "text": "新婦の瀬山彩華です。"
     }
   ]
 }

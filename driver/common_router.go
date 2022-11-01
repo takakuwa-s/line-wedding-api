@@ -25,9 +25,9 @@ func NewCommonRouter() *CommonRouter {
 func (cr *CommonRouter) GetDefaultRouter() *gin.Engine {
 	router := gin.Default()
 	config := cors.DefaultConfig()
-	frontDomain := os.Getenv("FRONT_DOMAIN")
+	frontUrl := os.Getenv("FRONT_URL")
 	//TOTO localhost
-	config.AllowOrigins = []string{frontDomain, "http://localhost:3000"}
+	config.AllowOrigins = []string{frontUrl, "http://localhost:3000"}
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	router.Use(gin.Logger(), cors.New(config))
 	return router

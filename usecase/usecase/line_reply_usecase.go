@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
@@ -139,7 +140,8 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 
 	// Return message
 	messages := lru.mr.FindMessageByKey("follow")
-	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), user.LineName)
+	liffUrl := os.Getenv("LIFF_URL")
+	messages[2]["text"] = fmt.Sprintf(messages[2]["text"].(string), liffUrl)
 	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
@@ -175,10 +177,6 @@ func (lru *LineReplyUsecase) HandleGroupEvent(m *dto.GroupMessage) error {
 func (lru *LineReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 	var messages []map[string]interface{}
 	switch m.Text {
-	case "招待状送信内容確認":
-		if lru.checkAdminRole(m.SenderUserId) {
-			messages = lru.mr.FindMessageByKey("invitation")
-		}
 	case "前日メッセージ送信内容確認":
 		if lru.checkAdminRole(m.SenderUserId) {
 			messages = lru.mr.FindMessageByKey("reminder")
