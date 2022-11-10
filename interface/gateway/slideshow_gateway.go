@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
@@ -67,8 +66,8 @@ func (sg *SlideShowGateway) Render(imageUrls, videoUrls []string) (*dto.SlideSho
 func (sg *SlideShowGateway) createBody(imageUrls, videoUrls []string) (io.Reader, error) {
 	id := os.Getenv("SHOTSTACK_TEMPLATE_ID")
 	req := dto.NewTemplateRender(id)
-	sg.appendUrl(req, imageUrls, "IMAGE_PATH_")
-	sg.appendUrl(req, videoUrls, "VIDEO_PATH_")
+	sg.appendUrl(req, imageUrls, "IMAGE_URL_")
+	sg.appendUrl(req, videoUrls, "VIDEO_URL_")
 	json, err := json.Marshal(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to json Marshal for the shotstack api request; %w", err)
@@ -78,16 +77,9 @@ func (sg *SlideShowGateway) createBody(imageUrls, videoUrls []string) (io.Reader
 }
 
 func (sg *SlideShowGateway) appendUrl(r *dto.TemplateRender, urls []string, findPrefix string) {
-	url := "https://storage.googleapis.com"
-	urlLen := len(url)
 	for i, u := range urls {
-		idx := strings.Index(u, url)
-		if idx == -1 {
-			continue
-		}
-		idx += urlLen
 		find := fmt.Sprintf("%s%d", findPrefix, i)
-		m := dto.NewMergeField(find, u[idx:])
+		m := dto.NewMergeField(find, u)
 		r.ApendMerge(m)
 	}
 }

@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"fmt"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	"go.uber.org/zap"
@@ -34,6 +35,56 @@ func (fr *FileRepository) DeleteFileById(id string) error {
 
 func (fr *FileRepository) DeleteFileByIds(ids []string) error {
 	return fr.cr.DeleteByIds("files", ids)
+}
+
+func (fr *FileRepository) UpdateForBrideAndGroomById(forBrideAndGroom bool, id string) error {
+	if _, err := fr.f.Firestore.Collection("files").Doc(id).Update(conf.Ctx, []firestore.Update{
+		{
+			Path:  "ForBrideAndGroom",
+			Value: forBrideAndGroom,
+		},
+		{
+			Path:  "UpdatedAt",
+			Value: time.Now(),
+		},
+	}); err != nil {
+		return fmt.Errorf("failed to update the file; id =  %s, forBrideAndGroom = %t, err = %w", id, forBrideAndGroom, err)
+	}
+	conf.Log.Info("Successfully update the file", zap.String("id", id), zap.Bool("forBrideAndGroom", forBrideAndGroom))
+	return nil
+}
+
+func (fr *FileRepository) UpdateFileStatusByIdIn(fileStatus entity.FileStatus, ids []string) error {
+	batch := fr.f.Firestore.Batch()
+	for _, list := range fr.cr.SplitSlice(ids) {
+		query := fr.f.Firestore.Collection("files").Where("Id", "in", list)
+		iter := query.Documents(conf.Ctx)
+		for {
+			dsnap, err := iter.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return fmt.Errorf("failed to get a file metadata ; err = %w", err)
+			}
+			batch.Update(dsnap.Ref, []firestore.Update{
+				{
+					Path:  "FileStatus",
+					Value: fileStatus,
+				},
+				{
+					Path:  "UpdatedAt",
+					Value: time.Now(),
+				},
+			})
+		}
+	}
+	_, err := batch.Commit(conf.Ctx)
+	if err != nil {
+		return fmt.Errorf("failed to update the file; id =  %s, fileStatus = %s, err = %w", ids, fileStatus, err)
+	}
+	conf.Log.Info("Successfully update the file", zap.Any("ids", ids), zap.Any("fileStatus", fileStatus))
+	return nil
 }
 
 func (fr *FileRepository) FindById(id string) (*entity.File, error) {
@@ -84,21 +135,21 @@ func (fr *FileRepository) FindByIds(ids []string) ([]entity.File, error) {
 	return files, nil
 }
 
-func (fr *FileRepository) FindByIdsAndUploaded(ids []string, uploaded bool) ([]entity.File, error) {
+func (fr *FileRepository) FindByIdsAndFileStatus(ids []string, fileStatus entity.FileStatus) ([]entity.File, error) {
 	var files []entity.File
 	for _, list := range fr.cr.SplitSlice(ids) {
-		query := fr.f.Firestore.Collection("files").Where("Id", "in", list).Where("Uploaded", "==", uploaded)
+		query := fr.f.Firestore.Collection("files").Where("Id", "in", list).Where("FileStatus", "==", fileStatus)
 		f, err := fr.executeQuery(&query)
 		if err != nil {
 			return nil, err
 		}
 		files = append(files, f...)
 	}
-	conf.Log.Info("Successfully find the file metadata with", zap.Int("file count", len(files)), zap.Strings("ids", ids), zap.Bool("uploaded", uploaded))
+	conf.Log.Info("Successfully find the file metadata with", zap.Int("file count", len(files)), zap.Strings("ids", ids), zap.String("FileStatus", string(fileStatus)))
 	return files, nil
 }
 
-func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(limit int, startId, userId, orderBy, fileType string, uploaded *bool) ([]entity.File, error) {
+func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndFileTypeAndForBrideAndGroomAndFileStatusIn(limit int, startId, userId, orderBy, fileType string, forBrideAndGroom *bool, statuses []string) ([]entity.File, error) {
 	query := fr.f.Firestore.Collection("files").OrderBy(orderBy, firestore.Desc)
 	if limit > 0 {
 		query = query.Limit(limit)
@@ -120,8 +171,11 @@ func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(l
 	if fileType != "" {
 		query = query.Where("FileType", "==", fileType)
 	}
-	if uploaded != nil {
-		query = query.Where("Uploaded", "==", &uploaded)
+	if len(statuses) > 0 {
+		query = query.Where("FileStatus", "in", statuses)
+	}
+	if forBrideAndGroom != nil {
+		query = query.Where("ForBrideAndGroom", "==", &forBrideAndGroom)
 	}
 	files, err := fr.executeQuery(&query)
 	if err != nil {
@@ -131,23 +185,8 @@ func (fr *FileRepository) FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(l
 	return files, nil
 }
 
-func (fr *FileRepository) FindByUploadedOrCalculatedFalse() ([]entity.File, error) {
-	query := fr.f.Firestore.Collection("files").Where("Uploaded", "==", false).OrderBy("UpdatedAt", firestore.Asc)
-	f1, err := fr.executeQuery(&query)
-	if err != nil {
-		return nil, err
-	}
-	query = fr.f.Firestore.Collection("files").Where("Uploaded", "==", true).Where("Calculated", "==", false).Where("FileType", "==", entity.Image).OrderBy("UpdatedAt", firestore.Asc)
-	f2, err := fr.executeQuery(&query)
-	if err != nil {
-		return nil, err
-	}
-	files := append(f1, f2...)
-	return files, nil
-}
-
-func (fr *FileRepository) FindByUploadedAndFileType(limit int, uploaded bool, fileType entity.FileType) ([]entity.File, error) {
-	query := fr.f.Firestore.Collection("files").Where("Uploaded", "==", uploaded).Where("FileType", "==", string(fileType)).Limit(limit)
+func (fr *FileRepository) FindByFileStatusIn(statuses []entity.FileStatus) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").Where("FileStatus", "in", statuses).OrderBy("UpdatedAt", firestore.Asc)
 	f, err := fr.executeQuery(&query)
 	if err != nil {
 		return nil, err
@@ -155,8 +194,17 @@ func (fr *FileRepository) FindByUploadedAndFileType(limit int, uploaded bool, fi
 	return f, nil
 }
 
-func (fr *FileRepository) FindByUploadedAndFileTypeAndDuration(limit int, uploaded bool, fileType entity.FileType, duration int) ([]entity.File, error) {
-	query := fr.f.Firestore.Collection("files").Where("Uploaded", "==", uploaded).Where("FileType", "==", string(fileType)).Where("Duration", ">=", duration).Limit(limit)
+func (fr *FileRepository) FindByFileStatusAndFileTypeAndForBrideAndGroom(limit int, fileStatus entity.FileStatus, forBrideAndGroom bool, fileType entity.FileType) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").Where("FileStatus", "==", fileStatus).Where("ForBrideAndGroom", "==", forBrideAndGroom).Where("FileType", "==", string(fileType)).Limit(limit)
+	f, err := fr.executeQuery(&query)
+	if err != nil {
+		return nil, err
+	}
+	return f, nil
+}
+
+func (fr *FileRepository) FindByFileStatusAndFileTypeAndForBrideAndGroomAndDuration(limit int, fileStatus entity.FileStatus, forBrideAndGroom bool, fileType entity.FileType, duration int) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").Where("FileStatus", "==", fileStatus).Where("ForBrideAndGroom", "==", forBrideAndGroom).Where("FileType", "==", string(fileType)).Where("Duration", ">=", duration).Limit(limit)
 	f, err := fr.executeQuery(&query)
 	if err != nil {
 		return nil, err

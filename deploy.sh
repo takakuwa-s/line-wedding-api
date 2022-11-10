@@ -6,7 +6,7 @@ if test $# -ne 2 ; then
   exit 1
 fi
 
-if [[ "$1" != "wedding-api" ]] && [[ "$1" != "file-upload-api" ]] ; then
+if [[ "$1" != "wedding-api" ]] && [[ "$1" != "background-process-api" ]] ; then
   echo "argument 1 is not correct: $1"
   exit 1
 fi
@@ -17,7 +17,7 @@ if [[ "$2" != "local" ]] && [[ "$2" != "dev" ]] && [[ "$2" != "prod" ]] ; then
 fi
 
 dokcerFilePath="./Dockerfile"
-if [[ "$1" == "file-upload-api" ]] ; then
+if [[ "$1" == "background-process-api" ]] ; then
   dokcerFilePath="./DockerfileWithFfmpeg"
 fi
 

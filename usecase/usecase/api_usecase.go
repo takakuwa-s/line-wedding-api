@@ -3,11 +3,9 @@ package usecase
 import (
 	"fmt"
 
-	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
-	"go.uber.org/zap"
 )
 
 type ApiUsecase struct {
@@ -16,6 +14,7 @@ type ApiUsecase struct {
 	lg  igateway.ILineGateway
 	fr  igateway.IFileRepository
 	br  igateway.IBinaryRepository
+	bpg igateway.IBackgroundProcessGateway
 	lpu *LinePushUsecase
 	su  *SlideShowUsecase
 }
@@ -27,9 +26,10 @@ func NewApiUsecase(
 	lg igateway.ILineGateway,
 	fr igateway.IFileRepository,
 	br igateway.IBinaryRepository,
+	bpg igateway.IBackgroundProcessGateway,
 	lpu *LinePushUsecase,
 	su *SlideShowUsecase) *ApiUsecase {
-	return &ApiUsecase{mr: mr, ur: ur, lg: lg, fr: fr, br: br, lpu: lpu, su: su}
+	return &ApiUsecase{mr: mr, ur: ur, lg: lg, fr: fr, br: br, bpg: bpg, lpu: lpu, su: su}
 }
 
 func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
@@ -39,8 +39,9 @@ func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
 		return nil, err
 	}
 	// Get file list
-	uploaded := true
-	files, err := au.GetFileList(12, "", "", "", "", &uploaded, user.IsAdmin)
+	fileStatuses := []string{string(entity.Open), string(entity.Uploaded)}
+	forBrideAndGroom := false
+	files, err := au.GetFileList(12, "", "", "", "", fileStatuses, &forBrideAndGroom, user.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -98,16 +99,17 @@ func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]ent
 	return users, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy, fileType string, uploaded *bool, needCreaterName bool) ([]dto.FileResponce, error) {
+func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy, fileType string, fileStatuses []string, forBrideAndGroom *bool, needCreaterName bool) ([]dto.FileResponce, error) {
 	if orderBy == "" {
 		orderBy = "UpdatedAt"
 	}
-	files, err := au.fr.FindByLimitAndStartIdAndUserIdAndFileTypeAndUploaded(limit, startId, userId, orderBy, fileType, uploaded)
+	files, err := au.fr.FindByLimitAndStartIdAndUserIdAndFileTypeAndForBrideAndGroomAndFileStatusIn(
+		limit, startId, userId, orderBy, fileType, forBrideAndGroom, fileStatuses)
 	if err != nil {
 		return nil, err
 	}
 	uMap := make(map[string]string)
-	if needCreaterName {
+	if needCreaterName && len(files) > 0 {
 		set := make(map[string]struct{})
 		for _, f := range files {
 			set[f.Creater] = struct{}{}
@@ -117,7 +119,6 @@ func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy, fileType 
 			ids = append(ids, id)
 		}
 		users, err := au.ur.FindByIds(ids)
-		conf.Log.Info("a", zap.Any("set", set), zap.Any("ids", ids), zap.Any("users", users))
 		if err != nil {
 			return nil, err
 		}
@@ -128,7 +129,18 @@ func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy, fileType 
 	return dto.NewFileResponceList(files, uMap), nil
 }
 
-func (au *ApiUsecase) DeleteFile(id string) error {
+func (au *ApiUsecase) DeleteFileList(ids []string) error {
+	err := au.fr.UpdateFileStatusByIdIn(entity.Deleted, ids)
+	if err != nil {
+		return err
+	}
+	if err := au.bpg.StartDeletingFiles(ids); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (au *ApiUsecase) PatchFile(id string, forBrideAndGroom bool) error {
 	file, err := au.fr.FindById(id)
 	if err != nil {
 		return err
@@ -136,37 +148,8 @@ func (au *ApiUsecase) DeleteFile(id string) error {
 	if file == nil {
 		return fmt.Errorf("not found the file with id = %s", id)
 	}
-	if err := au.fr.DeleteFileById(id); err != nil {
+	if err := au.fr.UpdateForBrideAndGroomById(forBrideAndGroom, id); err != nil {
 		return err
-	}
-	if file.Uploaded {
-		if err := au.br.DeleteBinary(file.Name, string(file.FileType)); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (au *ApiUsecase) DeleteFileList(ids []string) error {
-	files, err := au.fr.FindByIds(ids)
-	if err != nil {
-		return err
-	}
-	if len(files) == 0 {
-		return fmt.Errorf("not found the files with ids = %s", ids)
-	}
-	if len(files) != len(ids) {
-		return fmt.Errorf("some ids is invalid and not found; ids = %s", ids)
-	}
-	for _, f := range files {
-		if f.Uploaded {
-			if err := au.br.DeleteBinary(f.Name, string(f.FileType)); err != nil {
-				conf.Log.Error("failed to delete the file binary", zap.Any("file", f))
-			}
-		}
-		if err := au.fr.DeleteFileById(f.Id); err != nil {
-			conf.Log.Error("failed to delete the file metadata", zap.Any("file", f))
-		}
 	}
 	return nil
 }

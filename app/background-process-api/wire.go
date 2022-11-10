@@ -15,18 +15,18 @@ import (
 	"github.com/takakuwa-s/line-wedding-api/usecase/usecase"
 )
 
-func InitializeRouter() *driver.FileUploadRouter {
+func InitializeRouter() *driver.BackgroundProcessRouter {
 	wire.Build(
 		// dto
 		dto.NewLineBot,
 		dto.NewFirestore,
 
 		// driver
-		driver.NewFileUploadRouter,
+		driver.NewBackgroundProcessRouter,
 		driver.NewCommonRouter,
 
 		// controller
-		controller.NewFileUploadController,
+		controller.NewBackgroundProcessController,
 		controller.NewSlideShowApiController,
 
 		// gateway
@@ -53,21 +53,21 @@ func InitializeRouter() *driver.FileUploadRouter {
 		wire.Bind(new(ipresenter.IPresenter), new(*presenter.LinePresenter)),
 
 		// usecase
-		usecase.NewFileUploadUsecase,
+		usecase.NewBackgroundProcessUsecase,
 		usecase.NewSlideShowUsecase,
 		usecase.NewLinePushUsecase,
 	)
 	return nil
 }
 
-func InitializeScheduler() *driver.FileUploadScheduler {
+func InitializeScheduler() *driver.BackgroundProcessScheduler {
 	wire.Build(
 		// dto
 		dto.NewLineBot,
 		dto.NewFirestore,
 
 		// driver
-		driver.NewFileUploadScheduler,
+		driver.NewBackgroundProcessScheduler,
 
 		// gateway
 		gateway.NewCommonRepository,
@@ -81,7 +81,7 @@ func InitializeScheduler() *driver.FileUploadScheduler {
 		wire.Bind(new(igateway.ILineGateway), new(*gateway.LineGateway)),
 
 		// usecase
-		usecase.NewFileUploadUsecase,
+		usecase.NewBackgroundProcessUsecase,
 	)
 	return nil
 }

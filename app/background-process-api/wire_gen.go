@@ -17,7 +17,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeRouter() *driver.FileUploadRouter {
+func InitializeRouter() *driver.BackgroundProcessRouter {
 	commonRouter := driver.NewCommonRouter()
 	lineBot := dto.NewLineBot()
 	lineGateway := gateway.NewLineGateway(lineBot)
@@ -26,8 +26,8 @@ func InitializeRouter() *driver.FileUploadRouter {
 	commonRepository := gateway.NewCommonRepository(firestore)
 	fileRepository := gateway.NewFileRepository(commonRepository, firestore)
 	binaryRepository := gateway.NewBinaryRepository(firestore)
-	fileUploadUsecase := usecase.NewFileUploadUsecase(lineGateway, faceGateway, fileRepository, binaryRepository)
-	fileUploadController := controller.NewFileUploadController(fileUploadUsecase)
+	backgroundProcessUsecase := usecase.NewBackgroundProcessUsecase(lineGateway, faceGateway, fileRepository, binaryRepository)
+	backgroundProcessController := controller.NewBackgroundProcessController(backgroundProcessUsecase)
 	messageRepository := gateway.NewMessageRepository()
 	slideShowGateway := gateway.NewSlideShowGateway()
 	slideShowRepository := gateway.NewFSlideShowRepository(commonRepository, firestore)
@@ -36,11 +36,11 @@ func InitializeRouter() *driver.FileUploadRouter {
 	linePushUsecase := usecase.NewLinePushUsecase(messageRepository, userRepository, linePresenter, lineGateway)
 	slideShowUsecase := usecase.NewSlideShowUsecase(messageRepository, fileRepository, slideShowGateway, slideShowRepository, binaryRepository, linePushUsecase)
 	slideShowApiController := controller.NewSlideShowApiController(slideShowUsecase)
-	fileUploadRouter := driver.NewFileUploadRouter(commonRouter, fileUploadController, slideShowApiController)
-	return fileUploadRouter
+	backgroundProcessRouter := driver.NewBackgroundProcessRouter(commonRouter, backgroundProcessController, slideShowApiController)
+	return backgroundProcessRouter
 }
 
-func InitializeScheduler() *driver.FileUploadScheduler {
+func InitializeScheduler() *driver.BackgroundProcessScheduler {
 	lineBot := dto.NewLineBot()
 	lineGateway := gateway.NewLineGateway(lineBot)
 	faceGateway := gateway.NewFaceGateway()
@@ -48,7 +48,7 @@ func InitializeScheduler() *driver.FileUploadScheduler {
 	commonRepository := gateway.NewCommonRepository(firestore)
 	fileRepository := gateway.NewFileRepository(commonRepository, firestore)
 	binaryRepository := gateway.NewBinaryRepository(firestore)
-	fileUploadUsecase := usecase.NewFileUploadUsecase(lineGateway, faceGateway, fileRepository, binaryRepository)
-	fileUploadScheduler := driver.NewFileUploadScheduler(fileUploadUsecase)
-	return fileUploadScheduler
+	backgroundProcessUsecase := usecase.NewBackgroundProcessUsecase(lineGateway, faceGateway, fileRepository, binaryRepository)
+	backgroundProcessScheduler := driver.NewBackgroundProcessScheduler(backgroundProcessUsecase)
+	return backgroundProcessScheduler
 }

@@ -48,7 +48,7 @@ func (su *SlideShowUsecase) CreateSlideShow() (*dto.SlideShowCreateResponce, err
 
 func (su *SlideShowUsecase) getImagesForSlideshow() ([]string, error) {
 	limit := 34
-	images, err := su.fr.FindByUploadedAndFileType(300, true, entity.Image)
+	images, err := su.fr.FindByFileStatusAndFileTypeAndForBrideAndGroom(300, entity.Open, false, entity.Image)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (su *SlideShowUsecase) getImagesForSlideshow() ([]string, error) {
 
 func (su *SlideShowUsecase) getVideoesForSlideshow() ([]string, error) {
 	limit := 3
-	videoes, err := su.fr.FindByUploadedAndFileTypeAndDuration(300, true, entity.Video, 6000)
+	videoes, err := su.fr.FindByFileStatusAndFileTypeAndForBrideAndGroomAndDuration(300, entity.Open, false, entity.Video, 6000)
 	if err != nil {
 		return nil, err
 	}
@@ -107,18 +107,14 @@ func (su *SlideShowUsecase) uploadSlideshow(r dto.SlideshowWebhook) error {
 	if err != nil {
 		return err
 	}
+	if s != nil && len(s.ContentUrl) > 0 {
+		return nil
+	}
 	content, err := su.sg.DownloadContent(r.Url)
 	if err != nil {
 		return err
 	}
-	if s == nil {
-		s = entity.NewSlideShow(r.Id)
-	} else {
-		if err := su.br.DeleteBinary(s.Name, "slideshow"); err != nil {
-			return err
-		}
-		s.UpdatedAt = time.Now()
-	}
+	s = entity.NewSlideShow(r.Id)
 	s1, err := su.br.SaveSlideShowBinary(*s, content)
 	if err != nil {
 		return err

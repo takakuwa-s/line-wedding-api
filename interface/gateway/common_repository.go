@@ -66,7 +66,8 @@ func (cr *CommonRepository) FindById(collectionName, id string) (*firestore.Docu
 }
 
 func (cr *CommonRepository) SplitSlice(ids []string) [][]string {
-	limit := 4
+	// https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+	limit := 10
 	if len(ids) <= limit {
 		return [][]string{ids}
 	}

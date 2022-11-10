@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 
-ARG app="file-upload-api"
+ARG app="background-process-api"
 ARG env="dev"
 
 WORKDIR /go/home
@@ -23,7 +23,7 @@ RUN go build \
 
 FROM jrottenberg/ffmpeg:4-alpine as runner
 
-ARG app="file-upload-api"
+ARG app="background-process-api"
 ARG env="dev" 
 ENV GO_ENV=$env
 

@@ -81,7 +81,7 @@ func (br *BinaryRepository) SaveImageBinary(file entity.File, content io.ReadClo
 	file.ThumbnailUrl = thumbWriter.Attrs().MediaLink
 	file.ContentUrl = contentWriter.Attrs().MediaLink
 	file.MimeType = contentWriter.Attrs().ContentType
-	file.Uploaded = true
+	file.FileStatus = entity.Uploaded
 	file.Name = name
 	return &file, nil
 }
@@ -149,7 +149,7 @@ func (br *BinaryRepository) SaveVideoBinary(file entity.File, content io.ReadClo
 	file.ThumbnailUrl = thumbUrl
 	file.ContentUrl = contentUrl
 	file.MimeType = contentType
-	file.Uploaded = true
+	file.FileStatus = entity.Open
 	file.Name = name
 	return &file, nil
 }

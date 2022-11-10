@@ -6,8 +6,8 @@
     },
     {
       "type": "image",
-      "originalContentUrl": "https://drive.google.com/uc?export=view&id=1YF_CNsicIPQbrQqGzii-cHcL11S0WpYK",
-      "previewImageUrl": "https://drive.google.com/uc?export=view&id=1YF_CNsicIPQbrQqGzii-cHcL11S0WpYK"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp1.jpg?alt=media&token=16d0d322-283a-4a1f-a022-3a51887d38b9",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp1.jpg?alt=media&token=16d0d322-283a-4a1f-a022-3a51887d38b9"
     },
     {
       "type": "text",
@@ -15,8 +15,8 @@
     },
     {
       "type": "image",
-      "originalContentUrl": "https://drive.google.com/uc?export=view&id=1DPml6edin1RGh3dejeTiSkEVLC9l-EYp",
-      "previewImageUrl": "https://drive.google.com/uc?export=view&id=1DPml6edin1RGh3dejeTiSkEVLC9l-EYp"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp2.jpg?alt=media&token=dd7a5ce1-0f94-4869-8683-479ba1b8e476",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp2.jpg?alt=media&token=dd7a5ce1-0f94-4869-8683-479ba1b8e476"
     },
     {
       "type": "text",
@@ -73,22 +73,22 @@
   "席次表": [
     {
       "type": "image",
-      "originalContentUrl": "https://drive.google.com/uc?export=view&id=10Ey28paPMoxcch9iSGMvh2BT99-TDMxw",
-      "previewImageUrl": "https://drive.google.com/uc?export=view&id=10Ey28paPMoxcch9iSGMvh2BT99-TDMxw"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fseat_test.png?alt=media&token=7ccde1dd-516a-4818-8669-dc91f91d2937",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fseat_test.png?alt=media&token=7ccde1dd-516a-4818-8669-dc91f91d2937"
     }
   ],
   "料理メニュー": [
     {
       "type": "image",
-      "originalContentUrl": "https://drive.google.com/uc?export=view&id=1OhQIX9CHGiiSQT6Z9qv_7bGq_kYyefy2",
-      "previewImageUrl": "https://drive.google.com/uc?export=view&id=1OhQIX9CHGiiSQT6Z9qv_7bGq_kYyefy2"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fcource_menu.jpeg?alt=media&token=ba9b7491-d145-4d24-9a2d-10135a833f08",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fcource_menu.jpeg?alt=media&token=ba9b7491-d145-4d24-9a2d-10135a833f08"
     }
   ],
   "ドリンクメニュー": [
     {
       "type": "image",
-      "originalContentUrl": "https://drive.google.com/uc?export=view&id=13UpnvPRcsHxOYuH9z-DkCgE7HzwzWAxu",
-      "previewImageUrl": "https://drive.google.com/uc?export=view&id=13UpnvPRcsHxOYuH9z-DkCgE7HzwzWAxu"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.jpeg?alt=media&token=68e61ddb-4b6a-4d95-a8db-51d18b1beb93",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.jpeg?alt=media&token=68e61ddb-4b6a-4d95-a8db-51d18b1beb93"
     }
   ],
   "タイムスケジュール": [
@@ -100,8 +100,8 @@
   "プロフィール": [
     {
       "type": "image",
-      "originalContentUrl": "https://drive.google.com/uc?export=view&id=16SO75nYjs8bBRpu1supL8FvkErDT8-L4",
-      "previewImageUrl": "https://drive.google.com/uc?export=view&id=16SO75nYjs8bBRpu1supL8FvkErDT8-L4"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg.JPG?alt=media&token=f865d13f-8263-41d6-906c-84253aeac699",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg.JPG?alt=media&token=f865d13f-8263-41d6-906c-84253aeac699"
     },
     {
       "type": "text",
@@ -109,8 +109,8 @@
     },
     {
       "type": "image",
-      "originalContentUrl": "https://drive.google.com/uc?export=view&id=16QqGBp929_K-IeBRVgojnISsqM9ZGBRj",
-      "previewImageUrl": "https://drive.google.com/uc?export=view&id=16QqGBp929_K-IeBRVgojnISsqM9ZGBRj"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg.JPG?alt=media&token=cbe019bd-8a47-4b81-82a9-d278dedbc536",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg.JPG?alt=media&token=cbe019bd-8a47-4b81-82a9-d278dedbc536"
     },
     {
       "type": "text",

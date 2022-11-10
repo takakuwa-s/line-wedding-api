@@ -49,8 +49,8 @@ func (wr *WeddingRouter) Init() {
 		file := api.Group("/file")
 		{
 			file.GET("/list", wr.fac.GetFileList)
-			file.DELETE("/:id", wr.fac.DeleteFile)
 			file.DELETE("/list", wr.fac.DeleteFileList)
+			file.PATCH("/:id", wr.fac.PatchFile)
 		}
 		slideshow := api.Group("/slideshow")
 		{

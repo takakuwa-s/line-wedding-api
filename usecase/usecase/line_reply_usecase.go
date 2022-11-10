@@ -18,7 +18,7 @@ type LineReplyUsecase struct {
 	ur  igateway.IUserRepository
 	fr  igateway.IFileRepository
 	isr igateway.IImageSetRepository
-	fug igateway.IFileUploadGateway
+	bpg igateway.IBackgroundProcessGateway
 	lpu *LinePushUsecase
 	su  *SlideShowUsecase
 	p   ipresenter.IPresenter
@@ -31,14 +31,13 @@ func NewLineReplyUsecase(
 	ur igateway.IUserRepository,
 	fr igateway.IFileRepository,
 	isr igateway.IImageSetRepository,
-	fug igateway.IFileUploadGateway,
+	bpg igateway.IBackgroundProcessGateway,
 	lpu *LinePushUsecase,
 	su *SlideShowUsecase,
 	p ipresenter.IPresenter) *LineReplyUsecase {
-	return &LineReplyUsecase{mr: mr, lg: lg, ur: ur, fr: fr, isr: isr, fug: fug, lpu: lpu, su: su, p: p}
+	return &LineReplyUsecase{mr: mr, lg: lg, ur: ur, fr: fr, isr: isr, bpg: bpg, lpu: lpu, su: su, p: p}
 }
 
-// TODO error handling
 func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 	// Save file data
 	err := lru.fr.SaveFile(m.File)
@@ -48,7 +47,7 @@ func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 
 	if m.ImageSet == nil {
 		// Start file uploading
-		err = lru.fug.StartUploadingFiles([]string{m.File.Id})
+		err = lru.bpg.StartUploadingFiles([]string{m.File.Id})
 		if err != nil {
 			lru.fr.DeleteFileById(m.File.Id)
 			return err
@@ -67,7 +66,7 @@ func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 			conf.Log.Error("failed to delete the image set", zap.Error(err))
 		}
 		// Start file uploading
-		err = lru.fug.StartUploadingFiles(imageSet.FileIds)
+		err = lru.bpg.StartUploadingFiles(imageSet.FileIds)
 		if err != nil {
 			lru.fr.DeleteFileByIds(imageSet.FileIds)
 			return err
@@ -79,7 +78,6 @@ func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
-// TODO error handling
 func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.FileMessage) error {
 	if m.File.Duration > 120*1000 {
 		messages := lru.mr.FindMessageByKey("video_error")
@@ -93,7 +91,7 @@ func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.FileMessage) error {
 	}
 
 	// Start file uploading
-	err = lru.fug.StartUploadingFiles([]string{m.File.Id})
+	err = lru.bpg.StartUploadingFiles([]string{m.File.Id})
 	if err != nil {
 		lru.fr.DeleteFileById(m.File.Id)
 		return err
@@ -104,7 +102,6 @@ func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.FileMessage) error {
 	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
-// TODO error handling
 func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	// Get user
 	user, err := lru.ur.FindById(m.SenderUserId)
@@ -145,7 +142,6 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
-// TODO error handling
 func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
 	// Get user
 	user, err := lru.ur.FindById(m.SenderUserId)
