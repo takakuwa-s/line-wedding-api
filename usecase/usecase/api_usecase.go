@@ -41,7 +41,7 @@ func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
 	// Get file list
 	fileStatuses := []string{string(entity.Open), string(entity.Uploaded)}
 	forBrideAndGroom := false
-	files, err := au.GetFileList(12, "", "", "", "", fileStatuses, &forBrideAndGroom, user.IsAdmin)
+	files, err := au.GetFileList(nil, fileStatuses, 12, "", "", "", "", &forBrideAndGroom, user.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -99,14 +99,21 @@ func (au *ApiUsecase) GetUsers(limit int, startId, flag string, val bool) ([]ent
 	return users, nil
 }
 
-func (au *ApiUsecase) GetFileList(limit int, startId, userId, orderBy, fileType string, fileStatuses []string, forBrideAndGroom *bool, needCreaterName bool) ([]dto.FileResponce, error) {
-	if orderBy == "" {
-		orderBy = "UpdatedAt"
-	}
-	files, err := au.fr.FindByLimitAndStartIdAndUserIdAndFileTypeAndForBrideAndGroomAndFileStatusIn(
-		limit, startId, userId, orderBy, fileType, forBrideAndGroom, fileStatuses)
-	if err != nil {
-		return nil, err
+func (au *ApiUsecase) GetFileList(ids, fileStatuses []string, limit int, startId, userId, orderBy, fileType string, forBrideAndGroom *bool, needCreaterName bool) ([]dto.FileResponce, error) {
+	var files []entity.File
+	var err error
+	if len(ids) > 0 {
+		if files, err = au.fr.FindByIds(ids); err != nil {
+			return nil, err
+		}
+	} else {
+		if orderBy == "" {
+			orderBy = "UpdatedAt"
+		}
+		if files, err = au.fr.FindByLimitAndStartIdAndUserIdAndFileTypeAndForBrideAndGroomAndFileStatusIn(
+			limit, startId, userId, orderBy, fileType, forBrideAndGroom, fileStatuses); err != nil {
+			return nil, err
+		}
 	}
 	uMap := make(map[string]string)
 	if needCreaterName && len(files) > 0 {

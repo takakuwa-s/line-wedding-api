@@ -46,7 +46,8 @@ func (fac *FileApiController) GetFileList(c *gin.Context) {
 	fileType := c.Query("fileType")
 	orderBy := c.Query("orderBy")
 	fileStatuses := c.QueryArray("fileStatus")
-	files, err := fac.au.GetFileList(limit, startId, userId, orderBy, fileType, fileStatuses, forBrideAndGroom, needCreaterName)
+	ids := c.QueryArray("id")
+	files, err := fac.au.GetFileList(ids, fileStatuses, limit, startId, userId, orderBy, fileType, forBrideAndGroom, needCreaterName)
 	if err != nil {
 		conf.Log.Error("[GetFileList] Getting file list failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

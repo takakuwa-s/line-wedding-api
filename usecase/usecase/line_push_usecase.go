@@ -82,6 +82,10 @@ func (lpu *LinePushUsecase) multicastMessage(
 		// https://developers.line.biz/ja/reference/messaging-api/#send-multicast-request-body
 		return fmt.Errorf("userCnt is more than 500 limitation; userCnt = %d", userCnt)
 	}
+	if userCnt == 0 {
+		// do nothing
+		return nil
+	}
 
 	quotaComsuption, err := lpu.lg.GetQuotaComsuption()
 	if err != nil {

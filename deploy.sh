@@ -57,4 +57,14 @@ else
 
   echo "----- push the docker image to docker hub -----"
   docker push $repo:$tag
+
+  echo "----- restart azure app service -----"
+  appName=line-wedding-api
+  if test $1 = "background-process-api" ; then
+    appName=wedding-background-process-api
+  fi
+  if test $2 = "dev" ; then
+    appName=$appName-$2
+  fi
+  az webapp restart --resource-group wedding-$2 --name $appName
 fi
