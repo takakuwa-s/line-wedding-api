@@ -37,11 +37,10 @@ func InitializeRouter() *driver.WeddingRouter {
 	lineReplyUsecase := usecase.NewLineReplyUsecase(messageRepository, lineGateway, userRepository, fileRepository, imageSetRepository, backgroundProcessGateway, linePushUsecase, slideShowUsecase, linePresenter)
 	lineBotController := controller.NewLineBotController(lineBot, lineReplyUsecase)
 	apiUsecase := usecase.NewApiUsecase(messageRepository, userRepository, lineGateway, fileRepository, binaryRepository, backgroundProcessGateway, linePushUsecase, slideShowUsecase)
-	initApiController := controller.NewInitApiController(apiUsecase)
 	userApiController := controller.NewUserApiController(apiUsecase)
 	fileApiController := controller.NewFileApiController(apiUsecase)
 	lineApiController := controller.NewLineApiController(apiUsecase)
 	slideShowApiController := controller.NewSlideShowApiController(slideShowUsecase)
-	weddingRouter := driver.NewWeddingRouter(commonRouter, lineBotController, initApiController, userApiController, fileApiController, lineApiController, slideShowApiController)
+	weddingRouter := driver.NewWeddingRouter(commonRouter, lineBotController, userApiController, fileApiController, lineApiController, slideShowApiController)
 	return weddingRouter
 }

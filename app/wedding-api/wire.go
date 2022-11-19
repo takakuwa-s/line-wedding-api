@@ -28,7 +28,6 @@ func InitializeRouter() *driver.WeddingRouter {
 
 		// controller
 		controller.NewLineBotController,
-		controller.NewInitApiController,
 		controller.NewUserApiController,
 		controller.NewFileApiController,
 		controller.NewLineApiController,

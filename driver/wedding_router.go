@@ -10,7 +10,6 @@ import (
 type WeddingRouter struct {
 	cr  *CommonRouter
 	lbc *controller.LineBotController
-	iac *controller.InitApiController
 	uac *controller.UserApiController
 	fac *controller.FileApiController
 	lac *controller.LineApiController
@@ -21,12 +20,11 @@ type WeddingRouter struct {
 func NewWeddingRouter(
 	cr *CommonRouter,
 	lbc *controller.LineBotController,
-	iac *controller.InitApiController,
 	uac *controller.UserApiController,
 	fac *controller.FileApiController,
 	lac *controller.LineApiController,
 	sac *controller.SlideShowApiController) *WeddingRouter {
-	return &WeddingRouter{cr: cr, lbc: lbc, iac: iac, uac: uac, fac: fac, lac: lac, sac: sac}
+	return &WeddingRouter{cr: cr, lbc: lbc, uac: uac, fac: fac, lac: lac, sac: sac}
 }
 
 // Init ルーティング設定
@@ -59,7 +57,6 @@ func (wr *WeddingRouter) Init() {
 			slideshow.DELETE("/:id", wr.sac.DeleteSlideshow)
 			slideshow.PATCH("/:id", wr.sac.PatchSlideshow)
 		}
-		api.GET("/init/:id", wr.iac.GetInitialData)
 		api.POST("/line/message", wr.lac.SendMessageToLineBot)
 	}
 	port := os.Getenv("PORT")

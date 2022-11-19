@@ -32,22 +32,6 @@ func NewApiUsecase(
 	return &ApiUsecase{mr: mr, ur: ur, lg: lg, fr: fr, br: br, bpg: bpg, lpu: lpu, su: su}
 }
 
-func (au *ApiUsecase) GetInitialData(id string) (*dto.InitApiResponse, error) {
-	// Get user
-	user, err := au.ur.FindById(id)
-	if err != nil {
-		return nil, err
-	}
-	// Get file list
-	fileStatuses := []string{string(entity.Open), string(entity.Uploaded)}
-	forBrideAndGroom := false
-	files, err := au.GetFileList(nil, fileStatuses, 12, "", "", "", "", &forBrideAndGroom, user.IsAdmin)
-	if err != nil {
-		return nil, err
-	}
-	return dto.NewInitApiResponse(user, files), nil
-}
-
 func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error) {
 	// Get user
 	user, err := au.ur.FindById(r.Id)
