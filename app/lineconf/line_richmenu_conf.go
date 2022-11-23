@@ -92,12 +92,24 @@ func (lrc *LineRichmenuConf) createRichmenu(jsonPath, imagePath string) (string,
 	return res.RichMenuID, nil
 }
 
-func (lrc *LineRichmenuConf) CreateRichmenu() error {
-	id1, err := lrc.createRichmenu("./resource/richmenu-1.json", "./resource/richmenu-1.png")
+func (lrc *LineRichmenuConf) CreateRichmenu(menuPattern string) error {
+	switch menuPattern {
+	case "full-access":
+		return lrc.CreateTwoPageRichmenu(menuPattern)
+	case "only-registration":
+		return lrc.CreateOnePageRichmenu(menuPattern)
+	default:
+		return fmt.Errorf("unknown menuPattern; %s", menuPattern)
+	}
+}
+
+func (lrc *LineRichmenuConf) CreateTwoPageRichmenu(menuPattern string) error {
+	folder := fmt.Sprintf("./resource/%s/", menuPattern)
+	id1, err := lrc.createRichmenu(folder+"richmenu-1.json", folder+"richmenu-1.png")
 	if err != nil {
 		return err
 	}
-	id2, err := lrc.createRichmenu("./resource/richmenu-2.json", "./resource/richmenu-2.png")
+	id2, err := lrc.createRichmenu(folder+"richmenu-2.json", folder+"richmenu-2.png")
 	if err != nil {
 		return err
 	}
@@ -109,6 +121,18 @@ func (lrc *LineRichmenuConf) CreateRichmenu() error {
 	}
 	if _, err := lrc.client.CreateRichMenuAlias("richmenu-alias-2", id2).Do(); err != nil {
 		return fmt.Errorf("failed to set the menu 2 as alias 2 ; err = %w", err)
+	}
+	return nil
+}
+
+func (lrc *LineRichmenuConf) CreateOnePageRichmenu(menuPattern string) error {
+	folder := fmt.Sprintf("./resource/%s/", menuPattern)
+	id, err := lrc.createRichmenu(folder+"richmenu.json", folder+"richmenu.png")
+	if err != nil {
+		return err
+	}
+	if _, err := lrc.client.SetDefaultRichMenu(id).Do(); err != nil {
+		return fmt.Errorf("failed to set the menu 1 as default; err = %w", err)
 	}
 	return nil
 }

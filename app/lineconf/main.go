@@ -11,6 +11,7 @@ import (
 
 func main() {
 	env := os.Args[1]
+	menuPattern := os.Args[2]
 	err := godotenv.Load(fmt.Sprintf("../../env/%s/%s.env", env, env))
 	if err != nil {
 		conf.Log.Error("Error loading .env file", zap.Error(err))
@@ -40,7 +41,7 @@ func main() {
 			return
 		}
 	}
-	if err := lrc.CreateRichmenu(); err != nil {
+	if err := lrc.CreateRichmenu(menuPattern); err != nil {
 		conf.Log.Error("Failed to create the rich menu", zap.Error(err))
 		return
 	}

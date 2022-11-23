@@ -79,7 +79,7 @@ func (lru *LineReplyUsecase) HandleImageEvent(m *dto.FileMessage) error {
 }
 
 func (lru *LineReplyUsecase) HandleVideoEvent(m *dto.FileMessage) error {
-	if m.File.Duration > 120*1000 {
+	if m.File.Duration > 5*60*1000 {
 		messages := lru.mr.FindMessageByKey("video_error")
 		return lru.p.ReplyMessage(m.ReplyToken, messages)
 	}

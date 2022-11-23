@@ -26,14 +26,17 @@ func (cr *CommonRouter) GetDefaultRouter() *gin.Engine {
 	router := gin.Default()
 	config := cors.DefaultConfig()
 	frontUrl := os.Getenv("FRONT_URL")
-	//TOTO localhost
-	config.AllowOrigins = []string{frontUrl, "http://localhost:3000"}
+	config.AllowOrigins = []string{frontUrl}
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	router.Use(gin.Logger(), cors.New(config))
 	return router
 }
 
 func (cr *CommonRouter) ValidateTokenMiddleware(c *gin.Context, channelId string) {
+	if os.Getenv("ENV") == "local" {
+		return
+	}
+
 	auth := c.GetHeader("Authorization")
 	idx := strings.Index(auth, "Bearer ")
 	if idx == -1 || len(auth) <= 7 {
