@@ -14,6 +14,7 @@ type WeddingRouter struct {
 	fac *controller.FileApiController
 	lac *controller.LineApiController
 	sac *controller.SlideShowApiController
+	cac *controller.ConfigApiController
 }
 
 // Newコンストラクタ
@@ -23,8 +24,9 @@ func NewWeddingRouter(
 	uac *controller.UserApiController,
 	fac *controller.FileApiController,
 	lac *controller.LineApiController,
-	sac *controller.SlideShowApiController) *WeddingRouter {
-	return &WeddingRouter{cr: cr, lbc: lbc, uac: uac, fac: fac, lac: lac, sac: sac}
+	sac *controller.SlideShowApiController,
+	cac *controller.ConfigApiController) *WeddingRouter {
+	return &WeddingRouter{cr: cr, lbc: lbc, uac: uac, fac: fac, lac: lac, sac: sac, cac: cac}
 }
 
 // Init ルーティング設定
@@ -57,6 +59,7 @@ func (wr *WeddingRouter) Init() {
 			slideshow.PATCH("/:id", wr.sac.PatchSlideshow)
 		}
 		api.POST("/line/message", wr.lac.SendMessageToLineBot)
+		api.GET("/config", wr.cac.GetConfig)
 	}
 	port := os.Getenv("PORT")
 	if port == "" {

@@ -66,6 +66,17 @@ func (lpu *LinePushUsecase) SendUnFollowNotification(unFollower *entity.User) er
 	return lpu.multicastMessageToAdmin(messages)
 }
 
+func (lpu *LinePushUsecase) SendRegisterNotification(registered bool, name string) error {
+	var messages []map[string]interface{}
+	if registered {
+		messages = lpu.mr.FindMessageByKey("wedding_modify")
+	} else {
+		messages = lpu.mr.FindMessageByKey("wedding_register")
+	}
+	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), name)
+	return lpu.multicastMessageToAdmin(messages)
+}
+
 func (lpu *LinePushUsecase) multicastMessageToAdmin(m []map[string]interface{}) error {
 	users, err := lpu.ur.FindByIsAdmin(true)
 	if err != nil {

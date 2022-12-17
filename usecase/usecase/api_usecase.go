@@ -45,21 +45,25 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 			return nil, err
 		}
 	}
+	registered := user.Registered
 	user = r.ToUser(user)
 	user.Registered = true
 	if err = au.ur.SaveUser(user); err != nil {
 		return nil, err
 	}
+	if err = au.lpu.SendRegisterNotification(registered, user.FamilyName+user.FirstName); err != nil {
+		return nil, err
+	}
 	return user, nil
 }
 
-func (au *ApiUsecase) PatchUser(userId, field string, val bool) error {
+func (au *ApiUsecase) PatchUser(userId, field string, val interface{}) error {
 	// Check if user exists
 	if _, err := au.GetUser(userId); err != nil {
 		return err
 	}
 
-	return au.ur.UpdateBoolFieldById(userId, field, val)
+	return au.ur.UpdateFieldById(userId, field, val)
 }
 
 func (au *ApiUsecase) GetUser(id string) (*entity.User, error) {

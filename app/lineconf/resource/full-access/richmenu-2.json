@@ -42,8 +42,8 @@
       },
       "action": {
         "type": "message",
-        "label": "タイムスケジュール",
-        "text": "タイムスケジュール"
+        "label": "料理メニュー",
+        "text": "料理メニュー"
       }
     },
     {
@@ -68,8 +68,8 @@
       },
       "action": {
         "type": "message",
-        "label": "料理メニュー",
-        "text": "料理メニュー"
+        "label": "プロフィール",
+        "text": "プロフィール"
       }
     },
     {
@@ -93,8 +93,8 @@
       },
       "action": {
         "type": "message",
-        "label": "プロフィール",
-        "text": "プロフィール"
+        "label": "二次会情報",
+        "text": "二次会情報"
       }
     }
   ]

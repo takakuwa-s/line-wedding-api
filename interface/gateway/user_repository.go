@@ -30,7 +30,7 @@ func (ur *UserRepository) SaveUser(user *entity.User) error {
 	return ur.cr.Save("users", user.Id, user)
 }
 
-func (ur *UserRepository) UpdateBoolFieldById(id, field string, val bool) error {
+func (ur *UserRepository) UpdateFieldById(id, field string, val interface{}) error {
 	if _, err := ur.f.Firestore.Collection("users").Doc(id).Update(conf.Ctx, []firestore.Update{
 		{
 			Path:  field,
@@ -41,9 +41,9 @@ func (ur *UserRepository) UpdateBoolFieldById(id, field string, val bool) error 
 			Value: time.Now(),
 		},
 	}); err != nil {
-		return fmt.Errorf("failed to update the user; id =  %s, field = %s, val = %t, err = %w", id, field, val, err)
+		return fmt.Errorf("failed to update the user; id =  %s, field = %s, val = %s, err = %w", id, field, val, err)
 	}
-	conf.Log.Info("Successfully update the user", zap.String("id", id), zap.Bool(field, val))
+	conf.Log.Info("Successfully update the user", zap.String("id", id), zap.Any(field, val))
 	return nil
 }
 

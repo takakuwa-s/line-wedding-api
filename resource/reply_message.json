@@ -1,28 +1,4 @@
 {
-  "ヘルプ": [
-    {
-      "type": "text",
-      "text": "このアカウントは、2023年03月19日（日）の高桑駿・瀬山彩華の結婚式の情報を伝えるアカウントです。\n\n\nLINEアカウント下部のメニューをタップすると、それぞれ以下のことができます。"
-    },
-    {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp1.jpg?alt=media&token=16d0d322-283a-4a1f-a022-3a51887d38b9",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp1.jpg?alt=media&token=16d0d322-283a-4a1f-a022-3a51887d38b9"
-    },
-    {
-      "type": "text",
-      "text": "① ヘルプを表示します\n\n\n② WEB招待状を開き、結婚式の詳細を確認できます\n\n\n③ WEB招待状で登録した回答状況を確認・修正できます\n\n\n④ LINEを通してアップロードした写真・動画を確認・削除・ダウンロードできます\n\n\n⑤ LINEアカウントを通して写真・動画をアップロードできます\n\n\n⑥ 結婚式場へのアクセスを確認できます\n\n\n⑦ LINEアカウントのメニューの開閉を操作できます\n\n\n⑧ LINEアカウントのメニューの切り替えができます。切替後のメニューは続くメッセージの通りです"
-    },
-    {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp2.jpg?alt=media&token=dd7a5ce1-0f94-4869-8683-479ba1b8e476",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhelp2.jpg?alt=media&token=dd7a5ce1-0f94-4869-8683-479ba1b8e476"
-    },
-    {
-      "type": "text",
-      "text": "① 席次表を表示します\n\n\n② 結婚式・披露宴のスケジュールを確認できます\n\n\n③ 披露宴でのドリンクメニューを確認できます\n\n\n④ 披露宴での料理コースメニューを確認できます\n\n\n⑤ 結婚式会場のWEBサイトにアクセスします\n\n\n⑥ 新郎・新婦のプロフィールを表示します"
-    }
-  ],
   "写真共有": [
     {
       "type": "text",
@@ -52,7 +28,7 @@
   "結婚式場はどこ？": [
     {
       "type": "text",
-      "text": "下記結婚式会場にて挙式・披露宴を行います"
+      "text": "下記会場にて挙式・披露宴を行います"
     },
     {
       "type": "text",
@@ -94,7 +70,7 @@
   "タイムスケジュール": [
     {
       "type": "text",
-      "text": "2023年03月19日（日）\n\n挙式受付　 : 10:00\n挙式　　　 : 10:30\n披露宴受付 : 11:30\n披露宴　　 : 12:00"
+      "text": "【日程】\n2023/3/19 (日)\n\n【タクシー送迎】\n9:40 @JR逗子駅\n\n【挙式受付】\n10:00\n\n【挙式】\n10:30\n\n【披露宴】\n11:30"
     }
   ],
   "プロフィール": [
@@ -105,7 +81,7 @@
     },
     {
       "type": "text",
-      "text": "新郎の高桑駿です。"
+      "text": "高桑駿\n\n【年齢】\n28歳\n\n【中学】\nAKB48にハマってました！\n\n【高校】\nボート部でしたが、しんど過ぎてよくサボってました、\n\n【大学】\nおどりんちゅというよさこいチームで踊ってました\n\n【社会人】\nそのまま百物語というよさこいチームへ。新婦とはここで出会いました"
     },
     {
       "type": "image",
@@ -114,7 +90,13 @@
     },
     {
       "type": "text",
-      "text": "新婦の瀬山彩華です。"
+      "text": "瀬山彩華\n\n【年齢】\n27歳\n\n【中学】\n自転車通学が禁止だったので、往復2時間かけて通ってました笑\n\n【高校】\nダンス部でミスコンに選ばれました！\n\n【大学】\n法政大学鳳遙恋でよさこい踊ってました\n\n【社会人】\n新郎と同じで百物語にいました！ワーホリでニュージーランドにも行ってました！"
+    }
+  ],
+  "二次会情報": [
+    {
+      "type": "text",
+      "text": "まだ未定です〜"
     }
   ]
 }

@@ -41,6 +41,7 @@ func InitializeRouter() *driver.WeddingRouter {
 	fileApiController := controller.NewFileApiController(apiUsecase)
 	lineApiController := controller.NewLineApiController(apiUsecase)
 	slideShowApiController := controller.NewSlideShowApiController(slideShowUsecase)
-	weddingRouter := driver.NewWeddingRouter(commonRouter, lineBotController, userApiController, fileApiController, lineApiController, slideShowApiController)
+	configApiController := controller.NewConfigApiController()
+	weddingRouter := driver.NewWeddingRouter(commonRouter, lineBotController, userApiController, fileApiController, lineApiController, slideShowApiController, configApiController)
 	return weddingRouter
 }

@@ -15,6 +15,7 @@ type UpdateUserRequest struct {
 	PhoneNumber    string
 	PostalCode     string
 	Address        string
+	TaxiUse        bool
 	Allergy        string
 	Message        string
 }
@@ -29,6 +30,7 @@ func (ur *UpdateUserRequest) ToUser(u *entity.User) *entity.User {
 	u.PhoneNumber = ur.PhoneNumber
 	u.PostalCode = ur.PostalCode
 	u.Address = ur.Address
+	u.TaxiUse = ur.TaxiUse
 	u.Allergy = ur.Allergy
 	u.Message = ur.Message
 	return u

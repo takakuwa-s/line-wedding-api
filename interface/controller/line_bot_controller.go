@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"os"
+	"strconv"
+
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
@@ -22,6 +25,7 @@ func NewLineBotController(lb *dto.LineBot, lru *usecase.LineReplyUsecase) *LineB
 }
 
 func (lbc *LineBotController) Webhook(c *gin.Context) {
+	fileFeatureAvailable, _ := strconv.ParseBool(os.Getenv("FILE_FEATURE_AVAILABLE"))
 	bot, err := lbc.lb.GetClient()
 	if err != nil {
 		conf.Log.Error("Failed to get the line bot instance", zap.Error(err))
@@ -41,27 +45,34 @@ func (lbc *LineBotController) Webhook(c *gin.Context) {
 				case *linebot.ImageMessage:
 					imageMessage := event.Message.(*linebot.ImageMessage)
 					if imageMessage.ContentProvider.Type == linebot.ContentProviderTypeLINE {
-						file := entity.NewFile(imageMessage.ID, event.Source.UserID, entity.Image, 0)
-						var imageSet *entity.ImageSet
-						if imageMessage.ImageSet != nil {
-							imageSet = entity.NewImageSet(imageMessage.ImageSet.ID, imageMessage.ImageSet.Total)
+						if fileFeatureAvailable {
+							file := entity.NewFile(imageMessage.ID, event.Source.UserID, entity.Image, 0)
+							var imageSet *entity.ImageSet
+							if imageMessage.ImageSet != nil {
+								imageSet = entity.NewImageSet(imageMessage.ImageSet.ID, imageMessage.ImageSet.Total)
+							}
+							message := dto.NewFileMessage(event.ReplyToken, file, imageSet)
+							err = lbc.lru.HandleImageEvent(message)
+						} else {
+							err = lbc.lru.HandleUnknownMessage(event.ReplyToken)
 						}
-						message := dto.NewFileMessage(event.ReplyToken, file, imageSet)
-						err = lbc.lru.HandleImageEvent(message)
 					}
 				case *linebot.VideoMessage:
 					videoMessage := event.Message.(*linebot.VideoMessage)
 					if videoMessage.ContentProvider.Type == linebot.ContentProviderTypeLINE {
-						file := entity.NewFile(videoMessage.ID, event.Source.UserID, entity.Video, videoMessage.Duration)
-						message := dto.NewFileMessage(event.ReplyToken, file, nil)
-						err = lbc.lru.HandleVideoEvent(message)
+						if fileFeatureAvailable {
+							file := entity.NewFile(videoMessage.ID, event.Source.UserID, entity.Video, videoMessage.Duration)
+							message := dto.NewFileMessage(event.ReplyToken, file, nil)
+							err = lbc.lru.HandleVideoEvent(message)
+						} else {
+							err = lbc.lru.HandleUnknownMessage(event.ReplyToken)
+						}
 					}
 				case *linebot.TextMessage:
 					message := dto.NewTextMessage(event.ReplyToken, event.Message.(*linebot.TextMessage).Text, event.Source.UserID)
 					err = lbc.lru.HandleTextMessage(message)
 				default:
-					message := dto.NewTextMessage(event.ReplyToken, "unknown", event.Source.UserID)
-					err = lbc.lru.HandleTextMessage(message)
+					err = lbc.lru.HandleUnknownMessage(event.ReplyToken)
 				}
 			case linebot.EventTypePostback:
 				message := dto.NewPostbackMessage(event.ReplyToken, event.Postback.Data, event.Source.UserID, event.Postback.Params)

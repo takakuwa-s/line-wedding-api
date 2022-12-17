@@ -32,6 +32,7 @@ func InitializeRouter() *driver.WeddingRouter {
 		controller.NewFileApiController,
 		controller.NewLineApiController,
 		controller.NewSlideShowApiController,
+		controller.NewConfigApiController,
 
 		// gateway
 		gateway.NewCommonRepository,

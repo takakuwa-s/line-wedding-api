@@ -15,26 +15,13 @@
         "height": 718
       },
       "action": {
-        "type": "message",
-        "label": "ヘルプ",
-        "text": "ヘルプ"
-      }
-    },
-    {
-      "bounds": {
-        "x": 834,
-        "y": 0,
-        "width": 833,
-        "height": 718
-      },
-      "action": {
         "type": "uri",
         "uri": "%s"
       }
     },
     {
       "bounds": {
-        "x": 1667,
+        "x": 834,
         "y": 0,
         "width": 833,
         "height": 718
@@ -46,6 +33,19 @@
     },
     {
       "bounds": {
+        "x": 1667,
+        "y": 0,
+        "width": 833,
+        "height": 718
+      },
+      "action": {
+        "type": "message",
+        "label": "タイムスケジュール",
+        "text": "タイムスケジュール"
+      }
+    },
+    {
+      "bounds": {
         "x": 0,
         "y": 718,
         "width": 834,
@@ -53,8 +53,8 @@
       },
       "action": {
         "type": "message",
-        "label": "タイムスケジュール",
-        "text": "タイムスケジュール"
+        "label": "プロフィール",
+        "text": "プロフィール"
       }
     },
     {
@@ -65,9 +65,8 @@
         "height": 717
       },
       "action": {
-        "type": "message",
-        "label": "結婚式場はどこ？",
-        "text": "結婚式場はどこ？"
+        "type": "uri",
+        "uri": "https://www.scapes.jp/"
       }
     },
     {
@@ -79,8 +78,8 @@
       },
       "action": {
         "type": "message",
-        "label": "プロフィール",
-        "text": "プロフィール"
+        "label": "結婚式場はどこ？",
+        "text": "結婚式場はどこ？"
       }
     }
   ]

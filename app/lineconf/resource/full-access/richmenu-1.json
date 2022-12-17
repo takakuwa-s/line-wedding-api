@@ -28,9 +28,8 @@
         "height": 718
       },
       "action": {
-        "type": "message",
-        "label": "ヘルプ",
-        "text": "ヘルプ"
+        "type": "uri",
+        "uri": "%s"
       }
     },
     {
@@ -42,7 +41,7 @@
       },
       "action": {
         "type": "uri",
-        "uri": "%s"
+        "uri": "%s/user"
       }
     },
     {
@@ -53,8 +52,9 @@
         "height": 718
       },
       "action": {
-        "type": "uri",
-        "uri": "%s/user"
+        "type": "message",
+        "label": "タイムスケジュール",
+        "text": "タイムスケジュール"
       }
     },
     {

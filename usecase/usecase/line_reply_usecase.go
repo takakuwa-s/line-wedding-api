@@ -124,7 +124,7 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 		}
 	} else {
 		// update user status
-		if err := lru.ur.UpdateBoolFieldById(m.SenderUserId, "Follow", true); err != nil {
+		if err := lru.ur.UpdateFieldById(m.SenderUserId, "Follow", true); err != nil {
 			return err
 		}
 		profile = user
@@ -138,7 +138,8 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	// Return message
 	messages := lru.mr.FindMessageByKey("follow")
 	liffUrl := os.Getenv("LIFF_URL")
-	messages[2]["text"] = fmt.Sprintf(messages[2]["text"].(string), liffUrl)
+	action := messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})
+	messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})["uri"] = fmt.Sprintf(action["uri"].(string), liffUrl)
 	return lru.p.ReplyMessage(m.ReplyToken, messages)
 }
 
@@ -153,7 +154,7 @@ func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
 	}
 
 	// update user status
-	if err := lru.ur.UpdateBoolFieldById(m.SenderUserId, "Follow", false); err != nil {
+	if err := lru.ur.UpdateFieldById(m.SenderUserId, "Follow", false); err != nil {
 		return err
 	}
 
@@ -192,6 +193,11 @@ func (lru *LineReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 		messages = lru.mr.FindMessageByKey("unknown")
 	}
 	return lru.p.ReplyMessage(m.ReplyToken, messages)
+}
+
+func (lru *LineReplyUsecase) HandleUnknownMessage(replyToken string) error {
+	messages := lru.mr.FindMessageByKey("unknown")
+	return lru.p.ReplyMessage(replyToken, messages)
 }
 
 func (lru *LineReplyUsecase) HandlePostbackEvent(m *dto.PostbackMessage) error {

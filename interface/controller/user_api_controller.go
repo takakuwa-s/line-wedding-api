@@ -132,6 +132,7 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 	var data [][]string
 	data = append(data, []string{
 		"#",
+		"LINE名",
 		"名前",
 		"かな",
 		"管理者",
@@ -142,8 +143,10 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 		"電話番号",
 		"郵便番号",
 		"住所",
+		"タクシー",
 		"アレルギー",
 		"メッセージ",
+		"管理メモ",
 	})
 	for i, u := range users {
 		var guest string
@@ -152,11 +155,14 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 			guest = "新郎側"
 		case "BRIDE":
 			guest = "新婦側"
+		case "COMMON":
+			guest = "共通"
 		default:
 			guest = ""
 		}
 		data = append(data, []string{
 			strconv.Itoa(i + 1),
+			u.LineName,
 			u.FamilyName + " " + u.FirstName,
 			u.FamilyNameKana + " " + u.FirstNameKana,
 			uac.convertBoolToStr(u.IsAdmin),
@@ -167,8 +173,10 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 			u.PhoneNumber,
 			u.PostalCode,
 			u.Address,
+			uac.convertBoolToStr(u.TaxiUse),
 			u.Allergy,
 			u.Message,
+			u.Note,
 		})
 	}
 	return data

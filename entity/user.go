@@ -21,10 +21,12 @@ type User struct {
 	PhoneNumber    string    `json:"phoneNumber"`
 	PostalCode     string    `json:"postalCode"`
 	Address        string    `json:"address"`
+	TaxiUse        bool      `json:"taxiUse"`
 	Allergy        string    `json:"allergy"`
 	Message        string    `json:"message"`
 	IsAdmin        bool      `json:"isAdmin"`
 	Registered     bool      `json:"registered"`
+	Note           string    `json:"note"`
 	CreatedAt      time.Time `json:"createdAt"`
 	UpdatedAt      time.Time `json:"updatedAt"`
 }

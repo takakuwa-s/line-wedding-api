@@ -6,7 +6,7 @@ import (
 
 type IUserRepository interface {
 	SaveUser(user *entity.User) error
-	UpdateBoolFieldById(id, field string, val bool) error
+	UpdateFieldById(id, field string, val interface{}) error
 	FindById(id string) (*entity.User, error)
 	FindByIds(ids []string) ([]entity.User, error)
 	FindByIsAdmin(isAdmin bool) ([]entity.User, error)
