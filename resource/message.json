@@ -181,7 +181,7 @@
       "text": "スライドショーの作成に成功しました。",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     },
     {
@@ -190,7 +190,7 @@
       "previewImageUrl": "%s",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     }
   ],
@@ -200,7 +200,7 @@
       "text": "スライドショーの作成に失敗しました。\n\n詳細;\n%s",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     }
   ],
@@ -247,7 +247,7 @@
       "text": "%sさんがWedding botを友達登録しました",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     },
     {
@@ -256,7 +256,7 @@
       "previewImageUrl": "%s",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     }
   ],
@@ -266,7 +266,7 @@
       "text": "%sさんがWedding botを再度友達登録しました",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     },
     {
@@ -275,7 +275,7 @@
       "previewImageUrl": "%s",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     }
   ],
@@ -285,7 +285,7 @@
       "text": "%sさんがWedding botをブロックしました",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     }
   ],
@@ -295,7 +295,7 @@
       "text": "%sさんがフォームに回答しました",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     }
   ],
@@ -305,7 +305,7 @@
       "text": "%sさんがフォームの回答を修正しました",
       "sender": {
         "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin-icon.png?alt=media&token=95b362c1-c672-48b4-b904-00c9f33f8809"
+        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fadmin_icon.jpg?alt=media&token=2d8267a4-1546-4982-afdc-aeb71ea2134a"
       }
     }
   ]

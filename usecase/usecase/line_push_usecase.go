@@ -39,8 +39,8 @@ func (lpu *LinePushUsecase) SendSlideshowErrorNotification(note string) error {
 	return lpu.multicastMessageToAdmin(messages)
 }
 
-func (lpu *LinePushUsecase) PublishMessageToAttendee(messages []map[string]interface{}) error {
-	users, err := lpu.ur.FindByAttendanceAndFollow(true, true)
+func (lpu *LinePushUsecase) PublishMessageToUsers(messages []map[string]interface{}, flag string) error {
+	users, err := lpu.ur.FindByFlagOrderByName(500, "", flag, true)
 	if err != nil {
 		return err
 	}
@@ -55,8 +55,12 @@ func (lpu *LinePushUsecase) SendFollowNotification(follower *entity.User, isFirs
 		messages = lpu.mr.FindMessageByKey("wedding_refollow")
 	}
 	messages[0]["text"] = fmt.Sprintf(messages[0]["text"].(string), follower.LineName)
-	messages[1]["originalContentUrl"] = fmt.Sprintf(messages[1]["originalContentUrl"].(string), follower.IconUrl)
-	messages[1]["previewImageUrl"] = fmt.Sprintf(messages[1]["previewImageUrl"].(string), follower.IconUrl)
+	if len(follower.IconUrl) > 0 {
+		messages[1]["originalContentUrl"] = fmt.Sprintf(messages[1]["originalContentUrl"].(string), follower.IconUrl)
+		messages[1]["previewImageUrl"] = fmt.Sprintf(messages[1]["previewImageUrl"].(string), follower.IconUrl)
+	} else {
+		messages = messages[:1]
+	}
 	return lpu.multicastMessageToAdmin(messages)
 }
 
@@ -115,7 +119,7 @@ func (lpu *LinePushUsecase) multicastMessage(
 			return err
 		}
 	} else {
-		return fmt.Errorf("there is no remaining quota; userCnt = %d, quotaComsuption = %d", userCnt, quotaComsuption)
+		conf.Log.Warn("there is no remaining quota", zap.Int("userCnt", userCnt), zap.Int64("Quota Comsuption", quotaComsuption))
 	}
 	return nil
 }

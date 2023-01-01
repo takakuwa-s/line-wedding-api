@@ -130,17 +130,20 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 		profile = user
 	}
 
-	// Send notification to admin bot
-	if err = lru.lpu.SendFollowNotification(profile, user == nil); err != nil {
-		return fmt.Errorf("failed to send notification to admin user; err = %w", err)
-	}
-
 	// Return message
 	messages := lru.mr.FindMessageByKey("follow")
 	liffUrl := os.Getenv("LIFF_URL")
 	action := messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})
 	messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})["uri"] = fmt.Sprintf(action["uri"].(string), liffUrl)
-	return lru.p.ReplyMessage(m.ReplyToken, messages)
+	if err = lru.p.ReplyMessage(m.ReplyToken, messages); err != nil {
+		return fmt.Errorf("failed to send notification to admin user; err = %w", err)
+	}
+
+	// Send notification to admin bot
+	if err = lru.lpu.SendFollowNotification(profile, user == nil); err != nil {
+		conf.Log.Error("failed to send notification to admin user", zap.Error(err))
+	}
+	return nil
 }
 
 func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {

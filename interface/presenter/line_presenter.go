@@ -1,7 +1,9 @@
 package presenter
 
 import (
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
+	"go.uber.org/zap"
 
 	"encoding/json"
 	"fmt"
@@ -27,9 +29,12 @@ func (lp *LinePresenter) MulticastMessage(userIds []string, ms []map[string]inte
 	if err != nil {
 		return err
 	}
+	// User Id count must be less than 500
+	// https://developers.line.biz/ja/reference/messaging-api/#send-multicast-request-body
 	if _, err := bot.Multicast(userIds, messages...).Do(); err != nil {
 		return fmt.Errorf("failed to multicast the message messages = %v, err = %w", messages, err)
 	}
+	conf.Log.Info("Successfully multicast the messages", zap.Int("userIds count", len(userIds)))
 	return nil
 }
 

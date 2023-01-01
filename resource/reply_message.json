@@ -69,28 +69,29 @@
   ],
   "タイムスケジュール": [
     {
-      "type": "text",
-      "text": "【日程】\n2023/3/19 (日)\n\n【タクシー送迎】\n9:40 @JR逗子駅\n\n【挙式受付】\n10:00\n\n【挙式】\n10:30\n\n【披露宴】\n11:30"
+      "type": "image",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fschedule.png?alt=media&token=84191443-b22e-4c75-9536-a389597b4399",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fschedule.png?alt=media&token=84191443-b22e-4c75-9536-a389597b4399"
     }
   ],
   "プロフィール": [
     {
       "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg.JPG?alt=media&token=f865d13f-8263-41d6-906c-84253aeac699",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg.JPG?alt=media&token=f865d13f-8263-41d6-906c-84253aeac699"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg?alt=media&token=28c3df52-9613-4d59-bd38-80b43b5cad32",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg?alt=media&token=28c3df52-9613-4d59-bd38-80b43b5cad32"
     },
     {
       "type": "text",
-      "text": "高桑駿\n\n【年齢】\n28歳\n\n【中学】\nAKB48にハマってました！\n\n【高校】\nボート部でしたが、しんど過ぎてよくサボってました、\n\n【大学】\nおどりんちゅというよさこいチームで踊ってました\n\n【社会人】\nそのまま百物語というよさこいチームへ。新婦とはここで出会いました"
+      "text": "高桑駿\n\n【年齢】\n28歳\n\n【出身】\n新潟県新潟市\n\n【中学】\nAKB48にハマってました！\n\n【高校】\nボート部でした。信濃川で練習していましたが、練習が辛くてよくサボってました...\n\n【大学】\nおどりんちゅというよさこいチームで踊ってました。振り付け作ったり練習を指揮したりもしていました\n\n【社会人】\n百物語というよさこいチームで踊ってました。仕事ではこのようなアプリを作っています"
     },
     {
       "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg.JPG?alt=media&token=cbe019bd-8a47-4b81-82a9-d278dedbc536",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg.JPG?alt=media&token=cbe019bd-8a47-4b81-82a9-d278dedbc536"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg?alt=media&token=eaf567ff-f6be-478d-a702-57cd1e723c1e",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg?alt=media&token=eaf567ff-f6be-478d-a702-57cd1e723c1e"
     },
     {
       "type": "text",
-      "text": "瀬山彩華\n\n【年齢】\n27歳\n\n【中学】\n自転車通学が禁止だったので、往復2時間かけて通ってました笑\n\n【高校】\nダンス部でミスコンに選ばれました！\n\n【大学】\n法政大学鳳遙恋でよさこい踊ってました\n\n【社会人】\n新郎と同じで百物語にいました！ワーホリでニュージーランドにも行ってました！"
+      "text": "瀬山彩華\n\n【年齢】\n27歳\n\n【出身】\n埼玉県熊谷市\n\n【中学】\nうちわ祭（地元の夏祭り）のお囃子が生き甲斐でした。熊谷が最高気温40.9度を叩き出した時は部活帰りで歩いてました\n\n【高校】\nダンス部でした。文化祭のミスターコン2位でした！\n\n【大学】\n法政大学よさこいソーランサークル鳳遙恋でよさこい踊ってました\n\n【社会人】\n新郎と同じで百物語にいました！ワーホリでニュージーランドにも行ってました！"
     }
   ],
   "二次会情報": [

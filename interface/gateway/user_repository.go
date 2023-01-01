@@ -105,16 +105,6 @@ func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
 	return users, nil
 }
 
-func (ur *UserRepository) FindByAttendanceAndFollow(attendance, follow bool) ([]entity.User, error) {
-	query := ur.f.Firestore.Collection("users").Where("Attendance", "==", attendance).Where("Follow", "==", follow)
-	users, err := ur.executeQuery(&query)
-	if err != nil {
-		return nil, fmt.Errorf("failed to find users ; attendance = %t, follow = %t, err = %w", attendance, follow, err)
-	}
-	conf.Log.Info("Successfully find the users with Attendance and follow flag", zap.Bool("Attendance", attendance), zap.Bool("follow", follow), zap.Any("user", users))
-	return users, nil
-}
-
 func (ur *UserRepository) FindByFlagOrderByName(limit int, startId, flag string, val bool) ([]entity.User, error) {
 	query := ur.f.Firestore.Collection("users").OrderBy("FamilyNameKana", firestore.Asc).OrderBy("FirstNameKana", firestore.Asc)
 	if limit > 0 {
