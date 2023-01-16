@@ -177,6 +177,10 @@ func (lru *LineReplyUsecase) HandleGroupEvent(m *dto.GroupMessage) error {
 func (lru *LineReplyUsecase) HandleTextMessage(m *dto.TextMessage) error {
 	var messages []map[string]interface{}
 	switch m.Text {
+	case "招待状回答リマインド確認":
+		if lru.checkAdminRole(m.SenderUserId) {
+			messages = lru.mr.FindMessageByKey("invitation_reminder")
+		}
 	case "前日メッセージ送信内容確認":
 		if lru.checkAdminRole(m.SenderUserId) {
 			messages = lru.mr.FindMessageByKey("reminder")

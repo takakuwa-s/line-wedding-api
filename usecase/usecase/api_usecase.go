@@ -149,7 +149,7 @@ func (au *ApiUsecase) PatchFile(id string, forBrideAndGroom bool) error {
 	return nil
 }
 
-func (au *ApiUsecase) PublishMessageToUsers(messageKey, flag string) error {
+func (au *ApiUsecase) PublishMessageToUsers(messageKey, flag string, val bool) error {
 	var messages []map[string]interface{}
 	if messageKey == "slideshow" {
 		var err error
@@ -163,5 +163,5 @@ func (au *ApiUsecase) PublishMessageToUsers(messageKey, flag string) error {
 	if len(messages) == 0 {
 		return fmt.Errorf("not found the message; %v", messageKey)
 	}
-	return au.lpu.PublishMessageToUsers(messages, flag)
+	return au.lpu.PublishMessageToUsers(messages, flag, val)
 }

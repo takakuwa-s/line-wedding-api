@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/takakuwa-s/line-wedding-api/conf"
@@ -30,7 +31,12 @@ func (lac *LineApiController) SendMessageToLineBot(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "flag must be one of Attendance, Follow, IsAdmin, Registered"})
 		return
 	}
-	if err := lac.au.PublishMessageToUsers(messageKey, flag); err != nil {
+	val, err := strconv.ParseBool(c.Query("val"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "val must be boolean"})
+		return
+	}
+	if err := lac.au.PublishMessageToUsers(messageKey, flag, val); err != nil {
 		conf.Log.Error("[SendMessageToLineBot] Sending messages failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -35,6 +35,7 @@ func NewUser(res *linebot.UserProfileResponse) *User {
 	return &User{
 		Id:         res.UserID,
 		LineName:   res.DisplayName,
+		Attendance: true,
 		IsAdmin:    false,
 		Registered: false,
 		Follow:     true,

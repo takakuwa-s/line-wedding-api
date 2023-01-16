@@ -39,8 +39,8 @@ func (lpu *LinePushUsecase) SendSlideshowErrorNotification(note string) error {
 	return lpu.multicastMessageToAdmin(messages)
 }
 
-func (lpu *LinePushUsecase) PublishMessageToUsers(messages []map[string]interface{}, flag string) error {
-	users, err := lpu.ur.FindByFlagOrderByName(500, "", flag, true)
+func (lpu *LinePushUsecase) PublishMessageToUsers(messages []map[string]interface{}, flag string, val bool) error {
+	users, err := lpu.ur.FindByFlagOrderByName(500, "", flag, val)
 	if err != nil {
 		return err
 	}
