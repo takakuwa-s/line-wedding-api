@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
@@ -131,10 +132,16 @@ func (lru *LineReplyUsecase) HandleFollowEvent(m *dto.FollowMessage) error {
 	}
 
 	// Return message
-	messages := lru.mr.FindMessageByKey("follow")
-	liffUrl := os.Getenv("LIFF_URL")
-	action := messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})
-	messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})["uri"] = fmt.Sprintf(action["uri"].(string), liffUrl)
+	attendanceFeatureAvailable, _ := strconv.ParseBool(os.Getenv("ATTENDANCE_FEATURE_AVAILABLE"))
+	var messages []map[string]interface{}
+	if attendanceFeatureAvailable {
+		messages = lru.mr.FindMessageByKey("follow")
+		liffUrl := os.Getenv("LIFF_URL")
+		action := messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})
+		messages[2]["contents"].(map[string]interface{})["body"].(map[string]interface{})["contents"].([]interface{})[0].(map[string]interface{})["action"].(map[string]interface{})["uri"] = fmt.Sprintf(action["uri"].(string), liffUrl)
+	} else {
+		messages = lru.mr.FindMessageByKey("attendance_disabled_follow")
+	}
 	if err = lru.p.ReplyMessage(m.ReplyToken, messages); err != nil {
 		return fmt.Errorf("failed to send notification to admin user; err = %w", err)
 	}

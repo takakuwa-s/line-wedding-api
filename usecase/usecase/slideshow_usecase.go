@@ -5,9 +5,12 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
+	"github.com/takakuwa-s/line-wedding-api/utils"
+	"go.uber.org/zap"
 )
 
 type SlideShowUsecase struct {
@@ -48,19 +51,49 @@ func (su *SlideShowUsecase) CreateSlideShow() (*dto.SlideShowCreateResponce, err
 
 func (su *SlideShowUsecase) getImagesForSlideshow() ([]string, error) {
 	limit := 34
-	images, err := su.fr.FindByFileStatusAndFileTypeAndForBrideAndGroom(300, entity.Open, false, entity.Image)
+	images, err := su.fr.FindByFaceCountAndFileStatusAndFileTypeAndForBrideAndGroom(500, 1, entity.Open, false, entity.Image)
 	if err != nil {
 		return nil, err
 	}
 	if len(images) < limit {
 		return nil, fmt.Errorf("the number of images is %d and less than %d", len(images), limit)
 	}
-	var urls []string
-	for _, f := range images {
-		urls = append(urls, f.ContentUrl)
-	}
+	conf.Log.Info("images for slideshow are found", zap.Int("images size", len(images)))
 	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(urls), func(i, j int) { urls[i], urls[j] = urls[j], urls[i] })
+	rand.Shuffle(len(images), func(i, j int) { images[i], images[j] = images[j], images[i] })
+
+	var urls []string = []string{images[0].ContentUrl}
+	set := []int{0}
+	prev := 0
+	cur := 0
+	lap := 0
+	for len(urls) < limit {
+		if cur < len(images)-1 {
+			cur++
+		} else {
+			cur = 1
+			lap++
+		}
+		if lap > 2 {
+			break
+		}
+		if utils.IntContains(set, cur) {
+			continue
+		}
+		prevImage := images[prev]
+		curImage := images[cur]
+		if prevImage.FaceCount == curImage.FaceCount && prevImage.Creater == curImage.Creater {
+			continue
+		}
+		conf.Log.Info("Image is selected", zap.Int("cur", cur), zap.Int("prev", prev))
+		urls = append(urls, curImage.ContentUrl)
+		prev = cur
+		set = append(set, cur)
+	}
+	if len(urls) < limit {
+		return nil, fmt.Errorf("too many same images, hence cannot select %d images; urls = %d; images = %d", limit, len(urls), len(images))
+	}
+	conf.Log.Info("All images for slideshow are selected")
 	return urls[:limit], nil
 }
 

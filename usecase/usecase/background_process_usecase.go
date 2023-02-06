@@ -154,15 +154,15 @@ func (bpu *BackgroundProcessUsecase) updateFaceScore(f entity.File) (*entity.Fil
 }
 
 func (bpu *BackgroundProcessUsecase) calculateFaceScore(r []*dto.FaceResponse, f entity.File) *entity.File {
-	if len(r) <= 0 || len(r) > 10 {
-		f.FaceCount = 0
+	faceCount := len(r)
+	if faceCount <= 0 || faceCount > 10 {
+		f.FaceCount = faceCount
 		f.FaceHappinessLevel = 0
 		f.FacePhotoBeauty = 0
 		f.FaceScore = 0
 		f.FileStatus = entity.Open
 		return &f
 	}
-	faceCount := len(r)
 	faceIds := make([]string, faceCount)
 	var faceHappinessLevelSum float32
 	var facePhotoBeautySum float32

@@ -56,15 +56,15 @@
   "料理メニュー": [
     {
       "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fcource_menu.jpeg?alt=media&token=ba9b7491-d145-4d24-9a2d-10135a833f08",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fcource_menu.jpeg?alt=media&token=ba9b7491-d145-4d24-9a2d-10135a833f08"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fmenu.png?alt=media&token=6538d0b9-9047-4a0f-8b4f-048975ef941a",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fmenu.png?alt=media&token=6538d0b9-9047-4a0f-8b4f-048975ef941a"
     }
   ],
   "ドリンクメニュー": [
     {
       "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.jpeg?alt=media&token=68e61ddb-4b6a-4d95-a8db-51d18b1beb93",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.jpeg?alt=media&token=68e61ddb-4b6a-4d95-a8db-51d18b1beb93"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.png?alt=media&token=552d6e79-4716-4848-83b8-007a2e821eae",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.png?alt=media&token=552d6e79-4716-4848-83b8-007a2e821eae"
     }
   ],
   "タイムスケジュール": [
@@ -94,10 +94,73 @@
       "text": "瀬山彩華\n\n【年齢】\n27歳\n\n【出身】\n埼玉県熊谷市\n\n【中学】\nうちわ祭（地元の夏祭り）のお囃子が生き甲斐でした。熊谷が最高気温40.9度を叩き出した時は部活帰りで歩いてました\n\n【高校】\nダンス部でした。文化祭のミスターコン2位でした！\n\n【大学】\n法政大学よさこいソーランサークル鳳遙恋でよさこい踊ってました\n\n【社会人】\n新郎と同じで百物語にいました！ワーホリでニュージーランドにも行ってました！"
     }
   ],
-  "二次会情報": [
+  "ヘルプ": [
     {
       "type": "text",
-      "text": "まだ未定です〜"
+      "text": "以下メニューから、聞きたいことを選んで下さい"
+    },
+    {
+      "type": "template",
+      "altText": "ヘルプメニュー",
+      "template": {
+        "type": "carousel",
+        "imageAspectRatio": "rectangle",
+        "imageSize": "cover",
+        "columns": [
+          {
+            "thumbnailImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhow-to-use.png?alt=media&token=0b2d121e-87ad-47f7-845e-572c4c800ea9",
+            "imageBackgroundColor": "#000000",
+            "title": "招待状アプリの活用方法",
+            "text": "この招待状アプリで、できることが知りたい",
+            "defaultAction": {
+              "type": "message",
+              "label": "詳しく知りたい",
+              "text": "招待状アプリの活用方法"
+            },
+            "actions": [
+              {
+                "type": "message",
+                "label": "詳しく知りたい",
+                "text": "招待状アプリの活用方法"
+              }
+            ]
+          },
+          {
+            "thumbnailImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdownload.png?alt=media&token=f7154be1-4d5d-42c6-bcb2-2d9a1877daa6",
+            "imageBackgroundColor": "#000000",
+            "title": "写真・動画の一括保存方法",
+            "text": "このアカンウトで共有された、写真・動画をスマートフォンに一括で保存する方法が知りたい",
+            "defaultAction": {
+              "type": "message",
+              "label": "詳しく知りたい",
+              "text": "写真・動画の一括ダウンロード方法"
+            },
+            "actions": [
+              {
+                "type": "message",
+                "label": "詳しく知りたい",
+                "text": "写真・動画の一括ダウンロード方法"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "招待状アプリの活用方法": [
+    {
+      "type": "video",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline%20tutorial.mp4?alt=media&token=44e3e19b-bf3b-4b06-8336-cbaed72dc658",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline_tutorial_thumbnail.jpg?alt=media&token=d098c37b-8be6-49d6-bce3-f3a7699d74b4",
+      "trackingId": "how-to-use-app-video"
+    }
+  ],
+  "写真・動画の一括ダウンロード方法": [
+    {
+      "type": "video",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbulk%20download%20screen%20movie.mp4?alt=media&token=49a902e7-4aaf-48e1-a6e8-5f8d38860f91",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbulk%20download%20thumbnail.jpg?alt=media&token=884c6747-5da3-47ed-9172-04af9741cae4",
+      "trackingId": "bulk-download-thumbnail-video"
     }
   ]
 }

@@ -97,6 +97,18 @@
       }
     }
   ],
+  "attendance_disabled_follow": [
+    {
+      "type": "text",
+      "text": "高桑駿・瀬山彩華の結婚式招待状LINEアカウントをフォロー頂き、ありがとうございます"
+    },
+    {
+      "type": "video",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline%20tutorial.mp4?alt=media&token=44e3e19b-bf3b-4b06-8336-cbaed72dc658",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline_tutorial_thumbnail.jpg?alt=media&token=d098c37b-8be6-49d6-bce3-f3a7699d74b4",
+      "trackingId": "how-to-use-app-video"
+    }
+  ],
   "image": [
     {
       "type": "text",

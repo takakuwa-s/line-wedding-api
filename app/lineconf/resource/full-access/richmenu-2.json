@@ -93,8 +93,8 @@
       },
       "action": {
         "type": "message",
-        "label": "二次会情報",
-        "text": "二次会情報"
+        "label": "ヘルプ",
+        "text": "ヘルプ"
       }
     }
   ]

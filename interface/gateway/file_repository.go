@@ -194,8 +194,8 @@ func (fr *FileRepository) FindByFileStatusIn(statuses []entity.FileStatus) ([]en
 	return f, nil
 }
 
-func (fr *FileRepository) FindByFileStatusAndFileTypeAndForBrideAndGroom(limit int, fileStatus entity.FileStatus, forBrideAndGroom bool, fileType entity.FileType) ([]entity.File, error) {
-	query := fr.f.Firestore.Collection("files").Where("FileStatus", "==", fileStatus).Where("ForBrideAndGroom", "==", forBrideAndGroom).Where("FileType", "==", string(fileType)).Limit(limit)
+func (fr *FileRepository) FindByFaceCountAndFileStatusAndFileTypeAndForBrideAndGroom(limit, faceCount int, fileStatus entity.FileStatus, forBrideAndGroom bool, fileType entity.FileType) ([]entity.File, error) {
+	query := fr.f.Firestore.Collection("files").Where("FaceCount", ">=", faceCount).Where("FileStatus", "==", fileStatus).Where("ForBrideAndGroom", "==", forBrideAndGroom).Where("FileType", "==", string(fileType)).Limit(limit)
 	f, err := fr.executeQuery(&query)
 	if err != nil {
 		return nil, err
