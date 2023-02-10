@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 	"time"
 
 	"github.com/takakuwa-s/line-wedding-api/conf"
@@ -50,7 +51,7 @@ func (su *SlideShowUsecase) CreateSlideShow() (*dto.SlideShowCreateResponce, err
 }
 
 func (su *SlideShowUsecase) getImagesForSlideshow() ([]string, error) {
-	limit := 34
+	limit := 30
 	images, err := su.fr.FindByFaceCountAndFileStatusAndFileTypeAndForBrideAndGroom(500, 1, entity.Open, false, entity.Image)
 	if err != nil {
 		return nil, err
@@ -62,33 +63,41 @@ func (su *SlideShowUsecase) getImagesForSlideshow() ([]string, error) {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(images), func(i, j int) { images[i], images[j] = images[j], images[i] })
 
-	var urls []string = []string{images[0].ContentUrl}
-	set := []int{0}
-	prev := 0
-	cur := 0
-	lap := 0
-	for len(urls) < limit {
-		if cur < len(images)-1 {
-			cur++
-		} else {
-			cur = 1
-			lap++
+	urls := []string{}
+	idxSet := []int{}
+	keySet := []string{}
+	prevIdx := 0
+	for lap := 1; lap <= 3; lap++ {
+		for i := 0; i < len(images) && len(urls) < limit; i++ {
+			if utils.IntContains(idxSet, i) {
+				continue
+			}
+			cur := images[i]
+			switch lap {
+			case 1:
+				key := cur.Creater + "-" + strconv.Itoa(cur.FaceCount)
+				if cur.Width < cur.Height || utils.StringContains(keySet, key) {
+					continue
+				}
+				keySet = append(keySet, key)
+				conf.Log.Info("Image is selected at lap 1", zap.Int("curIdx", i), zap.String("key", key))
+			case 2:
+				prev := images[prevIdx]
+				if cur.Width < cur.Height || (cur.Creater == prev.Creater && cur.FaceCount == prev.FaceCount) {
+					continue
+				}
+				conf.Log.Info("Image is selected at lap 2", zap.Int("curIdx", i), zap.Int("prevIdx", prevIdx))
+			case 3:
+				prev := images[prevIdx]
+				if cur.Creater == prev.Creater && cur.FaceCount == prev.FaceCount {
+					continue
+				}
+				conf.Log.Info("Image is selected at lap 3", zap.Int("curIdx", i), zap.Int("prevIdx", prevIdx))
+			}
+			urls = append(urls, cur.ContentUrl)
+			idxSet = append(idxSet, i)
+			prevIdx = i
 		}
-		if lap > 2 {
-			break
-		}
-		if utils.IntContains(set, cur) {
-			continue
-		}
-		prevImage := images[prev]
-		curImage := images[cur]
-		if prevImage.FaceCount == curImage.FaceCount && prevImage.Creater == curImage.Creater {
-			continue
-		}
-		conf.Log.Info("Image is selected", zap.Int("cur", cur), zap.Int("prev", prev))
-		urls = append(urls, curImage.ContentUrl)
-		prev = cur
-		set = append(set, cur)
 	}
 	if len(urls) < limit {
 		return nil, fmt.Errorf("too many same images, hence cannot select %d images; urls = %d; images = %d", limit, len(urls), len(images))
@@ -98,21 +107,22 @@ func (su *SlideShowUsecase) getImagesForSlideshow() ([]string, error) {
 }
 
 func (su *SlideShowUsecase) getVideoesForSlideshow() ([]string, error) {
-	limit := 3
-	videoes, err := su.fr.FindByFileStatusAndFileTypeAndForBrideAndGroomAndDuration(300, entity.Open, false, entity.Video, 6000)
-	if err != nil {
-		return nil, err
-	}
-	if len(videoes) < limit {
-		return nil, fmt.Errorf("the number of videoes is %d and less than %d", len(videoes), limit)
-	}
-	var urls []string
-	for _, f := range videoes {
-		urls = append(urls, f.ContentUrl)
-	}
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(urls), func(i, j int) { urls[i], urls[j] = urls[j], urls[i] })
-	return urls[:limit], nil
+	return []string{}, nil
+	// limit := 1
+	// videoes, err := su.fr.FindByFileStatusAndFileTypeAndForBrideAndGroomAndDuration(300, entity.Open, false, entity.Video, 6000)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if len(videoes) < limit {
+	// 	return nil, fmt.Errorf("the number of videoes is %d and less than %d", len(videoes), limit)
+	// }
+	// var urls []string
+	// for _, f := range videoes {
+	// 	urls = append(urls, f.ContentUrl)
+	// }
+	// rand.Seed(time.Now().UnixNano())
+	// rand.Shuffle(len(urls), func(i, j int) { urls[i], urls[j] = urls[j], urls[i] })
+	// return urls[:limit], nil
 }
 
 func (su *SlideShowUsecase) UploadSlideshow(r dto.SlideshowWebhook) error {
