@@ -51,7 +51,7 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 	if err = au.ur.SaveUser(user); err != nil {
 		return nil, err
 	}
-	if err = au.lpu.SendRegisterNotification(registered, user.FamilyName+user.FirstName); err != nil {
+	if err = au.lpu.SendRegisterNotification(registered, user.Name); err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -118,7 +118,7 @@ func (au *ApiUsecase) GetFileList(ids, fileStatuses []string, limit int, startId
 			return nil, err
 		}
 		for _, u := range users {
-			uMap[u.Id] = u.FamilyName + u.FirstName
+			uMap[u.Id] = u.Name
 		}
 	}
 	return dto.NewFileResponceList(files, uMap), nil

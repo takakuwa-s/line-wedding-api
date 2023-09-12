@@ -5,33 +5,29 @@ import (
 )
 
 type UpdateUserRequest struct {
-	Id             string
-	Attendance     bool
-	GuestType      string
-	FamilyName     string
-	FirstName      string
-	FamilyNameKana string
-	FirstNameKana  string
-	PhoneNumber    string
-	PostalCode     string
-	Address        string
-	TaxiUse        bool
-	Allergy        string
-	Message        string
+	Id         string
+	Attendance bool
+	GuestType  string
+	Name       string
+	NameKana   string
+	Email      string
+	PostalCode string
+	Address    string
+	Allergy    string
+	Companions []entity.Companion
+	Message    string
 }
 
 func (ur *UpdateUserRequest) ToUser(u *entity.User) *entity.User {
 	u.Attendance = ur.Attendance
 	u.GuestType = ur.GuestType
-	u.FamilyName = ur.FamilyName
-	u.FirstName = ur.FirstName
-	u.FamilyNameKana = ur.FamilyNameKana
-	u.FirstNameKana = ur.FirstNameKana
-	u.PhoneNumber = ur.PhoneNumber
+	u.Name = ur.Name
+	u.NameKana = ur.NameKana
+	u.Email = ur.Email
 	u.PostalCode = ur.PostalCode
 	u.Address = ur.Address
-	u.TaxiUse = ur.TaxiUse
 	u.Allergy = ur.Allergy
+	u.Companions = ur.Companions
 	u.Message = ur.Message
 	return u
 }

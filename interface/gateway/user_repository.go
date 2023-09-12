@@ -106,7 +106,7 @@ func (ur *UserRepository) FindByIsAdmin(isAdmin bool) ([]entity.User, error) {
 }
 
 func (ur *UserRepository) FindByFlagOrderByName(limit int, startId, flag string, val bool) ([]entity.User, error) {
-	query := ur.f.Firestore.Collection("users").OrderBy("FamilyNameKana", firestore.Asc).OrderBy("FirstNameKana", firestore.Asc)
+	query := ur.f.Firestore.Collection("users").OrderBy("NameKana", firestore.Asc)
 	if limit > 0 {
 		query = query.Limit(limit)
 	}
