@@ -44,16 +44,16 @@ if test $2 = "local" ; then
 
   docker run --rm -it $1 -b localhost -p 8080:8080
 
-else
+elif test $2 = "dev" ; then
   echo "----- deploying to docker-hub -----"
   repo="takakuwa5docker/line-wedding-api"
-  tag=$1-$2
+  tag=$1-dev
 
   echo "----- remove docker image -----"
   docker rmi $repo:$tag -f
 
   echo "----- build the docker image -----"
-  docker build . -t $repo:$tag -f $dokcerFilePath --build-arg app=$1 --build-arg env=$2
+  docker build . -t $repo:$tag -f $dokcerFilePath --build-arg app=$1 --build-arg env=dev
 
   echo "----- push the docker image to docker hub -----"
   docker push $repo:$tag
@@ -63,8 +63,26 @@ else
   if test $1 = "background-process-api" ; then
     appName=wedding-background-process-api
   fi
-  if test $2 = "dev" ; then
-    appName=$appName-$2
-  fi
+  appName=$appName-dev
   az webapp restart --resource-group wedding-$2 --name $appName
+else
+  echo "----- deploying to docker-hub -----"
+  repo="takakuwa5docker/line-wedding-api"
+  tag=$1-prod-shimakame
+
+  echo "----- remove docker image -----"
+  docker rmi $repo:$tag -f
+
+  echo "----- build the docker image -----"
+  docker build . -t $repo:$tag -f $dokcerFilePath --build-arg app=$1 --build-arg env=prod
+
+  echo "----- push the docker image to docker hub -----"
+  docker push $repo:$tag
+
+  echo "----- restart azure app service -----"
+  appName=line-wedding-api-prod-shima
+  if test $1 = "background-process-api" ; then
+    appName=wedding-background-process-api-prod-shima
+  fi
+  az webapp restart --resource-group wedding-prod-shima --name $appName
 fi

@@ -26,7 +26,12 @@ func (cr *CommonRouter) GetDefaultRouter() *gin.Engine {
 	router := gin.Default()
 	config := cors.DefaultConfig()
 	frontUrl := os.Getenv("FRONT_URL")
-	config.AllowOrigins = []string{frontUrl, "http://localhost:3000"}
+	env := os.Getenv("ENV")
+	if env == "prod" {
+		config.AllowOrigins = []string{frontUrl}
+	} else {
+		config.AllowOrigins = []string{frontUrl, "http://localhost:3000"}
+	}
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	router.Use(gin.Logger(), cors.New(config))
 	return router

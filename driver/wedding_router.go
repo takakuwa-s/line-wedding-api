@@ -36,7 +36,10 @@ func (wr *WeddingRouter) Init() {
 	router.POST("/line-messaging-api/wedding/webhook", wr.lbc.Webhook)
 	router.GET("/health-check", wr.cr.HealthCheck)
 	api := router.Group("/api")
-	api.Use(wr.validateTokenMiddleware)
+	env := os.Getenv("ENV")
+	if env == "prod" {
+		api.Use(wr.validateTokenMiddleware)
+	}
 	{
 		user := api.Group("/user")
 		{
