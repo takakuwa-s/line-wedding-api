@@ -19,8 +19,7 @@ func main() {
 		conf.Log.Error("Error loading .env file", zap.Error(err))
 		return
 	}
-	path := os.Getenv("LINE_BOT_PRIVATE_KEY_PATH")
-	conf.Log.Info(path)
+
 	scheduler := InitializeScheduler()
 	scheduler.Init()
 

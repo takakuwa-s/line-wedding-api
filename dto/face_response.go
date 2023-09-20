@@ -1,73 +1,32 @@
 package dto
 
-type HeadPose struct {
-	Pitch float32 `json:"pitch"`
-	Roll  float32 `json:"roll"`
-	Yaw   float32 `json:"yaw"`
-}
-
-type Emotion struct {
-	Anger     float32 `json:"anger"`
-	Contempt  float32 `json:"contempt"`
-	Disgust   float32 `json:"disgust"`
-	Fear      float32 `json:"fear"`
-	Happiness float32 `json:"happiness"`
-	Neutral   float32 `json:"neutral"`
-	Surprise  float32 `json:"surprise"`
-}
-
-/**
- * blur: face is blurry or not.
- * Level returns 'Low', 'Medium' or 'High'.
- * Value returns a number between [0,1], the larger the blurrier.
- */
-type Blur struct {
-	BlurLevel string  `json:"blurLevel"`
-	Value     float32 `json:"value"`
-}
-
-/**
- * exposure: face exposure level.
- * Level returns 'GoodExposure', 'OverExposure' or 'UnderExposure'.
- */
-type Exposure struct {
-	ExposureLevel string  `json:"exposureLevel"`
-	Value         float32 `json:"value"`
-}
-
-/**
- * noise: noise level of face pixels.
- * Level returns 'Low', 'Medium' and 'High'.
- * Value returns a number between [0,1], the larger the noisier
- */
-type Noise struct {
-	NoiseLevel string  `json:"noiseLevel"`
-	Value      float32 `json:"value"`
-}
-
-/**
- * occlusion: whether each facial area is occluded.
- * including forehead, eyes and mouth.
- */
-type Occlusion struct {
-	ForeheadOccluded bool `json:"foreheadOccluded"`
-	EyeOccluded      bool `json:"eyeOccluded"`
-	MouthOccluded    bool `json:"mouthOccluded"`
-}
-
-type FaceAttributes struct {
-	Smile     float32   `json:"smile"`
-	HeadPose  HeadPose  `json:"headPose"`
-	Age       float32   `json:"age"`
-	Gender    string    `json:"gender"`
-	Emotion   Emotion   `json:"emotion"`
-	Blur      Blur      `json:"blur"`
-	Exposure  Exposure  `json:"exposure"`
-	Noise     Noise     `json:"noise"`
-	Occlusion Occlusion `json:"occlusion"`
-}
-
 type FaceResponse struct {
-	FaceId         string         `json:"faceId"`
-	FaceAttributes FaceAttributes `json:"faceAttributes"`
+	// Detection confidence. Range [0, 1].
+	DetectionConfidence float32
+
+	// Roll angle, which indicates the amount of clockwise/anti-clockwise rotation
+	// of the face relative to the image vertical about the axis perpendicular to
+	// the face. Range [-180,180].
+	RollAngle float32
+	// Yaw angle, which indicates the leftward/rightward angle that the face is
+	// pointing relative to the vertical plane perpendicular to the image. Range
+	// [-180,180].
+	PanAngle float32
+	// Pitch angle, which indicates the upwards/downwards angle that the face is
+	// pointing relative to the image's horizontal plane. Range [-180,180].
+	TiltAngle float32
+
+	// unknown = 0
+	// very unlikely = 1
+	// unlikely = 2
+	// possible = 3
+	// likely = 4
+	// very likely = 5
+	JoyLikelihood          int32
+	SorrowLikelihood       int32
+	AngerLikelihood        int32
+	SurpriseLikelihood     int32
+	UnderExposedLikelihood int32
+	BlurredLikelihood      int32
+	HeadwearLikelihood     int32
 }

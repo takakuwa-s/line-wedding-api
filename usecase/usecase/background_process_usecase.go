@@ -163,66 +163,76 @@ func (bpu *BackgroundProcessUsecase) calculateFaceScore(r []*dto.FaceResponse, f
 		f.FileStatus = entity.Open
 		return &f
 	}
-	faceIds := make([]string, faceCount)
 	var faceHappinessLevelSum float32
 	var facePhotoBeautySum float32
-	var hasMale bool
-	var hasFemale bool
-	var hasYoung bool
-	var hasElderly bool
-	for i, f := range r {
-		faceIds[i] = f.FaceId
+	for _, f := range r {
 
-		// calculate the face happiness level (max: 40)
-		faceHappinessLevelSum += 20 * f.FaceAttributes.Smile
-		faceHappinessLevelSum -= 20 * f.FaceAttributes.Emotion.Anger
-		faceHappinessLevelSum -= 10 * f.FaceAttributes.Emotion.Contempt
-		faceHappinessLevelSum -= 15 * f.FaceAttributes.Emotion.Disgust
-		faceHappinessLevelSum -= 5 * f.FaceAttributes.Emotion.Fear
-		faceHappinessLevelSum += 20 * f.FaceAttributes.Emotion.Happiness
-		faceHappinessLevelSum += 1 * f.FaceAttributes.Emotion.Neutral
-		faceHappinessLevelSum += 5 * f.FaceAttributes.Emotion.Surprise
+		//---- calculate the face happiness level (max: 40) ---
 
-		// calculate the face photo beauty (max: 30)
-		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Blur.Value)
-		facePhotoBeautySum += 10 * (1 - f.FaceAttributes.Noise.Value)
-		facePhotoBeautySum += 10 * (1 - 2*float32(math.Abs(0.5-float64(f.FaceAttributes.Exposure.Value))))
-
-		if f.FaceAttributes.Occlusion.ForeheadOccluded {
-			facePhotoBeautySum -= 2
-		}
-		if f.FaceAttributes.Occlusion.EyeOccluded {
-			facePhotoBeautySum -= 4
-		}
-		if f.FaceAttributes.Occlusion.MouthOccluded {
-			facePhotoBeautySum -= 2
+		//---- Joy : faceHappinessLevelSum = 0 ~ 40
+		if f.JoyLikelihood == 0 {
+			facePhotoBeautySum -= 5
+		} else {
+			faceHappinessLevelSum += 10 * f.DetectionConfidence * float32(f.JoyLikelihood-1)
 		}
 
-		// For bonus
-		if f.FaceAttributes.Gender == "male" {
-			hasMale = true
+		//---- Sorrow : faceHappinessLevelSum = -12 ~ 0
+		if f.SorrowLikelihood == 0 {
+			facePhotoBeautySum -= 5
+		} else {
+			faceHappinessLevelSum -= 3 * f.DetectionConfidence * float32((f.SorrowLikelihood - 1))
 		}
-		if f.FaceAttributes.Gender == "female" {
-			hasFemale = true
+
+		//---- Anger : faceHappinessLevelSum = -16 ~ 0
+		if f.AngerLikelihood == 0 {
+			facePhotoBeautySum -= 5
+		} else {
+			faceHappinessLevelSum -= 4 * f.DetectionConfidence * float32((f.AngerLikelihood - 1))
 		}
-		if f.FaceAttributes.Age < 10 {
-			hasYoung = true
+
+		//---- Surprise : faceHappinessLevelSum = -8 ~ 0
+		if f.SurpriseLikelihood == 0 {
+			facePhotoBeautySum -= 5
+		} else {
+			faceHappinessLevelSum -= 2 * f.DetectionConfidence * float32((f.SurpriseLikelihood - 1))
 		}
-		if f.FaceAttributes.Age > 50 {
-			hasElderly = true
+
+		//---- calculate the face photo beauty  (max: 40) ---
+		facePhotoBeautySum += 40
+
+		//---- UnderExposedLikelihood : facePhotoBeautySum = -20 ~ 0
+		if f.UnderExposedLikelihood == 0 {
+			facePhotoBeautySum -= 5
+		} else {
+			facePhotoBeautySum -= 5 * f.DetectionConfidence * float32((f.UnderExposedLikelihood - 1))
 		}
+
+		//---- BlurredLikelihood : facePhotoBeautySum = -20 ~ 0
+		if f.BlurredLikelihood == 0 {
+			facePhotoBeautySum -= 5
+		} else {
+			facePhotoBeautySum -= 5 * f.DetectionConfidence * float32((f.BlurredLikelihood - 1))
+		}
+
+		//---- RollAngle : facePhotoBeautySum = -18 ~ 0
+		facePhotoBeautySum -= 0.1 * f.DetectionConfidence * float32(math.Abs(float64(f.RollAngle)))
+
+		//---- PanAngle : facePhotoBeautySum = -18 ~ 0
+		facePhotoBeautySum -= 0.1 * f.DetectionConfidence * float32(math.Abs(float64(f.PanAngle)))
+
+		//---- TiltAngle : facePhotoBeautySum = -18 ~ 0
+		facePhotoBeautySum -= 0.1 * f.DetectionConfidence * float32(math.Abs(float64(f.TiltAngle)))
 	}
+
+	if faceHappinessLevelSum < 0 {
+		faceHappinessLevelSum = 0
+	}
+	if facePhotoBeautySum < 0 {
+		facePhotoBeautySum = 0
+	}
+
 	// calculate the face count bonus point (max: 20)
 	bonusPoint := 2 * float32(faceCount)
-	if hasMale && hasFemale {
-		bonusPoint += 4
-	}
-	if hasYoung {
-		bonusPoint += 3
-	}
-	if hasElderly {
-		bonusPoint += 3
-	}
 
 	f.FaceCount = faceCount
 	f.FaceHappinessLevel = faceHappinessLevelSum / float32(faceCount)
