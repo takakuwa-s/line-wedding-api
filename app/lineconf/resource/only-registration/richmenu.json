@@ -40,8 +40,8 @@
       },
       "action": {
         "type": "message",
-        "label": "タイムスケジュール",
-        "text": "タイムスケジュール"
+        "label": "結婚式場はどこ？",
+        "text": "結婚式場はどこ？"
       }
     },
     {
@@ -65,8 +65,9 @@
         "height": 717
       },
       "action": {
-        "type": "uri",
-        "uri": "https://www.scapes.jp/"
+        "type": "message",
+        "label": "タイムスケジュール",
+        "text": "タイムスケジュール"
       }
     },
     {
@@ -78,8 +79,8 @@
       },
       "action": {
         "type": "message",
-        "label": "結婚式場はどこ？",
-        "text": "結婚式場はどこ？"
+        "label": "ヘルプ",
+        "text": "ヘルプ"
       }
     }
   ]

@@ -57,7 +57,7 @@
   "follow": [
     {
       "type": "text",
-      "text": "このたび、高桑駿・瀬山彩華の結婚式を挙げることとなりました"
+      "text": "このたび、嶋佑祥・久原彩華の結婚式を挙げることとなりました"
     },
     {
       "type": "text",
@@ -75,7 +75,7 @@
           "contents": [
             {
               "type": "image",
-              "url": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Finvitation.png?alt=media&token=b0fe4cfa-7c71-4d99-854e-bf5c7ad6402d",
+              "url": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline_im01.PNG?alt=media&token=f7aeb8ba-2b66-47e9-9086-33f544226f58",
               "size": "full",
               "aspectMode": "cover",
               "aspectRatio": "1:1",
@@ -100,13 +100,7 @@
   "attendance_disabled_follow": [
     {
       "type": "text",
-      "text": "高桑駿・瀬山彩華の結婚式招待状LINEアカウントをフォロー頂き、ありがとうございます"
-    },
-    {
-      "type": "video",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline%20tutorial.mp4?alt=media&token=44e3e19b-bf3b-4b06-8336-cbaed72dc658",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline_tutorial_thumbnail.jpg?alt=media&token=d098c37b-8be6-49d6-bce3-f3a7699d74b4",
-      "trackingId": "how-to-use-app-video"
+      "text": "嶋佑祥・久原彩華の結婚式招待状LINEアカウントをフォロー頂き、ありがとうございます"
     }
   ],
   "image": [
@@ -234,7 +228,7 @@
   "reminder": [
     {
       "type": "text",
-      "text": "皆さん、こんにちは！\n\n先日はLINE招待状にて、出席のご回答いただきありがとうございました。\n\nさて、結婚式が今週末となりました！\n\n招待状にも記載がありますが、当日は往復無料タクシーのご用意をしております。\n往路は定刻の出発になりますので、お乗り遅れないようご注意ください。\n\n【タクシーお迎え】\n時間　9:40\n場所　JR逗子駅東口ロータリー\n\nまた、新郎が開発した本LINEアカウントですが、これより全機能を公開いたします。\n席次表や会場案内、フォトアルバムなどございますので、どうぞご活用ください！！\n\n当日は逗子までご足労頂き恐縮ですが、何卒宜しくお願い致します。\n\n皆様にお会いできますことを楽しみにしております！！"
+      "text": "皆さん、こんにちは！\n\n先日はLINE招待状にて、出席のご回答いただきありがとうございました。\n\nさて、結婚式が今週末となりました！\n\n新郎新婦友人高桑駿氏が開発した本LINEアカウントですが、これより全機能を公開いたします。\n席次表やメニュー、フォトアルバムなどございますので、どうぞご活用ください！！\n\nまた、チャペルは式場の屋上にあります。外になりますのでジャケットの下に着れるカーディガンや、ドレスの上に羽織れるものをご用意ください。\n\n当日皆様にお会いできますことを楽しみにしております！！"
     },
     {
       "type": "sticker",
@@ -245,7 +239,7 @@
   "invitation_reminder": [
     {
       "type": "text",
-      "text": "【招待状回答のお願い】\n\n先日は本LINE botを友達登録頂き、ありがとうございました。\n\n友達登録完了後、お送りしましたWeb招待状より出欠のご回答をお願い致します。\nWeb招待状はLINE bot内メニュー左上からも確認可能です。\n\n誠に勝手ながら2/1（水）を締切とさせて頂いております。\n何卒宜しくお願いします。\n\n※こちらのメッセージは未回答の方にお送りしております。既にご回答済みの場合は、恐れ入りますが新郎又は新婦までご連絡ください。"
+      "text": "【招待状回答のお願い】\n\n先日は本LINE botを友達登録頂き、ありがとうございました。\n\n友達登録完了後、お送りしましたWeb招待状より出欠のご回答をお願い致します。\nWeb招待状はLINE bot内メニュー左上からも確認可能です。\n\n誠に勝手ながら11/8（水）を締切とさせて頂いております。\n何卒宜しくお願いします。\n\n※こちらのメッセージは未回答の方にお送りしております。既にご回答済みの場合は、恐れ入りますが新郎又は新婦までご連絡ください。"
     },
     {
       "type": "sticker",

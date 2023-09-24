@@ -32,39 +32,18 @@
     },
     {
       "type": "text",
-      "text": "https://www.scapes.jp/access.html"
+      "text": "https://catstreet.trunk-hotel.com/access/"
     },
     {
       "type": "location",
-      "title": "スケープス ザ スィート | SCAPES THE SUITE",
-      "address": "〒240-0112 神奈川県三浦郡葉山町堀内９２２−２",
-      "latitude": 35.275178758891705,
-      "longitude": 139.57171279571781
+      "title": "TRUNK(HOTEL) CAT STREET",
+      "address": "〒150-0001 東京都渋谷区神宮前5-31",
+      "latitude": 35.66417344215678,
+      "longitude": 139.70378737548586
     },
     {
       "type": "text",
-      "text": "当日は、JR逗子駅（東口）NewDays前ロータリーから会場までのタクシーをご用意しておりますので、ぜひご利用下さい"
-    }
-  ],
-  "席次表": [
-    {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fseat.jpg?alt=media&token=ce7cc779-d0d3-47f1-851b-268aba0801b9",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fseat.jpg?alt=media&token=ce7cc779-d0d3-47f1-851b-268aba0801b9"
-    }
-  ],
-  "料理メニュー": [
-    {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fmenu.png?alt=media&token=6538d0b9-9047-4a0f-8b4f-048975ef941a",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fmenu.png?alt=media&token=6538d0b9-9047-4a0f-8b4f-048975ef941a"
-    }
-  ],
-  "ドリンクメニュー": [
-    {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.png?alt=media&token=552d6e79-4716-4848-83b8-007a2e821eae",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.png?alt=media&token=552d6e79-4716-4848-83b8-007a2e821eae"
+      "text": "渋谷駅B1番出口より徒歩6分（改札口からは10〜15分）"
     }
   ],
   "タイムスケジュール": [

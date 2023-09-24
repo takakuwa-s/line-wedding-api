@@ -163,6 +163,17 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 		default:
 			guest = ""
 		}
+		companionName1 := ""
+		companionAllergy1 := ""
+		companionName2 := ""
+		companionAllergy2 := ""
+		if len(u.Companions) > 0 {
+			companionName1 = u.Companions[0].Name
+			companionAllergy1 = u.Companions[0].Allergy
+			companionName2 = u.Companions[1].Name
+			companionAllergy2 = u.Companions[1].Allergy
+		}
+
 		data = append(data, []string{
 			strconv.Itoa(i + 1),
 			u.LineName,
@@ -177,10 +188,10 @@ func (uac *UserApiController) convertToCsv(users []entity.User) [][]string {
 			u.PostalCode,
 			u.Address,
 			u.Allergy,
-			u.Companions[0].Name,
-			u.Companions[0].Allergy,
-			u.Companions[1].Name,
-			u.Companions[1].Allergy,
+			companionName1,
+			companionAllergy1,
+			companionName2,
+			companionAllergy2,
 			u.Message,
 			u.Note,
 		})
