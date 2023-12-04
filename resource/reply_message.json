@@ -49,97 +49,87 @@
   "タイムスケジュール": [
     {
       "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fschedule.png?alt=media&token=84191443-b22e-4c75-9536-a389597b4399",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fschedule.png?alt=media&token=84191443-b22e-4c75-9536-a389597b4399"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fschedule.jpg?alt=media&token=1eb78ecd-612c-4f62-b972-7dedf7048472",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fschedule.jpg?alt=media&token=1eb78ecd-612c-4f62-b972-7dedf7048472"
     }
   ],
-  "プロフィール": [
+  "席次表": [
     {
       "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg?alt=media&token=28c3df52-9613-4d59-bd38-80b43b5cad32",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg?alt=media&token=28c3df52-9613-4d59-bd38-80b43b5cad32"
-    },
-    {
-      "type": "text",
-      "text": "高桑駿\n\n【年齢】\n28歳\n\n【出身】\n新潟県新潟市\n\n【中学】\nAKB48にハマってました！\n\n【高校】\nボート部でした。信濃川で練習していましたが、練習が辛くてよくサボってました...\n\n【大学】\nおどりんちゅというよさこいチームで踊ってました。振り付け作ったり練習を指揮したりもしていました\n\n【社会人】\n百物語というよさこいチームで踊ってました。仕事ではこのようなアプリを作っています"
-    },
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fseat.jpg?alt=media&token=df2ad932-841c-4537-bb1e-4908876dba7e",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fseat.jpg?alt=media&token=df2ad932-841c-4537-bb1e-4908876dba7e"
+    }
+  ],
+  "料理メニュー": [
     {
       "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg?alt=media&token=eaf567ff-f6be-478d-a702-57cd1e723c1e",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg?alt=media&token=eaf567ff-f6be-478d-a702-57cd1e723c1e"
-    },
-    {
-      "type": "text",
-      "text": "瀬山彩華\n\n【年齢】\n27歳\n\n【出身】\n埼玉県熊谷市\n\n【中学】\nうちわ祭（地元の夏祭り）のお囃子が生き甲斐でした。熊谷が最高気温40.9度を叩き出した時は部活帰りで歩いてました\n\n【高校】\nダンス部でした。文化祭のミスターコン2位でした！\n\n【大学】\n法政大学よさこいソーランサークル鳳遙恋でよさこい踊ってました\n\n【社会人】\n新郎と同じで百物語にいました！ワーホリでニュージーランドにも行ってました！"
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fmenu.jpg?alt=media&token=d2d7f404-8da8-4477-a9bc-0009eeb99c2d",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fmenu.jpg?alt=media&token=d2d7f404-8da8-4477-a9bc-0009eeb99c2d"
     }
   ],
   "ヘルプ": [
     {
-      "type": "text",
-      "text": "以下メニューから、聞きたいことを選んで下さい"
-    },
-    {
       "type": "template",
       "altText": "ヘルプメニュー",
       "template": {
-        "type": "carousel",
+        "type": "buttons",
+        "thumbnailImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fhelp.jpg?alt=media&token=1d15f45e-2a3c-405c-b36d-7c21f053efa0",
         "imageAspectRatio": "rectangle",
         "imageSize": "cover",
-        "columns": [
+        "imageBackgroundColor": "#FFFFFF",
+        "title":"ヘルプ",
+        "text":"以下から知りたい情報を選択してください。",
+        "actions": [
           {
-            "thumbnailImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fhow-to-use.png?alt=media&token=0b2d121e-87ad-47f7-845e-572c4c800ea9",
-            "imageBackgroundColor": "#000000",
-            "title": "招待状アプリの活用方法",
-            "text": "この招待状アプリで、できることが知りたい",
-            "defaultAction": {
-              "type": "message",
-              "label": "詳しく知りたい",
-              "text": "招待状アプリの活用方法"
-            },
-            "actions": [
-              {
-                "type": "message",
-                "label": "詳しく知りたい",
-                "text": "招待状アプリの活用方法"
-              }
-            ]
+            "type": "message",
+            "label": "メニューの開き方",
+            "text": "メニューの開き方"
           },
           {
-            "thumbnailImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdownload.png?alt=media&token=f7154be1-4d5d-42c6-bcb2-2d9a1877daa6",
-            "imageBackgroundColor": "#000000",
-            "title": "写真・動画の一括保存方法",
-            "text": "このアカンウトで共有された、写真・動画をスマートフォンに一括で保存する方法が知りたい",
-            "defaultAction": {
-              "type": "message",
-              "label": "詳しく知りたい",
-              "text": "写真・動画の一括ダウンロード方法"
-            },
-            "actions": [
-              {
-                "type": "message",
-                "label": "詳しく知りたい",
-                "text": "写真・動画の一括ダウンロード方法"
-              }
-            ]
+            "type": "message",
+            "label": "メニューボタンの内容",
+            "text": "メニューボタンの内容"
+          },
+          {
+            "type": "message",
+            "label": "写真共有のやり方",
+            "text": "写真共有のやり方"
+          },
+          {
+            "type": "message",
+            "label": "ギャラリーの使い方",
+            "text": "ギャラリーの使い方"
           }
         ]
       }
     }
   ],
-  "招待状アプリの活用方法": [
+  "メニューの開き方": [
     {
-      "type": "video",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline%20tutorial.mp4?alt=media&token=44e3e19b-bf3b-4b06-8336-cbaed72dc658",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline_tutorial_thumbnail.jpg?alt=media&token=d098c37b-8be6-49d6-bce3-f3a7699d74b4",
-      "trackingId": "how-to-use-app-video"
+      "type": "image",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fhow_to_open_menu.jpg?alt=media&token=12b38a7e-edde-4e47-8c00-5b42c47d8aff",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fhow_to_open_menu.jpg?alt=media&token=12b38a7e-edde-4e47-8c00-5b42c47d8aff"
     }
   ],
-  "写真・動画の一括ダウンロード方法": [
+  "メニューボタンの内容": [
     {
-      "type": "video",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbulk%20download%20screen%20movie.mp4?alt=media&token=49a902e7-4aaf-48e1-a6e8-5f8d38860f91",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbulk%20download%20thumbnail.jpg?alt=media&token=884c6747-5da3-47ed-9172-04af9741cae4",
-      "trackingId": "bulk-download-thumbnail-video"
+      "type": "image",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fmenu_button.jpg?alt=media&token=2cc273fd-be2f-46d8-bcbb-f49d3eb495f1",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fmenu_button.jpg?alt=media&token=2cc273fd-be2f-46d8-bcbb-f49d3eb495f1"
+    }
+  ],
+  "写真共有のやり方": [
+    {
+      "type": "image",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fshare_photos.jpg?alt=media&token=c170f3d8-3907-454c-9f7a-652167aa7cf6",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fshare_photos.jpg?alt=media&token=c170f3d8-3907-454c-9f7a-652167aa7cf6"
+    }
+  ],
+  "ギャラリーの使い方": [
+    {
+      "type": "image",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fhow_to_use_gallery.jpg?alt=media&token=48ebbfb6-6fe0-47b1-a3b9-f673fe5cb933",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fhow_to_use_gallery.jpg?alt=media&token=48ebbfb6-6fe0-47b1-a3b9-f673fe5cb933"
     }
   ]
 }

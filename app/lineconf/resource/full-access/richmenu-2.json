@@ -1,7 +1,7 @@
 {
   "size": {
     "width": 2500,
-    "height": 1658
+    "height": 1435
   },
   "selected": true,
   "name": "richmenu-2",
@@ -11,19 +11,6 @@
       "bounds": {
         "x": 0,
         "y": 0,
-        "width": 2500,
-        "height": 223
-      },
-      "action": {
-        "type": "richmenuswitch",
-        "richMenuAliasId": "richmenu-alias-1",
-        "data": "{}"
-      }
-    },
-    {
-      "bounds": {
-        "x": 0,
-        "y": 223,
         "width": 834,
         "height": 718
       },
@@ -36,7 +23,7 @@
     {
       "bounds": {
         "x": 834,
-        "y": 223,
+        "y": 0,
         "width": 833,
         "height": 718
       },
@@ -49,45 +36,32 @@
     {
       "bounds": {
         "x": 1667,
-        "y": 223,
+        "y": 0,
         "width": 833,
         "height": 718
       },
       "action": {
         "type": "message",
-        "label": "ドリンクメニュー",
-        "text": "ドリンクメニュー"
+        "label": "写真共有",
+        "text": "写真共有"
       }
     },
     {
       "bounds": {
         "x": 0,
-        "y": 941,
+        "y": 718,
         "width": 834,
         "height": 717
       },
       "action": {
-        "type": "message",
-        "label": "プロフィール",
-        "text": "プロフィール"
+        "type": "uri",
+        "uri": "%s/image/list/all"
       }
     },
     {
       "bounds": {
         "x": 834,
-        "y": 941,
-        "width": 833,
-        "height": 717
-      },
-      "action": {
-        "type": "uri",
-        "uri": "https://www.scapes.jp/"
-      }
-    },
-    {
-      "bounds": {
-        "x": 1667,
-        "y": 941,
+        "y": 718,
         "width": 833,
         "height": 717
       },
@@ -95,6 +69,19 @@
         "type": "message",
         "label": "ヘルプ",
         "text": "ヘルプ"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1667,
+        "y": 718,
+        "width": 833,
+        "height": 717
+      },
+      "action": {
+        "type": "richmenuswitch",
+        "richMenuAliasId": "richmenu-alias-1",
+        "data": "{}"
       }
     }
   ]

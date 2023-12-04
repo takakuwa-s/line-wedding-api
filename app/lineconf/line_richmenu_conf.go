@@ -105,11 +105,11 @@ func (lrc *LineRichmenuConf) CreateRichmenu(menuPattern string) error {
 
 func (lrc *LineRichmenuConf) CreateTwoPageRichmenu(menuPattern string) error {
 	folder := fmt.Sprintf("./resource/%s/", menuPattern)
-	id1, err := lrc.createRichmenu(folder+"richmenu-1.json", folder+"richmenu-1.png")
+	id1, err := lrc.createRichmenu(folder+"richmenu-1.json", folder+"richmenu-1.jpg")
 	if err != nil {
 		return err
 	}
-	id2, err := lrc.createRichmenu(folder+"richmenu-2.json", folder+"richmenu-2.png")
+	id2, err := lrc.createRichmenu(folder+"richmenu-2.json", folder+"richmenu-2.jpg")
 	if err != nil {
 		return err
 	}

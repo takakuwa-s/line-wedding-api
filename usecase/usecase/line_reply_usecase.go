@@ -170,7 +170,7 @@ func (lru *LineReplyUsecase) HandleUnFollowEvent(m *dto.FollowMessage) error {
 
 	// Send notification to admin bot
 	if err := lru.lpu.SendUnFollowNotification(user); err != nil {
-		return fmt.Errorf("failed to send notification to admin user; err = %w", err)
+		conf.Log.Error("failed to send notification to admin user when unfollow", zap.Error(err))
 	}
 
 	return nil

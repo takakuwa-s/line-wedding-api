@@ -3,9 +3,11 @@ package usecase
 import (
 	"fmt"
 
+	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
 	"github.com/takakuwa-s/line-wedding-api/usecase/igateway"
+	"go.uber.org/zap"
 )
 
 type ApiUsecase struct {
@@ -52,7 +54,7 @@ func (au *ApiUsecase) UpdateUser(r *dto.UpdateUserRequest) (*entity.User, error)
 		return nil, err
 	}
 	if err = au.lpu.SendRegisterNotification(registered, user.Name); err != nil {
-		return nil, err
+		conf.Log.Error("Cannot send the register notifications", zap.Error(err))
 	}
 	return user, nil
 }
