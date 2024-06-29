@@ -1,9 +1,6 @@
 package controller
 
 import (
-	"os"
-	"strconv"
-
 	"github.com/takakuwa-s/line-wedding-api/conf"
 	"github.com/takakuwa-s/line-wedding-api/dto"
 	"github.com/takakuwa-s/line-wedding-api/entity"
@@ -25,7 +22,8 @@ func NewLineBotController(lb *dto.LineBot, lru *usecase.LineReplyUsecase) *LineB
 }
 
 func (lbc *LineBotController) Webhook(c *gin.Context) {
-	fileFeatureAvailable, _ := strconv.ParseBool(os.Getenv("FILE_FEATURE_AVAILABLE"))
+	// fileFeatureAvailable, _ := strconv.ParseBool(os.Getenv("FILE_FEATURE_AVAILABLE"))
+	fileFeatureAvailable := false
 	bot, err := lbc.lb.GetClient()
 	if err != nil {
 		conf.Log.Error("Failed to get the line bot instance", zap.Error(err))

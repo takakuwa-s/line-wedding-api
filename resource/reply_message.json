@@ -28,70 +28,37 @@
   "結婚式場はどこ？": [
     {
       "type": "text",
-      "text": "下記会場にて挙式・披露宴を行います"
-    },
-    {
-      "type": "text",
-      "text": "https://www.scapes.jp/access.html"
-    },
-    {
-      "type": "location",
-      "title": "スケープス ザ スィート | SCAPES THE SUITE",
-      "address": "〒240-0112 神奈川県三浦郡葉山町堀内９２２−２",
-      "latitude": 35.275178758891705,
-      "longitude": 139.57171279571781
-    },
-    {
-      "type": "text",
-      "text": "当日は、JR逗子駅から会場までのタクシーをご用意しておりますので、ぜひご利用下さい"
+      "text": "停止中"
     }
   ],
   "席次表": [
     {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fseat.jpg?alt=media&token=ce7cc779-d0d3-47f1-851b-268aba0801b9",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fseat.jpg?alt=media&token=ce7cc779-d0d3-47f1-851b-268aba0801b9"
+      "type": "text",
+      "text": "停止中"
     }
   ],
   "料理メニュー": [
     {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fmenu.png?alt=media&token=6538d0b9-9047-4a0f-8b4f-048975ef941a",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fmenu.png?alt=media&token=6538d0b9-9047-4a0f-8b4f-048975ef941a"
+      "type": "text",
+      "text": "停止中"
     }
   ],
   "ドリンクメニュー": [
     {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.png?alt=media&token=552d6e79-4716-4848-83b8-007a2e821eae",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fdrink.png?alt=media&token=552d6e79-4716-4848-83b8-007a2e821eae"
+      "type": "text",
+      "text": "停止中"
     }
   ],
   "タイムスケジュール": [
     {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fschedule.png?alt=media&token=84191443-b22e-4c75-9536-a389597b4399",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fschedule.png?alt=media&token=84191443-b22e-4c75-9536-a389597b4399"
+      "type": "text",
+      "text": "停止中"
     }
   ],
   "プロフィール": [
     {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg?alt=media&token=28c3df52-9613-4d59-bd38-80b43b5cad32",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fgroom.jpg?alt=media&token=28c3df52-9613-4d59-bd38-80b43b5cad32"
-    },
-    {
       "type": "text",
-      "text": "高桑駿\n\n【年齢】\n28歳\n\n【出身】\n新潟県新潟市\n\n【中学】\nAKB48にハマってました！\n\n【高校】\nボート部でした。信濃川で練習していましたが、練習が辛くてよくサボってました...\n\n【大学】\nおどりんちゅというよさこいチームで踊ってました。振り付け作ったり練習を指揮したりもしていました\n\n【社会人】\n百物語というよさこいチームで踊ってました。仕事ではこのようなアプリを作っています"
-    },
-    {
-      "type": "image",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg?alt=media&token=eaf567ff-f6be-478d-a702-57cd1e723c1e",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbride.jpg?alt=media&token=eaf567ff-f6be-478d-a702-57cd1e723c1e"
-    },
-    {
-      "type": "text",
-      "text": "瀬山彩華\n\n【年齢】\n27歳\n\n【出身】\n埼玉県熊谷市\n\n【中学】\nうちわ祭（地元の夏祭り）のお囃子が生き甲斐でした。熊谷が最高気温40.9度を叩き出した時は部活帰りで歩いてました\n\n【高校】\nダンス部でした。文化祭のミスターコン2位でした！\n\n【大学】\n法政大学よさこいソーランサークル鳳遙恋でよさこい踊ってました\n\n【社会人】\n新郎と同じで百物語にいました！ワーホリでニュージーランドにも行ってました！"
+      "text": "停止中"
     }
   ],
   "ヘルプ": [
@@ -149,18 +116,14 @@
   ],
   "招待状アプリの活用方法": [
     {
-      "type": "video",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline%20tutorial.mp4?alt=media&token=44e3e19b-bf3b-4b06-8336-cbaed72dc658",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fline_tutorial_thumbnail.jpg?alt=media&token=d098c37b-8be6-49d6-bce3-f3a7699d74b4",
-      "trackingId": "how-to-use-app-video"
+      "type": "text",
+      "text": "停止中"
     }
   ],
   "写真・動画の一括ダウンロード方法": [
     {
-      "type": "video",
-      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbulk%20download%20screen%20movie.mp4?alt=media&token=49a902e7-4aaf-48e1-a6e8-5f8d38860f91",
-      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-1df62.appspot.com/o/resource%2Fbulk%20download%20thumbnail.jpg?alt=media&token=884c6747-5da3-47ed-9172-04af9741cae4",
-      "trackingId": "bulk-download-thumbnail-video"
+      "type": "text",
+      "text": "停止中"
     }
   ]
 }
