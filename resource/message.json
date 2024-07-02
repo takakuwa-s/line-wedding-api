@@ -50,53 +50,10 @@
       "stickerID": "10551379"
     }
   ],
-  "follow": [
-    {
-      "type": "text",
-      "text": "このたび、嶋佑祥・久原彩華の結婚式を挙げることとなりました"
-    },
-    {
-      "type": "text",
-      "text": "お手数ではございますが下記をタップして内容をご確認いただき、ご出席賜りますようお願い致します"
-    },
-    {
-      "type": "flex",
-      "altText": "結婚式招待状",
-      "contents": {
-        "type": "bubble",
-        "size": "giga",
-        "body": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "image",
-              "url": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline_im01.PNG?alt=media&token=f7aeb8ba-2b66-47e9-9086-33f544226f58",
-              "size": "full",
-              "aspectMode": "cover",
-              "aspectRatio": "1:1",
-              "gravity": "center",
-              "action": {
-                "type": "uri",
-                "label": "招待状を開く",
-                "uri": "%s"
-              }
-            },
-            {
-              "type": "text",
-              "text": "招待状を開く",
-              "align": "center"
-            }
-          ],
-          "paddingAll": "none"
-        }
-      }
-    }
-  ],
   "attendance_disabled_follow": [
     {
       "type": "text",
-      "text": "嶋佑祥・久原彩華の結婚式招待状LINEアカウントをフォロー頂き、ありがとうございます"
+      "text": "中川太志・小林沙瑛子の結婚式写真共有LINEアカウントをフォロー頂き、ありがとうございます"
     }
   ],
   "image": [
@@ -177,72 +134,6 @@
       }
     }
   ],
-  "slideshow_create_success": [
-    {
-      "type": "text",
-      "text": "スライドショーの作成に成功しました。",
-      "sender": {
-        "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline-admin-icon.jpg?alt=media&token=e4368d51-ab4f-4003-a338-3918665d4590&_gl=1*u3vnhm*_ga*MTAzNDE4MjIyNC4xNjkxNTAwNTc1*_ga_CW55HF8NVT*MTY5NTk5Njk1Ni4yOC4xLjE2OTU5OTgzOTkuMjMuMC4w"
-      }
-    },
-    {
-      "type": "video",
-      "originalContentUrl": "%s",
-      "previewImageUrl": "%s",
-      "sender": {
-        "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline-admin-icon.jpg?alt=media&token=e4368d51-ab4f-4003-a338-3918665d4590&_gl=1*u3vnhm*_ga*MTAzNDE4MjIyNC4xNjkxNTAwNTc1*_ga_CW55HF8NVT*MTY5NTk5Njk1Ni4yOC4xLjE2OTU5OTgzOTkuMjMuMC4w"
-      }
-    }
-  ],
-  "slideshow_create_error": [
-    {
-      "type": "text",
-      "text": "スライドショーの作成に失敗しました。\n\n詳細;\n%s",
-      "sender": {
-        "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline-admin-icon.jpg?alt=media&token=e4368d51-ab4f-4003-a338-3918665d4590&_gl=1*u3vnhm*_ga*MTAzNDE4MjIyNC4xNjkxNTAwNTc1*_ga_CW55HF8NVT*MTY5NTk5Njk1Ni4yOC4xLjE2OTU5OTgzOTkuMjMuMC4w"
-      }
-    }
-  ],
-  "slideshow": [
-    {
-      "type": "text",
-      "text": "結婚式にお越し頂き、ありがとうございました"
-    },
-    {
-      "type": "text",
-      "text": "投稿頂いた写真・動画を元に、スライドショーを作成させて頂きました。是非お帰りの際にご覧下さい"
-    },
-    {
-      "type": "video",
-      "originalContentUrl": "%s",
-      "previewImageUrl": "%s"
-    }
-  ],
-  "reminder": [
-    {
-      "type": "text",
-      "text": "皆さん、こんにちは！\n先日はLINE招待状にて、結婚式ご出席のご回答をいただきまして誠にありがとうございました。\n段々と、イルミネーションが輝き、心がはずむ季節がやってきましたね🎄\nさて、いよいよ結婚式・披露宴が今週末となりました。\n\nつきまして、\nこれより本LINE botの全機能を公開いたします。\n席次表やお料理メニュー、フォトアルバムなどございますので、どうぞご活用ください！！\n\nそれから、\n当日はご来館いただくホテルの屋上にチャペルがあります。\nエレベーターを出てすぐ教会扉がありますが、半外となりますのでジャケットの下に着られるカーディガンや、ドレスの上に羽織れるものをご用意いただくと良いかもしれません。\n\nそれでは、\n当日皆さんにお会いできますことを楽しみにしております！！"
-    },
-    {
-      "type": "sticker",
-      "packageID": "446",
-      "stickerID": "1992"
-    }
-  ],
-  "invitation_reminder": [
-    {
-      "type": "text",
-      "text": "【招待状回答のお願い】\n\n先日は本LINE botを友達登録頂き、ありがとうございました。\n\n友達登録完了後、お送りしましたWeb招待状より出欠のご回答をお願い致します。\nWeb招待状はLINE bot内メニュー左上からも確認可能です。\n\n誠に勝手ながら11/10（金）を締切とさせて頂いております。\n何卒宜しくお願いします。\n\n※こちらのメッセージは未回答の方にお送りしております。既にご回答済みの場合は、恐れ入りますが新郎又は新婦までご連絡ください。"
-    },
-    {
-      "type": "sticker",
-      "packageID": "6325",
-      "stickerID": "10979915"
-    }
-  ],
   "wedding_follow": [
     {
       "type": "text",
@@ -285,26 +176,6 @@
     {
       "type": "text",
       "text": "%sさんがWedding botをブロックしました",
-      "sender": {
-        "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline-admin-icon.jpg?alt=media&token=e4368d51-ab4f-4003-a338-3918665d4590&_gl=1*u3vnhm*_ga*MTAzNDE4MjIyNC4xNjkxNTAwNTc1*_ga_CW55HF8NVT*MTY5NTk5Njk1Ni4yOC4xLjE2OTU5OTgzOTkuMjMuMC4w"
-      }
-    }
-  ],
-  "wedding_register": [
-    {
-      "type": "text",
-      "text": "%sさんがフォームに回答しました",
-      "sender": {
-        "name": "管理者",
-        "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline-admin-icon.jpg?alt=media&token=e4368d51-ab4f-4003-a338-3918665d4590&_gl=1*u3vnhm*_ga*MTAzNDE4MjIyNC4xNjkxNTAwNTc1*_ga_CW55HF8NVT*MTY5NTk5Njk1Ni4yOC4xLjE2OTU5OTgzOTkuMjMuMC4w"
-      }
-    }
-  ],
-  "wedding_modify": [
-    {
-      "type": "text",
-      "text": "%sさんがフォームの回答を修正しました",
       "sender": {
         "name": "管理者",
         "iconUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-dev-9342b.appspot.com/o/app-img%2Fline-admin-icon.jpg?alt=media&token=e4368d51-ab4f-4003-a338-3918665d4590&_gl=1*u3vnhm*_ga*MTAzNDE4MjIyNC4xNjkxNTAwNTc1*_ga_CW55HF8NVT*MTY5NTk5Njk1Ni4yOC4xLjE2OTU5OTgzOTkuMjMuMC4w"

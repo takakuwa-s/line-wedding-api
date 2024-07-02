@@ -120,7 +120,7 @@ func (au *ApiUsecase) GetFileList(ids, fileStatuses []string, limit int, startId
 			return nil, err
 		}
 		for _, u := range users {
-			uMap[u.Id] = u.Name
+			uMap[u.Id] = u.LineName
 		}
 	}
 	return dto.NewFileResponceList(files, uMap), nil

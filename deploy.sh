@@ -68,7 +68,7 @@ elif test $2 = "dev" ; then
 else
   echo "----- deploying to docker-hub -----"
   repo="takakuwa5docker/line-wedding-api"
-  tag=$1-prod-shimakame
+  tag=$1-prod-taishi-saeko
 
   echo "----- remove docker image -----"
   docker rmi $repo:$tag -f
@@ -80,9 +80,9 @@ else
   docker push $repo:$tag
 
   echo "----- restart azure app service -----"
-  appName=line-wedding-api-prod-shima
+  appName=line-wedding-api-prod-taishi-saeko
   if test $1 = "background-process-api" ; then
-    appName=wedding-background-process-api-prod-shima
+    appName=wedding-background-process-api-prod-taishi-saeko
   fi
-  az webapp restart --resource-group wedding-prod-shima --name $appName
+  az webapp restart --resource-group wedding-prod-taishi-saeko --name $appName
 fi
