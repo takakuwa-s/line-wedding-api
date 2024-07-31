@@ -82,11 +82,12 @@ func (lpu *LinePushUsecase) SendRegisterNotification(registered bool, name strin
 }
 
 func (lpu *LinePushUsecase) multicastMessageToAdmin(m []map[string]interface{}) error {
-	users, err := lpu.ur.FindByIsAdmin(true)
-	if err != nil {
-		return err
-	}
-	return lpu.multicastMessage(users, m)
+	// users, err := lpu.ur.FindByIsAdmin(true)
+	// if err != nil {
+	// 	return err
+	// }
+	// return lpu.multicastMessage(users, m)
+	return nil
 }
 
 func (lpu *LinePushUsecase) multicastMessage(

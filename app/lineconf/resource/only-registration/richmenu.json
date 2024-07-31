@@ -9,18 +9,6 @@
   "areas": [
     {
       "bounds": {
-        "x": 0,
-        "y": 0,
-        "width": 834,
-        "height": 718
-      },
-      "action": {
-        "type": "uri",
-        "uri": "%s"
-      }
-    },
-    {
-      "bounds": {
         "x": 834,
         "y": 0,
         "width": 833,
@@ -28,7 +16,7 @@
       },
       "action": {
         "type": "uri",
-        "uri": "%s/user"
+        "uri": "https://invitopalette.myprint.co.jp/design/Flower_B/pages/invitation.php?hash_id=XeioYWPeuRZFd1vC0gM3mrjZzIPI8oymrvBsYbW0xNo="
       }
     },
     {
@@ -40,8 +28,8 @@
       },
       "action": {
         "type": "message",
-        "label": "結婚式場はどこ？",
-        "text": "結婚式場はどこ？"
+        "label": "式場アクセス",
+        "text": "式場アクセス"
       }
     },
     {
@@ -53,8 +41,8 @@
       },
       "action": {
         "type": "message",
-        "label": "プロフィール",
-        "text": "プロフィール"
+        "label": "席次表",
+        "text": "席次表"
       }
     },
     {
@@ -66,8 +54,20 @@
       },
       "action": {
         "type": "message",
-        "label": "タイムスケジュール",
-        "text": "タイムスケジュール"
+        "label": "写真アップロード",
+        "text": "写真アップロード"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1667,
+        "y": 718,
+        "width": 833,
+        "height": 718
+      },
+      "action": {
+        "type": "uri",
+        "uri": "%s/image/list/all"
       }
     }
   ]
