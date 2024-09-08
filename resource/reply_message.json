@@ -27,8 +27,9 @@
   ],
   "席次表": [
     {
-      "type": "text",
-      "text": "???"
+      "type": "image",
+      "originalContentUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-prod-taishi-saeko.appspot.com/o/app-img%2Fseat.jpg?alt=media&token=d4cb8ec7-d66a-4803-81c1-e97cda2189ba",
+      "previewImageUrl": "https://firebasestorage.googleapis.com/v0/b/wedding-prod-taishi-saeko.appspot.com/o/app-img%2Fseat.jpg?alt=media&token=d4cb8ec7-d66a-4803-81c1-e97cda2189ba"
     }
   ],
   "式場アクセス": [
